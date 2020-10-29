@@ -1,0 +1,202 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="GameEngine">
+      <UniqueIdentifier>{9a388c5c-d467-47c2-b2bf-202e2f23d28d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject">
+      <UniqueIdentifier>{86352219-28c4-44ef-8a07-aba1df0688fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\Texture">
+      <UniqueIdentifier>{cb2afc4f-02fd-4c32-9baa-b730fb23b841}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\Sprite">
+      <UniqueIdentifier>{ac7e7b27-c82d-425c-a338-112cbe9f9cc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\Debug">
+      <UniqueIdentifier>{edcc888a-bb6f-485f-a025-25da31339cdd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\Animation">
+      <UniqueIdentifier>{e14b249e-77f2-42bf-b0c8-06432543c239}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\Scene">
+      <UniqueIdentifier>{d0393a84-ecc2-450e-b35f-4138a177bca3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Mario">
+      <UniqueIdentifier>{7bf264f1-a5e1-4ef2-9155-90c4813af371}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Block">
+      <UniqueIdentifier>{a2bf480c-9e84-462b-b613-a0028d72babc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\BackGround">
+      <UniqueIdentifier>{a8eeb38f-5a47-458a-93b3-5725e4e42606}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\Keyboard">
+      <UniqueIdentifier>{c16b0189-49b3-4710-89e0-365d6f3af0f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\ActiveBlock">
+      <UniqueIdentifier>{1df4e83b-39d8-41bb-8780-5e1a452c8073}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Brick">
+      <UniqueIdentifier>{42a15de3-1417-4c84-b167-458153430c88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\QuestionBlock">
+      <UniqueIdentifier>{36a5c75c-d928-4a90-b6c3-a6f47a88add7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Bullet">
+      <UniqueIdentifier>{c7a41fd8-ee91-4f42-a1cb-b0f57adbc5d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Bullet\Fireball">
+      <UniqueIdentifier>{e2e84014-f366-461c-9725-4adfd85897fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Bullet\Hammer">
+      <UniqueIdentifier>{a3de42ab-4164-4211-af7f-0018e9698b1a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameEngine.cpp">
+      <Filter>GameEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>GameEngine\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>GameEngine\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="debug.cpp">
+      <Filter>GameEngine\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteManager.cpp">
+      <Filter>GameEngine\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>GameEngine\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationManager.cpp">
+      <Filter>GameEngine\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>GameEngine\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>GameEngine\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="TestScene.cpp">
+      <Filter>GameEngine\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Global.cpp">
+      <Filter>GameEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="Mario.cpp">
+      <Filter>GameObject\Mario</Filter>
+    </ClCompile>
+    <ClCompile Include="Block.cpp">
+      <Filter>GameObject\Block</Filter>
+    </ClCompile>
+    <ClCompile Include="BackGround.cpp">
+      <Filter>GameObject\BackGround</Filter>
+    </ClCompile>
+    <ClCompile Include="Keyboard.cpp">
+      <Filter>GameEngine\Keyboard</Filter>
+    </ClCompile>
+    <ClCompile Include="GroupObject.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="ActiveBlock.cpp">
+      <Filter>GameObject\ActiveBlock</Filter>
+    </ClCompile>
+    <ClCompile Include="QuestionBlock.cpp">
+      <Filter>GameObject\QuestionBlock</Filter>
+    </ClCompile>
+    <ClCompile Include="BrickShiny.cpp">
+      <Filter>GameObject\Brick</Filter>
+    </ClCompile>
+    <ClCompile Include="Fireball.cpp">
+      <Filter>GameObject\Bullet\Fireball</Filter>
+    </ClCompile>
+    <ClCompile Include="Hammer.cpp">
+      <Filter>GameObject\Bullet\Hammer</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GameEngine.h">
+      <Filter>GameEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>GameEngine\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>GameEngine\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="debug.h">
+      <Filter>GameEngine\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteManager.h">
+      <Filter>GameEngine\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>GameEngine\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationManager.h">
+      <Filter>GameEngine\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>GameEngine\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyEventHandler.h">
+      <Filter>GameEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>GameEngine\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="TestScene.h">
+      <Filter>GameEngine\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Global.h">
+      <Filter>GameEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="Mario.h">
+      <Filter>GameObject\Mario</Filter>
+    </ClInclude>
+    <ClInclude Include="Block.h">
+      <Filter>GameObject\Block</Filter>
+    </ClInclude>
+    <ClInclude Include="BackGround.h">
+      <Filter>GameObject\BackGround</Filter>
+    </ClInclude>
+    <ClInclude Include="Keyboard.h">
+      <Filter>GameEngine\Keyboard</Filter>
+    </ClInclude>
+    <ClInclude Include="GroupObject.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="ActiveBlock.h">
+      <Filter>GameObject\ActiveBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="QuestionBlock.h">
+      <Filter>GameObject\QuestionBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="BrickShiny.h">
+      <Filter>GameObject\Brick</Filter>
+    </ClInclude>
+    <ClInclude Include="Fireball.h">
+      <Filter>GameObject\Bullet\Fireball</Filter>
+    </ClInclude>
+    <ClInclude Include="Hammer.h">
+      <Filter>GameObject\Bullet\Hammer</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
