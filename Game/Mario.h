@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include "Bullet.h"
 #include "Fireball.h"
 #include "Hammer.h"
 

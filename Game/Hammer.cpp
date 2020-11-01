@@ -85,7 +85,6 @@ void Hammer::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		float min_tx, min_ty;
 		float rdx = 0;
 		float rdy = 0;
-		collideWithMario = false;
 
 		// TODO: This is a very ugly designed function!!!!
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
@@ -96,10 +95,7 @@ void Hammer::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			LPCOLLISIONEVENT e = coEventsResult[i];
 			LPGAMEOBJECT obj = e->obj;
 
-			if (obj == mario)
-			{
-				collideWithMario = true;
-			}
+			
 
 		}*/
 

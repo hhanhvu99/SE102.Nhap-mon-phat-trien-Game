@@ -127,6 +127,9 @@
     <ClCompile Include="Hammer.cpp">
       <Filter>GameObject\Bullet\Hammer</Filter>
     </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>GameObject\Bullet</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine.h">
@@ -197,6 +200,9 @@
     </ClInclude>
     <ClInclude Include="Hammer.h">
       <Filter>GameObject\Bullet\Hammer</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet.h">
+      <Filter>GameObject\Bullet</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

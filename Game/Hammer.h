@@ -1,6 +1,5 @@
 #pragma once
-#include "GameObject.h"
-#include "SceneManager.h"
+#include "Bullet.h"
 #include "TestScene.h"
 
 //Basic info
@@ -15,23 +14,13 @@
 #define BULLET_HAMMER_DRAW_OFFSET_Y		0.0f
 #define BULLET_SAFE_DELETE_RANGE		300.0f
 
-class Hammer : public GameObject
+class Hammer : public Bullet
 {
-	float nx, ny;
-	float offsetX, offsetY;
-	float camPosX, camPosY;
-	int bulletType;
-	DWORD timeLeft;
-	LPGAMEOBJECT mario;
-
-	bool pause = false;
-	bool collideWithMario = false;
-
 public:
 	Hammer(float x, float y, int direction);
 
-	void Add();
-	void Destroy();
+	virtual void Add();
+	virtual void Destroy();
 
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL);

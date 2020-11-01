@@ -59,6 +59,7 @@ void AnimationManager::Load(LPCWSTR gameFile)
 	char str[MAX_GAME_LINE];
 	bool begin = false;
 	bool getID = false;
+	timeChange = false;
 
 	LPANIMATION_SET ani_set = new AnimationSet();
 	LPANIMATION ani = new Animation();
@@ -86,6 +87,10 @@ void AnimationManager::Load(LPCWSTR gameFile)
 		{ 
 			ani_set->Add(ani_id, ani);
 			this->Add(ani_set_id, ani_set); 
+
+			if (timeChange)
+				this->SetTime(ani_set_id, aniTime);
+
 			break; 
 		}
 
@@ -113,8 +118,20 @@ int AnimationManager::ParseCommon(string line, LPANIMATION ani)
 	for (int i = 0; i < 2; ++i)
 		data.push_back(atoi(tokens[i].c_str()));
 
+	if (tokens.size() == 3)
+	{
+		data.push_back(atoi(tokens[2].c_str()));
+	}
+	
 	if (data[1] == 0)
+	{
+		if (data.size() == 3)
+		{
+			timeChange = true;
+			aniTime = data[2];
+		}
 		return data[0];
+	}
 	else
 	{
 		ani->Add(data[0]);

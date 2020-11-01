@@ -1,6 +1,5 @@
 #pragma once
-#include "GameObject.h"
-#include "SceneManager.h"
+#include "Bullet.h"
 #include "TestScene.h"
 
 //Basic info
@@ -19,19 +18,9 @@
 #define BULLET_SAFE_DELETE_RANGE		300.0f
 
 //Time left
-#define BULLET_FIREBALL_TIME_LEFT		80		
-class Fireball : public GameObject
+#define BULLET_FIREBALL_TIME_LEFT		80	
+class Fireball : public Bullet
 {
-	float nx, ny;
-	float offsetX, offsetY;
-	float camPosX, camPosY;
-	int bulletType;
-	DWORD timeLeft;
-	LPGAMEOBJECT mario;
-
-	bool pause = false;
-	bool stopDrawing = false;
-
 public:
 	Fireball(float x, float y, int direction);
 

@@ -8,6 +8,8 @@ class AnimationManager
 {
 	static AnimationManager* __instance;
 	bool first = false;
+	bool timeChange = false;
+	int aniTime = 0;
 
 	unordered_map<int, LPANIMATION_SET> animation_sets;
 

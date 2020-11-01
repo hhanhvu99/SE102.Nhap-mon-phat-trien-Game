@@ -149,6 +149,7 @@
     <ClCompile Include="BackGround.cpp" />
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="BrickShiny.cpp" />
+    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="Fireball.cpp" />
     <ClCompile Include="GameEngine.cpp" />
@@ -174,6 +175,7 @@
     <ClInclude Include="BackGround.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="BrickShiny.h" />
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="Fireball.h" />
     <ClInclude Include="GameEngine.h" />
