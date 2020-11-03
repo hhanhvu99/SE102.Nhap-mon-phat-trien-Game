@@ -33,7 +33,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	GameObject::Update(dt);
 
 	// Simple fall down
-	vy += MARIO_GRAVITY * dt/10;
+	vy += MARIO_GRAVITY * dt;
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -126,7 +126,6 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		float min_tx, min_ty;
 		float rdx = 0;
 		float rdy = 0;
-		countOffGround = 0;
 
 		// TODO: This is a very ugly designed function!!!!
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
@@ -175,6 +174,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			if (ny < 0)
 			{
 				touchGround = true;
+				countOffGround = 0;
 			}
 			else if (ny > 0)
 			{
@@ -246,13 +246,19 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	float speed = abs(vx);
 	if (level != MARIO_LEVEL_FROG)
 	{
-		if (speed < MARIO_BREAK_THRESHOLD)
+		if (speed < MARIO_MAX_WALKING_SPEED)
 		{
 			ani_walk_time = MARIO_ANI_WALKING_TIME_DEFAULT;
 			if (touchGround)
 				isMax = false;
 		}
-		else if (speed <= MARIO_MAX_WALKING_SPEED)
+		else if (speed == MARIO_MAX_WALKING_SPEED)
+		{
+			ani_walk_time = MARIO_ANI_WALKING_TIME_WARMUP;
+			if (touchGround)
+				isMax = false;
+		}
+		else if (speed < MARIO_HALF_MAX_RUNNING_SPEED)
 		{
 			ani_walk_time = MARIO_ANI_WALKING_TIME_WARMUP;
 			if (touchGround)
@@ -271,7 +277,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		ani_walk_time = MARIO_ANI_FROG_JUMPING_TIME;
 	}
-	
+	DebugOut(L"Ani time: %d \n", ani_walk_time);
 
 	//Invincibility BBox
 	if (level != MARIO_LEVEL_SMALL && level != MARIO_LEVEL_FROG)
@@ -306,10 +312,9 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		if (GetTickCount() - startFrogJump > MARIO_FROG_JUMPING_TIME)
 		{
 			frog_jumping = false;
-			if (direction > 0) vx = 0.0001f;
-			else if (direction < 0) vx = -0.0001f;
+			if (direction > 0) vx = 0.0005f;
+			else if (direction < 0) vx = -0.0005f;
 		}
-		DebugOut(L"vx: %f \n", vx);
 	}
 
 	//Attack
@@ -489,10 +494,8 @@ void Mario::SetState(int state)
 		{
 			if (level != MARIO_LEVEL_FROG)
 			{
-				if (abs(vx) > MARIO_MAX_WALKING_SPEED)
-					vx -= Global::Sign(vx) * MARIO_SLIDE_SPEED * dt/10;
-				else if (abs(vx) + MARIO_WALKING_SPEED <= MARIO_MAX_WALKING_SPEED)
-					vx += MARIO_WALKING_SPEED * dt/10;
+				if (abs(vx) + MARIO_WALKING_SPEED <= MARIO_MAX_WALKING_SPEED)
+					vx += MARIO_WALKING_SPEED * dt;
 				else
 					vx = MARIO_MAX_WALKING_SPEED;
 			}
@@ -507,9 +510,9 @@ void Mario::SetState(int state)
 			{
 				startFrogJump = now;
 				frog_jumping = true;
-			}
+			}	
 			if (abs(vx) + MARIO_WALKING_SPEED <= MARIO_MAX_WALKING_SPEED)
-				vx += MARIO_WALKING_SPEED * dt / 10;
+				vx += MARIO_WALKING_SPEED * dt;
 			else
 				vx = MARIO_MAX_WALKING_SPEED;
 
@@ -521,7 +524,7 @@ void Mario::SetState(int state)
 		if (!touchRight)
 		{
 			if (abs(vx) + MARIO_RUNNING_SPEED <= MARIO_MAX_RUNNING_SPEED)
-				vx += MARIO_RUNNING_SPEED * dt/10;
+				vx += MARIO_RUNNING_SPEED * dt;
 			else
 			{
 				vx = MARIO_MAX_RUNNING_SPEED;
@@ -536,10 +539,8 @@ void Mario::SetState(int state)
 		{
 			if (level != MARIO_LEVEL_FROG)
 			{
-				if (abs(vx) > MARIO_MAX_WALKING_SPEED)
-					vx -= Global::Sign(vx) * MARIO_SLIDE_SPEED * dt/10;
-				else if (abs(vx) + MARIO_WALKING_SPEED <= MARIO_MAX_WALKING_SPEED)
-					vx += -MARIO_WALKING_SPEED * dt / 10;
+				if (abs(vx) + MARIO_WALKING_SPEED <= MARIO_MAX_WALKING_SPEED)
+					vx += -MARIO_WALKING_SPEED * dt;
 				else
 					vx = -MARIO_MAX_WALKING_SPEED;
 			}
@@ -557,7 +558,7 @@ void Mario::SetState(int state)
 				frog_jumping = true;
 			}
 			if (abs(vx) + MARIO_WALKING_SPEED <= MARIO_MAX_WALKING_SPEED)
-				vx += -MARIO_WALKING_SPEED * dt / 10;
+				vx += -MARIO_WALKING_SPEED * dt;
 			else
 				vx = -MARIO_MAX_WALKING_SPEED;
 
@@ -569,7 +570,7 @@ void Mario::SetState(int state)
 		if (!touchLeft)
 		{
 			if (abs(vx) + MARIO_RUNNING_SPEED <= MARIO_MAX_RUNNING_SPEED)
-				vx += -MARIO_RUNNING_SPEED * dt / 10;
+				vx += -MARIO_RUNNING_SPEED * dt;
 			else
 			{
 				vx = -MARIO_MAX_RUNNING_SPEED;
@@ -581,13 +582,13 @@ void Mario::SetState(int state)
 		break;
 	case MARIO_STATE_BREAK_LEFT:
 		if (isRunning) vx -= Global::Sign(vx) * MARIO_RUNNING_BREAK_SPEED;
-		else vx -= Global::Sign(vx) * MARIO_BREAK_SPEED * dt / 10;
+		else vx -= Global::Sign(vx) * MARIO_BREAK_SPEED * dt;
 		if (vx < 0) vx = 0;
 		direction = -1;
 		break;
 	case MARIO_STATE_BREAK_RIGHT:
 		if (isRunning) vx -= Global::Sign(vx) * MARIO_RUNNING_BREAK_SPEED;
-		else vx -= Global::Sign(vx) * MARIO_BREAK_SPEED * dt / 10;
+		else vx -= Global::Sign(vx) * MARIO_BREAK_SPEED * dt;
 		if (vx > 0) vx = 0;
 		direction = 1;
 		break;
@@ -601,7 +602,7 @@ void Mario::SetState(int state)
 
 		if (now - jump_start < MARIO_MAX_JUMPING && jump_allow)
 		{
-			vy -= (MARIO_JUMPING_SPEED + MARIO_GRAVITY) * dt/10;
+			vy -= (MARIO_JUMPING_SPEED + MARIO_GRAVITY) * dt;
 
 			if (now - jump_start >= MARIO_MAX_JUMPING)
 				jump_allow = false;
@@ -678,7 +679,7 @@ void Mario::SetState(int state)
 	case MARIO_STATE_IDLE:
 		if (vx != 0)
 		{
-			vx -= Global::Sign(vx) * MARIO_SLIDE_SPEED * dt / 10;
+			vx -= Global::Sign(vx) * MARIO_SLIDE_SPEED * dt;
 			if (abs(vx) < MARIO_BREAK_THRESHOLD) vx = 0;
 		}
 		break;
