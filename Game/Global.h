@@ -44,6 +44,9 @@
 
 #define BLOCK_MOVING_TIME				20
 
+//Entity
+#define ENTITY_SAFE_DELETE_RANGE		300.0f
+
 //Animation
 #define MARIO							1412
 
@@ -72,6 +75,9 @@ static const D3DCOLOR InvicibilityPalette[] = {
 	D3DCOLOR_ARGB(255, 104, 178, 252),
 };
 
+//Pause Movement
+extern bool PAUSE;
+
 //Animation Time
 #define MARIO_ANI_WALKING_TIME_DEFAULT	150
 #define MARIO_ANI_WALKING_TIME_WARMUP	80
@@ -79,6 +85,7 @@ static const D3DCOLOR InvicibilityPalette[] = {
 #define MARIO_ANI_WALKING_TIME_MAX		30
 
 #define MARIO_ANI_INVINCIBLE_TIME		10
+#define MARIO_ANI_UNTOUCHABLE_TIME		50
 
 #define MARIO_ANI_FROG_JUMPING_TIME		160
 #define MARIO_ANI_TAIL_WHIP_TIME		60
@@ -190,6 +197,25 @@ static const D3DCOLOR InvicibilityPalette[] = {
 #define BULLET_FIREBALL_ANI_SPEED		50
 #define BULLET_HAMMER_ANI_SPEED			70
 
+/////////////
+//Enemy Mob//
+/////////////
+#define ENEMY_MOB						7791
+
+//////////////
+//Mob Prefix//
+//////////////
+//Mob Type
+#define ENEMY_GROOMBA_BROWN				100000
+
+//////////////
+//Mob Suffix//
+//////////////
+#define ENEMY_ANI_LEFT					9
+#define ENEMY_ANI_RIGHT					10
+#define ENEMY_ANI_DIE					80
+#define ENEMY_ANI_DIE_HIT_LEFT			81
+#define ENEMY_ANI_DIE_HIT_RIGHT			82
 
 enum eType
 {
@@ -203,6 +229,11 @@ enum eType
 
 	//Mario 
 	PLAYER = 04,
+	PLAYER_UNTOUCHABLE = 05,
+
+	//Enemy Mob
+	ENEMY = 06,
+	ENEMY_MOB_DIE = 07,
 
 	//Active Block
 	BRICK = 10,
@@ -211,6 +242,7 @@ enum eType
 	//Bullet
 	MARIO_BULLET = 50
 	
+
 
 	
 };

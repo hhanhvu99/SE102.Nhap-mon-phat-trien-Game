@@ -55,6 +55,7 @@ void LoadResources()
 
 	texture->Add(1, L"Asset\\Block\\SpriteSheet.png", NULL);
 	texture->Add(2, L"Asset\\Character\\Mario\\MarioSheet.png", D3DCOLOR_XRGB(68, 145, 190));
+	texture->Add(3, L"Asset\\Character\\Enemy\\MobSheet.png", NULL);
 	texture->Add(ID_TEX_BBOX, L"Asset\\Debug\\BoundingBox.png", NULL);
 
 	SpriteManager* spriteData = SpriteManager::GetInstance();
@@ -100,6 +101,10 @@ void LoadResources()
 	//--Mario--//
 	spriteData->Load(L"Script\\Assets\\Sprites\\MarioSprites.txt", sheet);
 
+	//--Mob--//
+	sheet = texture->Get(3);
+	spriteData->Load(L"Script\\Assets\\Sprites\\EnemyMobSprites.txt", sheet);
+
 	////////////////////////
 	//---Load animation---//
 	////////////////////////
@@ -109,6 +114,9 @@ void LoadResources()
 
 	//--Bullet--//
 	aniData->Load(L"Script\\Assets\\Animations\\BulletAnimations.txt");
+
+	//--Mob--//
+	aniData->Load(L"Script\\Assets\\Animations\\EnemyAnimations.txt");
 	
 	////////////////////
 	//---Load Array---//
@@ -249,7 +257,8 @@ int Run()
 			
 			while (accumulator >= timeStep)
 			{
-				gameEngine->ProcessKeyboard();
+				if(!PAUSE)
+					gameEngine->ProcessKeyboard();
 				Update(timeStep);
 				accumulator -= timeStep;
 			}

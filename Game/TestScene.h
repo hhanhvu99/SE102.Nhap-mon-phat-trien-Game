@@ -10,6 +10,7 @@
 #include "GroupObject.h"
 #include "BrickShiny.h"
 #include "QuestionBlock.h"
+#include "Groomba.h"
 
 #include "Global.h"
 
@@ -28,6 +29,7 @@ public:
 	TestScene(int id, LPCWSTR filePath);
 	void Add(LPGAMEOBJECT gameObject);
 	void Destroy(LPGAMEOBJECT gameObject);
+	void Remove(LPGAMEOBJECT gameObject);
 	Mario* GetMario() { return this->mario; }
 
 	virtual void Load();

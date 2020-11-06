@@ -39,17 +39,23 @@
 #define MARIO_STATE_INVINCIBLE			700
 #define MARIO_STATE_UNTOUCHABLE			701
 #define MARIO_STATE_ATTACK				800
+#define MARIO_STATE_HIT					900
+#define MARIO_STATE_TRANSITION_1		901
+#define MARIO_STATE_TRANSITION_2		902
 #define MARIO_STATE_DIE					1000
 
 //Time
-#define MARIO_UNTOUCHABLE_TIME			5000
+#define MARIO_UNTOUCHABLE_TIME			2000
+#define MARIO_TRANSITION_1_TIME			200
+#define MARIO_TRANSITION_2_TIME			600
+#define MARIO_TRANSITION_2_CYCLE		200
 #define MARIO_INVINCIBILITY_TIME		5000	
 #define MARIO_FROG_JUMPING_TIME			500
 #define MARIO_SHOOT_WAITING_TIME		1000
 #define MARIO_MAX_JUMPING				120
 
 //Point collide
-#define MARIO_POINT_COLLIDE_OFFSET_X	4.0f
+#define MARIO_POINT_COLLIDE_OFFSET_X	8.0f
 #define MARIO_POINT_COLLIDE_OFFSET_Y	0.5f
 
 //Offset for different Mario level
@@ -112,7 +118,13 @@ class Mario : public GameObject
 	bool flipFrame = false;
 
 	bool untouchable = false;
-	DWORD untouchable_start;
+	DWORD untouchable_start = 0;
+	DWORD untouchable_frame = 0;
+
+	bool inTransition = false;
+	DWORD startTransitionOne = 0;
+	DWORD startTransitionTwo = 0;
+	DWORD transition_frame = 0;
 
 	bool startInvincible = false;
 	DWORD invincible_start = 0;
@@ -137,6 +149,7 @@ class Mario : public GameObject
 	bool isMax = false;
 	bool isCrouch = false;
 	bool jumpCrouch = false;
+	
 
 	int countTouch = 0;
 	int countOffGround = 0;
@@ -154,7 +167,10 @@ public:
 	int GetLevel() { return this->level; }
 
 	bool PointCollision(vector<LPGAMEOBJECT>& collideObjects, float pointX, float pointY);
+	bool PointCollision(vector<LPGAMEOBJECT>& collideObjects, float pointX, float pointY, LPGAMEOBJECT& target);
+
 	bool isCrouching() { return isCrouch; }
+	bool isTouchGround() { return touchGround; }
 
 	void Reset();
 

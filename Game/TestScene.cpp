@@ -25,6 +25,11 @@ void TestScene::Destroy(LPGAMEOBJECT gameObject)
 	delete gameObject;
 }
 
+void TestScene::Remove(LPGAMEOBJECT gameObject)
+{
+	collideObjects.erase(std::remove(collideObjects.begin(), collideObjects.end(), gameObject), collideObjects.end());
+}
+
 void TestScene::Load()
 {
 	DebugOut(L"[INFO] Start loading scene resources from : %s \n", sceneFilePath);
@@ -39,9 +44,11 @@ void TestScene::Load()
 	mario = new Mario(45.0f, 350.0f);
 	mario->SetDrawOrder(PLAYER_DRAW_ORDER);
 
-
 	gameObjects.clear();
 	collideObjects.clear();
+
+	gameObjects.push_back(mario);
+	collideObjects.push_back(mario);
 
 	for (int j = 0; j < height; ++j)
 	{
@@ -105,7 +112,7 @@ void TestScene::Load()
 	vector<LPGAMEOBJECT>::iterator pos;
 
 	//Group object
-	int length = sizeof(GROUP) / sizeof(GROUP[0]);
+	int length = 4;
 	for (int x = 0; x < length; x+=4)
 	{
 		left = GROUP[x];
@@ -147,8 +154,24 @@ void TestScene::Load()
 		collideObjects.push_back(group);
 	}
 
-	gameObjects.push_back(mario);
-	collideObjects.push_back(mario);
+	//Add Enemy Mob
+	int placeX;
+	int placeY;
+	int mobType;
+	Groomba* enemy;
+
+	length = 3;
+	for (int x = 0; x < length; x += 3)
+	{
+		placeX = ENEMY[x];
+		placeY = ENEMY[x + 1];
+		mobType = ENEMY[x + 2];
+		enemy = new Groomba(placeX, placeY, mobType);
+		enemy->SetDrawOrder(ENEMY_ENTITY_DRAW_ORDER);
+		enemy->SetAnimationSet(AnimationManager::GetInstance()->Get(ENEMY_MOB));
+
+	}
+
 	Keyboard::GetInstance()->SetKeyHandler(mario);
 	mario->SetAnimationSet(AnimationManager::GetInstance()->Get(MARIO));
 	mario->SetLevel(MARIO_LEVEL_SMALL);
@@ -160,6 +183,15 @@ void TestScene::Load()
 		}
 	);
 
+	float cx, cy;
+	mario->GetPosition(cx, cy);
+
+	GameEngine* game = GameEngine::GetInstance();
+	cx -= game->GetScreenWidth() / 2;
+	cy -= game->GetScreenHeight() / 2;
+
+	GameEngine::GetInstance()->SetCamPos(cx, 250.0f);
+
 	DebugOut(L"[INFO] Done loading scene resources %s\n", sceneFilePath);
 }
 
@@ -170,6 +202,7 @@ void TestScene::Update(DWORD dt)
 	{
 		x->Update(dt, &collideObjects);
 	}
+	
 
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (mario == NULL) return;

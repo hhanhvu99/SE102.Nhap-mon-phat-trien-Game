@@ -81,8 +81,9 @@ void SpriteManager::ParseCommon(string line, LPDIRECT3DTEXTURE9 tex)
 		this->Add(data[0], data[1], data[2], data[3], data[4], tex);
 	else if (data.size() == 6)
 		this->Add(data[0], data[1], data[2], data[3], data[4], tex, data[5]);
+	else if (data.size() == 7)
+		this->Add(data[0], data[1], data[2], data[3], data[4], tex, data[5], data[6]);
 	else
-		this->Add(data[0], data[1], data[2], data[3], data[4], tex, data[5], -data[6]);
-
+		this->Add(data[0], data[1], data[2], data[3], data[4], tex, data[5], data[6], data[7]);
 }
 

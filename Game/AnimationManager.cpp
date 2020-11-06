@@ -78,19 +78,17 @@ void AnimationManager::Load(LPCWSTR gameFile)
 			break;
 		}
 
+		if (!timeChange)
+			aniTime = 100;
 		if (begin && line[0] == '/') { begin = false; ani_set->Add(ani_id, ani); continue; }
-		if (begin && line[0] == '-') { begin = true; first = true; ani_set->Add(ani_id, ani); ani = new Animation(); continue; }
+		if (begin && line[0] == '-') { begin = true; first = true; ani_set->Add(ani_id, ani); ani->SetTime(aniTime); ani = new Animation(); continue; }
 		if (line[0] == '/') { continue; }
-		if (line[0] == '-') { begin = true; first = true; ani = new Animation(); continue; }
+		if (line[0] == '-') { begin = true; first = true; ani->SetTime(aniTime);  ani = new Animation(); continue; }
 		if (line == "[ID]") { getID = true; continue; }
 		if (line == "End") 
 		{ 
 			ani_set->Add(ani_id, ani);
 			this->Add(ani_set_id, ani_set); 
-
-			if (timeChange)
-				this->SetTime(ani_set_id, aniTime);
-
 			break; 
 		}
 
@@ -109,6 +107,7 @@ int AnimationManager::ParseCommon(string line, LPANIMATION ani)
 {
 	vector<string> tokens = split(line, ",");
 	vector<int> data;
+	timeChange = false;
 
 	if (tokens.size() < 2)
 		return -2;

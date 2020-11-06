@@ -56,16 +56,30 @@ void Hammer::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	coEvents.clear();
 
 	// Simple fall down
-	if (pause == false)
+	if (PAUSE == false)
 	{
 		vy += BULLET_HAMMER_GRAVITY * dt;
 		vx = direction * BULLET_HAMMER_SPEED_X;
-		CalcPotentialCollisions(coObjects, coEvents, eType::PLAYER);
+		CalcPotentialCollisions(coObjects, coEvents, { eType::PLAYER });
 	}
 	else
 	{
-		dx = 0;
-		dy = 0;
+		vx = 0;
+		vy = 0;
+		return;
+	}
+
+	GameEngine::GetInstance()->GetCamPos(camPosX, camPosY);
+	if (state == BULLET_STATE_IDLE)
+	{
+		vx = 0;
+		vy = 0;
+	}
+	else if (x < camPosX - BULLET_SAFE_DELETE_RANGE || x > camPosX + BULLET_SAFE_DELETE_RANGE ||
+		y < camPosY - BULLET_SAFE_DELETE_RANGE || y > camPosY + BULLET_SAFE_DELETE_RANGE)
+	{
+		this->Destroy();
+		return;
 	}
 
 	// No collision occured, proceed normally
@@ -89,20 +103,19 @@ void Hammer::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		// TODO: This is a very ugly designed function!!!!
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
-		/*
-		for (UINT i = 0; i < coEventsResult.size(); i++)
-		{
-			LPCOLLISIONEVENT e = coEventsResult[i];
-			LPGAMEOBJECT obj = e->obj;
-
-			
-
-		}*/
-
 		//DebugOut(L"vx: %f -- vy: %f\n", vx, vy);
 		//DebugOut(L"nx: %f -- ny: %f", nx, ny);
 
+		for (UINT i = 0; i < coEventsResult.size(); i++)
+		{
+			LPCOLLISIONEVENT e = coEventsResult[i];
+			if (e->obj->GetType() == eType::ENEMY)
+			{
+				e->obj->SetState(ENEMY_STATE_HIT);
+			}
 
+
+		}
 	}
 
 	//DebugOut(L"x: %f -- y:%f\n", x, y);
@@ -112,17 +125,6 @@ void Hammer::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		delete coEvents[i];
 		coEvents[i] = NULL;
-	}
-	GameEngine::GetInstance()->GetCamPos(camPosX, camPosY);
-	if (state == BULLET_STATE_IDLE)
-	{
-		vx = 0;
-		vy = 0;
-	}
-	else if (x < camPosX - BULLET_SAFE_DELETE_RANGE || x > camPosX + BULLET_SAFE_DELETE_RANGE ||
-		y < camPosY - BULLET_SAFE_DELETE_RANGE || y > camPosY + BULLET_SAFE_DELETE_RANGE)
-	{
-		this->Destroy();
 	}
 }
 
@@ -144,11 +146,7 @@ void Hammer::SetState(int state)
 
 	switch (state)
 	{
-	case BULLET_STATE_IDLE:
-		pause = true;
-		break;
 	case BULLET_STATE_MOVING:
-		pause = false;
 		break;
 	}
 }

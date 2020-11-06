@@ -56,6 +56,15 @@
     <Filter Include="GameObject\Bullet\Hammer">
       <UniqueIdentifier>{a3de42ab-4164-4211-af7f-0018e9698b1a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Mob">
+      <UniqueIdentifier>{59f8cf9a-1432-49c3-8004-54e3985b8749}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Mob\Groomba">
+      <UniqueIdentifier>{eeba4386-351f-453b-8ff4-68fdaa60dca7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Mob\Turtle">
+      <UniqueIdentifier>{aabed23f-e95f-462b-886d-130fe7cb072a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -130,6 +139,9 @@
     <ClCompile Include="Bullet.cpp">
       <Filter>GameObject\Bullet</Filter>
     </ClCompile>
+    <ClCompile Include="Groomba.cpp">
+      <Filter>GameObject\Mob\Groomba</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine.h">
@@ -203,6 +215,9 @@
     </ClInclude>
     <ClInclude Include="Bullet.h">
       <Filter>GameObject\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Groomba.h">
+      <Filter>GameObject\Mob\Groomba</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -18,7 +18,7 @@
 #define BULLET_SAFE_DELETE_RANGE		300.0f
 
 //Time left
-#define BULLET_FIREBALL_TIME_LEFT		80	
+#define BULLET_FIREBALL_TIME_LEFT		200
 class Fireball : public Bullet
 {
 public:

@@ -35,6 +35,7 @@ void Scene::LoadBlock(LPCWSTR gameFile)
 	BLOCKS.clear();
 	ACTIVE_BLOCKS.clear();
 	GROUP.clear();
+	ENEMY.clear();
 
 	while (f.getline(str, MAX_GAME_LINE))
 	{
@@ -44,6 +45,7 @@ void Scene::LoadBlock(LPCWSTR gameFile)
 		if (line == "[BLOCK]") { option = 1; continue; }
 		if (line == "[ACTIVE BLOCK]") { option = 2; continue; }
 		if (line == "[GROUP]") { option = 3; continue; }
+		if (line == "[ENEMY]") { option = 4; continue; }
 		if (option == 1)
 		{
 			vector<string> tokens = split(line, ",");
@@ -61,6 +63,12 @@ void Scene::LoadBlock(LPCWSTR gameFile)
 			vector<string> tokens = split(line, ",");
 			for (int i = 0; i < tokens.size(); ++i)
 				GROUP.push_back(atoi(tokens[i].c_str()));
+		}
+		else if (option == 4)
+		{
+			vector<string> tokens = split(line, ",");
+			for (int i = 0; i < tokens.size(); ++i)
+				ENEMY.push_back(atoi(tokens[i].c_str()));
 		}
 		else
 		{

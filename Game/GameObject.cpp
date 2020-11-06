@@ -50,6 +50,16 @@ LPCOLLISIONEVENT GameObject::SweptAABBEx(LPGAMEOBJECT coO)
 		t, nx, ny
 	);
 
+	/*
+	if (coO->GetType() == eType::PLAYER && this->type == eType::ENEMY)
+	{
+		DebugOut(L"-------------\n");
+		DebugOut(L"ml: %f - mt: %f - mr: %f - mb: %f\n", ml, mt, mr, mb);
+		DebugOut(L"rdx: %f - rdy: %f\n", rdx, rdy);
+		DebugOut(L"sl: %f - st: %f - sr: %f - sb: %f\n", sl, st, sr, sb);
+		DebugOut(L"t: %f - nx: %f - ny: %f\n", t, nx, ny);
+	}*/
+
 	CollisionEvent* e = new CollisionEvent(t, nx, ny, rdx, rdy, coO);
 	return e;
 }
@@ -63,19 +73,39 @@ LPCOLLISIONEVENT GameObject::SweptAABBEx(LPGAMEOBJECT coO)
 void GameObject::CalcPotentialCollisions(
 	vector<LPGAMEOBJECT>* coObjects,
 	vector<LPCOLLISIONEVENT>& coEvents,
-	eType exclude)
+	vector<eType> exclude)
 {
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
-		if (this == coObjects->at(i) || exclude == coObjects->at(i)->GetType())
+		if (this == coObjects->at(i))
 			continue;
 
+		if (exclude.size() != 0)
+		{
+			for (eType type : exclude)
+			{
+				if (type == coObjects->at(i)->GetType())
+					goto continueLoop;
+					
+			}	
+		}
+
+		if (false)
+		{
+		continueLoop:
+			continue;
+		}
+			
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
+		
 
 		if (e->t > 0 && e->t <= 1.0f)
+		{
 			coEvents.push_back(e);
+		}
 		else
 			delete e;
+
 	}
 
 	std::sort(coEvents.begin(), coEvents.end(), CollisionEvent::compare);

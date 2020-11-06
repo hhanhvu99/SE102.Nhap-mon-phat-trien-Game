@@ -54,18 +54,46 @@ void Fireball::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	coEvents.clear();
 
 	// Simple fall down
-	if (pause == false)
+	if (PAUSE == false)
 	{
 		vy += BULLET_FIREBALL_GRAVITY * dt;
 		vx = direction * BULLET_FIREBALL_SPEED_X;
-		CalcPotentialCollisions(coObjects, coEvents, eType::PLAYER);
+		if(state != BULLET_STATE_HIT)
+			CalcPotentialCollisions(coObjects, coEvents, { eType::PLAYER , eType::ENEMY_MOB_DIE});
 	}
 	else
 	{
-		dx = 0;
-		dy = 0;
+		vx = 0;
+		vy = 0;
+		return;
 	}
 		
+	GameEngine::GetInstance()->GetCamPos(camPosX, camPosY);
+	if (state == BULLET_STATE_IDLE)
+	{
+		vx = 0;
+		vy = 0;
+	}
+	else if (state == BULLET_STATE_HIT)
+	{
+		vx = 0;
+		vy = 0;
+
+		if (GetTickCount() - timeLeft > BULLET_FIREBALL_TIME_LEFT)
+		{
+			this->Destroy();
+			//Doi co index
+			return;
+		}
+	}
+
+	else if (x < camPosX - BULLET_SAFE_DELETE_RANGE || x > camPosX + BULLET_SAFE_DELETE_RANGE ||
+		y < camPosY - BULLET_SAFE_DELETE_RANGE || y > camPosY + BULLET_SAFE_DELETE_RANGE)
+	{
+		this->Destroy();
+		return;
+	}
+
 	// No collision occured, proceed normally
 	//DebugOut(L"Size: %d \n", coEvents.size());
 	//DebugOut(L"Result: %d\n", result);
@@ -88,8 +116,6 @@ void Fireball::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		//DebugOut(L"vx: %f -- vy: %f\n", vx, vy);
 		//DebugOut(L"nx: %f -- ny: %f", nx, ny);
 
-
-		this->x += min_tx * dx + nx * 0.4f;
 		this->y += min_ty * dy + ny * 0.4f;
 
 		if (nx != 0 || ny > 0)
@@ -106,16 +132,17 @@ void Fireball::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		// Collision logic with other objects
 		//
 
-		//Đợi enemy
-		/*
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
-			LPGAMEOBJECT obj = e->obj;
+			if (e->obj->GetType() == eType::ENEMY)
+			{
+				e->obj->SetState(ENEMY_STATE_HIT);
+				SetState(BULLET_STATE_HIT);
+			}
 
 			
-			
-		}*/
+		}
 
 	}
 
@@ -126,26 +153,6 @@ void Fireball::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		delete coEvents[i];
 		coEvents[i] = NULL;
-	}
-	GameEngine::GetInstance()->GetCamPos(camPosX, camPosY);
-	if (state == BULLET_STATE_IDLE)
-	{
-		vx = 0;
-		vy = 0;
-	}
-	else if (state == BULLET_STATE_HIT)
-	{
-		if (GetTickCount() - timeLeft > BULLET_FIREBALL_TIME_LEFT)
-		{
-			this->Destroy();
-			//Doi co index
-		}
-	}
-	
-	else if (x < camPosX - BULLET_SAFE_DELETE_RANGE || x > camPosX + BULLET_SAFE_DELETE_RANGE ||
-			 y < camPosY - BULLET_SAFE_DELETE_RANGE || y > camPosY + BULLET_SAFE_DELETE_RANGE)
-	{
-		this->Destroy();
 	}
 }
 
@@ -178,13 +185,10 @@ void Fireball::SetState(int state)
 	switch (state)
 	{
 	case BULLET_STATE_IDLE:
-		pause = true;
 		break;
 	case BULLET_STATE_MOVING:
-		pause = false;
 		break;
 	case BULLET_STATE_HIT:
-		pause = true;
 		timeLeft = now;
 		bulletType = BULLET_EFFECT_POP;
 		break;
