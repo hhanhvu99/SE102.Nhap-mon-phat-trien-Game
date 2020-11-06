@@ -43,6 +43,22 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// turn off collision when die 
 	if (state != MARIO_STATE_DIE)
 		CalcPotentialCollisions(coObjects, coEvents, { eType::MARIO_BULLET, eType::ENEMY_MOB_DIE, eType::ENEMY });
+	else
+	{
+		vx = 0;
+
+		if (dying)
+		{
+			if (GetTickCount() - die_time <= MARIO_DIE_TIME)
+				vy = 0;
+			else
+			{
+				vy = -MARIO_DIE_DEFLECT_SPEED;
+				dying = false;
+			}	
+		}
+		
+	}
 
 			
 	// reset untouchable timer if untouchable time has passed
@@ -82,8 +98,6 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 		
 	}
-
-
 
 	if (startInvincible)
 	{
@@ -778,35 +792,45 @@ void Mario::SetState(int state)
 		}
 		break;
 	case MARIO_STATE_HIT:
-		untouchable_start = now;
-		untouchable_frame = now;
-		untouchable = true;
-		type = eType::PLAYER_UNTOUCHABLE;
-		PAUSE = true;
-
-		if (level > 1200)
+		if (level != MARIO_LEVEL_SMALL)
 		{
-			level = 1200;
-			GameObject::SetState(MARIO_STATE_TRANSITION_1);
-			startTransitionOne = now;
-			SetAnimationSet(AnimationManager::GetInstance()->Get(BULLET));
-		}	
+			untouchable_start = now;
+			untouchable_frame = now;
+			untouchable = true;
+			type = eType::PLAYER_UNTOUCHABLE;
+			PAUSE = true;
+
+			if (level > MARIO_LEVEL_BIG)
+			{
+				level = MARIO_LEVEL_BIG;
+				GameObject::SetState(MARIO_STATE_TRANSITION_1);
+				startTransitionOne = now;
+				SetAnimationSet(AnimationManager::GetInstance()->Get(BULLET));
+			}
+			else
+			{
+				level = MARIO_LEVEL_SMALL;
+				GameObject::SetState(MARIO_STATE_TRANSITION_2);
+				startTransitionTwo = now;
+				transition_frame = now;
+			}
+
+			inTransition = true;
+			tail_whip = false;
+			shoot = false;
+		}
 		else
 		{
-			level = 1100;
-			GameObject::SetState(MARIO_STATE_TRANSITION_2);
-			startTransitionTwo = now;
-			transition_frame = now;
+			SetState(MARIO_STATE_DIE);
 		}
-
-		inTransition = true;
-		tail_whip = false;
-		shoot = false;
-
+		
 			
 		break;
 	case MARIO_STATE_DIE:
-		vy = -MARIO_DIE_DEFLECT_SPEED;
+		PAUSE = true;
+		dying = true;
+		die_time = now;
+
 		break;
 	}
 }
@@ -942,5 +966,6 @@ void Mario::Reset()
 	SetLevel(level);
 	SetPosition(start_x, start_y);
 	SetSpeed(0, 0);
+	PAUSE = false;
 }
 

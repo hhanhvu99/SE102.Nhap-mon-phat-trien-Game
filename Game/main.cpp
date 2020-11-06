@@ -257,8 +257,7 @@ int Run()
 			
 			while (accumulator >= timeStep)
 			{
-				if(!PAUSE)
-					gameEngine->ProcessKeyboard();
+				gameEngine->ProcessKeyboard();
 				Update(timeStep);
 				accumulator -= timeStep;
 			}

@@ -18,7 +18,7 @@
 #define MARIO_JUMP_SPEED_Y				0.5f
 #define MARIO_JUMP_DEFLECT_SPEED		0.2f
 #define MARIO_GRAVITY					0.0015f
-#define MARIO_DIE_DEFLECT_SPEED			0.5f
+#define MARIO_DIE_DEFLECT_SPEED			0.3f
 #define MARIO_BREAK_THRESHOLD			0.005f
 
 //State
@@ -53,6 +53,7 @@
 #define MARIO_FROG_JUMPING_TIME			500
 #define MARIO_SHOOT_WAITING_TIME		1000
 #define MARIO_MAX_JUMPING				120
+#define MARIO_DIE_TIME					500
 
 //Point collide
 #define MARIO_POINT_COLLIDE_OFFSET_X	8.0f
@@ -143,6 +144,9 @@ class Mario : public GameObject
 	bool allowShoot = true;
 	bool shoot = false;
 	DWORD startShoot = 0;
+
+	bool dying = false;
+	DWORD die_time = 0;
 
 	bool touchLeft = false, touchRight = false;
 	bool isRunning = false;

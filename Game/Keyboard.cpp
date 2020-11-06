@@ -6,112 +6,115 @@ Keyboard* Keyboard::__instance = NULL;
 
 void Keyboard::KeyState(BYTE* states)
 {
-	GameEngine* game = GameEngine::GetInstance();
-
-	float vx, vy;
-	//int lastKeyPress = game->GetLastKey();
-	mario->GetSpeed(vx, vy);
-
-	//DebugOut(L"[INFO] Last key: %d\n", lastKeyPress);
-
-
-	// disable control key when Mario die 
-	if (mario->GetState() == MARIO_STATE_DIE) return;
-
-	//Break
-	if (mario->GetState() == MARIO_STATE_BREAK_RIGHT)
-		if (vx != 0)
-		{
-			mario->SetState(MARIO_STATE_BREAK_RIGHT);
-			return;
-		}
-	if (mario->GetState() == MARIO_STATE_BREAK_LEFT)
-		if (vx != 0)
-		{
-			mario->SetState(MARIO_STATE_BREAK_LEFT);
-			return;
-		}
-
-	//Attack
-	if (game->IsKeyDown(DIK_D))
+	if (PAUSE == false)
 	{
-		mario->SetState(MARIO_STATE_ATTACK);
-		//mario->SetState(MARIO_STATE_IDLE);
-		//return;
-	}
-	
-	//Jump high
-	if (game->IsKeyDown(DIK_SPACE))
-		mario->SetState(MARIO_STATE_JUMP);
+		GameEngine* game = GameEngine::GetInstance();
 
-	//Run
-	if (mario->GetLevel() != MARIO_LEVEL_FROG)
-	{
-		if (game->IsKeyDown(DIK_LSHIFT))
-		{
-			if (game->IsKeyDown(DIK_RIGHT))
-				if (mario->isCrouching())
-					mario->SetState(MARIO_STATE_NOT_CROUCH);
-				else
-					if (vx < 0)
-						mario->SetState(MARIO_STATE_BREAK_RIGHT);
-					else
-						mario->SetState(MARIO_STATE_RUNNING_RIGHT);
-			else if (game->IsKeyDown(DIK_LEFT))
-				if (mario->isCrouching())
-					mario->SetState(MARIO_STATE_NOT_CROUCH);
-				else
-					if (vx > 0)
-						mario->SetState(MARIO_STATE_BREAK_LEFT);
-					else
-						mario->SetState(MARIO_STATE_RUNNING_LEFT);
-			return;
-		}
-	}
-	
-	//Walk
-	if (game->IsKeyDown(DIK_RIGHT))
-	{
-		if (mario->isCrouching() && mario->GetLevel() != MARIO_LEVEL_FROG)
-			mario->SetState(MARIO_STATE_NOT_CROUCH);
-		else
-			if (vx < 0)
+		float vx, vy;
+		//int lastKeyPress = game->GetLastKey();
+		mario->GetSpeed(vx, vy);
+
+		//DebugOut(L"[INFO] Last key: %d\n", lastKeyPress);
+
+
+		// disable control key when Mario die 
+		if (mario->GetState() == MARIO_STATE_DIE) return;
+
+		//Break
+		if (mario->GetState() == MARIO_STATE_BREAK_RIGHT)
+			if (vx != 0)
+			{
 				mario->SetState(MARIO_STATE_BREAK_RIGHT);
-			else
-				if (mario->GetLevel() != MARIO_LEVEL_FROG)
-					mario->SetState(MARIO_STATE_WALKING_RIGHT);
-				else
-					mario->SetState(MARIO_STATE_WALKING_RIGHT_FROG);
-		return;
-	}
-	else if (game->IsKeyDown(DIK_LEFT))
-	{
-		if (mario->isCrouching() && mario->GetLevel() != MARIO_LEVEL_FROG)
-			mario->SetState(MARIO_STATE_NOT_CROUCH);
-		else
-			if (vx > 0)
+				return;
+			}
+		if (mario->GetState() == MARIO_STATE_BREAK_LEFT)
+			if (vx != 0)
+			{
 				mario->SetState(MARIO_STATE_BREAK_LEFT);
-			else
-				if (mario->GetLevel() != MARIO_LEVEL_FROG)
-					mario->SetState(MARIO_STATE_WALKING_LEFT);
-				else
-					mario->SetState(MARIO_STATE_WALKING_LEFT_FROG);
-		return;
-	}	
-	else
-		mario->SetState(MARIO_STATE_IDLE);
+				return;
+			}
 
-	//Duck
-	if (game->IsKeyDown(DIK_DOWN))
-	{
-		mario->SetState(MARIO_STATE_CROUCH);
-		return;
+		//Attack
+		if (game->IsKeyDown(DIK_D))
+		{
+			mario->SetState(MARIO_STATE_ATTACK);
+			//mario->SetState(MARIO_STATE_IDLE);
+			//return;
+		}
+
+		//Jump high
+		if (game->IsKeyDown(DIK_SPACE))
+			mario->SetState(MARIO_STATE_JUMP);
+
+		//Run
+		if (mario->GetLevel() != MARIO_LEVEL_FROG)
+		{
+			if (game->IsKeyDown(DIK_LSHIFT))
+			{
+				if (game->IsKeyDown(DIK_RIGHT))
+					if (mario->isCrouching())
+						mario->SetState(MARIO_STATE_NOT_CROUCH);
+					else
+						if (vx < 0)
+							mario->SetState(MARIO_STATE_BREAK_RIGHT);
+						else
+							mario->SetState(MARIO_STATE_RUNNING_RIGHT);
+				else if (game->IsKeyDown(DIK_LEFT))
+					if (mario->isCrouching())
+						mario->SetState(MARIO_STATE_NOT_CROUCH);
+					else
+						if (vx > 0)
+							mario->SetState(MARIO_STATE_BREAK_LEFT);
+						else
+							mario->SetState(MARIO_STATE_RUNNING_LEFT);
+				return;
+			}
+		}
+
+		//Walk
+		if (game->IsKeyDown(DIK_RIGHT))
+		{
+			if (mario->isCrouching() && mario->GetLevel() != MARIO_LEVEL_FROG)
+				mario->SetState(MARIO_STATE_NOT_CROUCH);
+			else
+				if (vx < 0)
+					mario->SetState(MARIO_STATE_BREAK_RIGHT);
+				else
+					if (mario->GetLevel() != MARIO_LEVEL_FROG)
+						mario->SetState(MARIO_STATE_WALKING_RIGHT);
+					else
+						mario->SetState(MARIO_STATE_WALKING_RIGHT_FROG);
+			return;
+		}
+		else if (game->IsKeyDown(DIK_LEFT))
+		{
+			if (mario->isCrouching() && mario->GetLevel() != MARIO_LEVEL_FROG)
+				mario->SetState(MARIO_STATE_NOT_CROUCH);
+			else
+				if (vx > 0)
+					mario->SetState(MARIO_STATE_BREAK_LEFT);
+				else
+					if (mario->GetLevel() != MARIO_LEVEL_FROG)
+						mario->SetState(MARIO_STATE_WALKING_LEFT);
+					else
+						mario->SetState(MARIO_STATE_WALKING_LEFT_FROG);
+			return;
+		}
+		else
+			mario->SetState(MARIO_STATE_IDLE);
+
+		//Duck
+		if (game->IsKeyDown(DIK_DOWN))
+		{
+			mario->SetState(MARIO_STATE_CROUCH);
+			return;
+		}
+		else if (mario->isCrouching())
+		{
+			mario->SetState(MARIO_STATE_NOT_CROUCH);
+		}
 	}
-	else if (mario->isCrouching())
-	{
-		mario->SetState(MARIO_STATE_NOT_CROUCH);
-	}
-		
+	
 }
 
 void Keyboard::OnKeyDown(int KeyCode)
@@ -121,10 +124,12 @@ void Keyboard::OnKeyDown(int KeyCode)
 	switch (KeyCode)
 	{
 	case DIK_X:
-		mario->SetState(MARIO_STATE_SHORT_JUMP);
+		if(PAUSE == false)
+			mario->SetState(MARIO_STATE_SHORT_JUMP);
 		break;
 	case DIK_Q:
-		mario->SetState(MARIO_STATE_INVINCIBLE);
+		if (PAUSE == false)
+			mario->SetState(MARIO_STATE_INVINCIBLE);
 		break;
 	case DIK_1:
 		mario->SetLevel(MARIO_LEVEL_SMALL);
