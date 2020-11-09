@@ -220,6 +220,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			if (ny < 0)
 			{
 				touchGround = true;
+				flapping = false;
 				countOffGround = 0;
 			}
 			else if (ny > 0)
@@ -417,6 +418,20 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 	}
 
+	//Flapping
+	if (flapping == true)
+	{
+		if (GetTickCount() - startFlapAni > MARIO_FLAP_DURATION)
+			flapAni = false;
+		else
+			ani_walk_time = MARIO_ANI_FLAP_TIME;
+		if (GetTickCount() - startFlap > MARIO_FLAP_TIME)
+			flapping = false;
+		else	
+			vy = MARIO_MAX_GRAVITY;
+			
+	}
+
 	//Shoot
 	if (allowShoot == false)
 	{
@@ -470,17 +485,38 @@ void Mario::Render()
 				if (direction > 0) ani = level + MARIO_ANI_ROLL_RIGHT;
 				else ani = level + MARIO_ANI_ROLL_LEFT;
 			}
+			else if (flapAni)
+			{
+				if (direction > 0)
+				{
+					if (isMax) ani = level + MARIO_ANI_FLAP_RUN_RIGHT;
+					else ani = level + MARIO_ANI_FLAP_RIGHT;
+				}
+				else
+				{
+					if (isMax) ani = level + MARIO_ANI_FLAP_RUN_LEFT;
+					else ani = level + MARIO_ANI_FLAP_LEFT;
+				}
+			}
 			else
 			{
 				if (direction > 0)
 				{
 					if (isMax) ani = level + MARIO_ANI_RUN_JUMP_RIGHT;
-					else ani = level + MARIO_ANI_JUMP_RIGHT;
+					else
+					{
+						if (vy < 0) ani = level + MARIO_ANI_JUMP_RIGHT;
+						else ani = level + MARIO_ANI_JUMP_RIGHT_DOWN;
+					}
 				}
 				else
 				{
 					if (isMax) ani = level + MARIO_ANI_RUN_JUMP_LEFT;
-					else ani = level + MARIO_ANI_JUMP_LEFT;
+					else
+					{
+						if (vy < 0) ani = level + MARIO_ANI_JUMP_LEFT;
+						else ani = level + MARIO_ANI_JUMP_LEFT_DOWN;
+					}
 				}
 			}
 
@@ -731,6 +767,18 @@ void Mario::SetState(int state)
 
 		}
 		//DebugOut(L"dt: %d\n", dt);
+		break;
+	case MARIO_STATE_JUMP_FLAP:
+		if (level == MARIO_LEVEL_RACC || level == MARIO_LEVEL_TANU)
+		{
+			startFlap = now;
+			startFlapAni = now;
+			flapping = true;
+			flapAni = true;
+			
+		}
+		else
+			state = MARIO_STATE_SHORT_JUMP;
 		break;
 	case MARIO_STATE_CROUCH:
 		if (level != MARIO_LEVEL_SMALL && level != MARIO_LEVEL_FROG && touchGround)

@@ -90,6 +90,7 @@ extern bool PAUSE;
 #define MARIO_ANI_FROG_JUMPING_TIME		160
 #define MARIO_ANI_TAIL_WHIP_TIME		60
 #define MARIO_ANI_SHOOT_TIME			40
+#define MARIO_ANI_FLAP_TIME				50
 
 ////////////////
 //Mario Prefix//
@@ -117,8 +118,10 @@ extern bool PAUSE;
 #define MARIO_ANI_RUNNING_RIGHT		12
 //Jumping
 #define MARIO_ANI_JUMP_LEFT			15
+#define MARIO_ANI_JUMP_LEFT_DOWN	83
 #define MARIO_ANI_RUN_JUMP_LEFT		16
 #define MARIO_ANI_JUMP_RIGHT		17
+#define MARIO_ANI_JUMP_RIGHT_DOWN	84
 #define MARIO_ANI_RUN_JUMP_RIGHT	18
 //Break
 #define MARIO_ANI_BREAK_LEFT		19
@@ -149,8 +152,8 @@ extern bool PAUSE;
 #define MARIO_ANI_ATTACK_RIGHT		70
 //Flap Tail	
 #define MARIO_ANI_FLAP_LEFT			72
-#define MARIO_ANI_FLAP_RIGHT		73
-#define MARIO_ANI_FLAP_RUN_LEFT		74
+#define MARIO_ANI_FLAP_RUN_LEFT		73
+#define MARIO_ANI_FLAP_RIGHT		74
 #define MARIO_ANI_FLAP_RUN_RIGHT	75
 //Attack Set
 #define MARIO_ANI_ATTACK_SET_LEFT	76
