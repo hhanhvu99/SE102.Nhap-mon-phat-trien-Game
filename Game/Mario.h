@@ -36,6 +36,7 @@
 #define MARIO_STATE_SHORT_JUMP			501
 #define MARIO_STATE_CROUCH_JUMP			502
 #define MARIO_STATE_JUMP_FLAP			503
+#define MARIO_STATE_JUMP_FLAP_HOLD		504
 #define MARIO_STATE_CROUCH				600
 #define MARIO_STATE_NOT_CROUCH			601
 #define MARIO_STATE_INVINCIBLE			700
@@ -57,6 +58,7 @@
 #define MARIO_MAX_JUMPING				120
 #define MARIO_FLAP_TIME					200
 #define MARIO_FLAP_DURATION				100
+#define MARIO_FLAP_RUN_DURATION			150
 #define MARIO_DIE_TIME					500
 
 //Point collide
@@ -184,6 +186,7 @@ public:
 
 	bool isCrouching() { return isCrouch; }
 	bool isTouchGround() { return touchGround; }
+	bool isAllowJump() { return jump_allow; }
 
 	void Reset();
 

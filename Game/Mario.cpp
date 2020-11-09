@@ -25,6 +25,7 @@ Mario::Mario(float x, float y) : GameObject()
 
 	SetState(MARIO_STATE_IDLE);
 	SetLevel(level);
+	this->Reset();
 }
 
 void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
@@ -421,17 +422,27 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	//Flapping
 	if (flapping == true)
 	{
-		if (GetTickCount() - startFlapAni > MARIO_FLAP_DURATION)
-			flapAni = false;
+		if (isMax)
+		{
+			if (GetTickCount() - startFlapAni > MARIO_FLAP_RUN_DURATION)
+				flapAni = false;
+		}
 		else
+		{
+			if (GetTickCount() - startFlapAni > MARIO_FLAP_DURATION)
+				flapAni = false;
+		}	
+				
+		if(flapAni)
 			ani_walk_time = MARIO_ANI_FLAP_TIME;
+			
 		if (GetTickCount() - startFlap > MARIO_FLAP_TIME)
 			flapping = false;
 		else	
 			vy = MARIO_MAX_GRAVITY;
-			
+				
 	}
-
+	
 	//Shoot
 	if (allowShoot == false)
 	{
@@ -505,8 +516,13 @@ void Mario::Render()
 					if (isMax) ani = level + MARIO_ANI_RUN_JUMP_RIGHT;
 					else
 					{
-						if (vy < 0) ani = level + MARIO_ANI_JUMP_RIGHT;
-						else ani = level + MARIO_ANI_JUMP_RIGHT_DOWN;
+						if (level != MARIO_LEVEL_FROG)
+						{
+							if (vy < 0) ani = level + MARIO_ANI_JUMP_RIGHT;
+							else ani = level + MARIO_ANI_JUMP_RIGHT_DOWN;
+						}
+						else
+							ani = level + MARIO_ANI_JUMP_RIGHT;
 					}
 				}
 				else
@@ -514,8 +530,13 @@ void Mario::Render()
 					if (isMax) ani = level + MARIO_ANI_RUN_JUMP_LEFT;
 					else
 					{
-						if (vy < 0) ani = level + MARIO_ANI_JUMP_LEFT;
-						else ani = level + MARIO_ANI_JUMP_LEFT_DOWN;
+						if (level != MARIO_LEVEL_FROG)
+						{
+							if (vy < 0) ani = level + MARIO_ANI_JUMP_LEFT;
+							else ani = level + MARIO_ANI_JUMP_LEFT_DOWN;
+						}
+						else
+							ani = level + MARIO_ANI_JUMP_LEFT;
 					}
 				}
 			}
@@ -744,13 +765,11 @@ void Mario::SetState(int state)
 			touchGround = false;
 		}
 
-		if (now - jump_start < MARIO_MAX_JUMPING && jump_allow)
-		{
+		if (now - jump_start < MARIO_MAX_JUMPING)
 			vy -= (MARIO_JUMPING_SPEED + MARIO_GRAVITY) * dt;
+		else
+			jump_allow = false;
 
-			if (now - jump_start >= MARIO_MAX_JUMPING)
-				jump_allow = false;
-		}
 
 		if (touchGround)
 		{
@@ -768,6 +787,23 @@ void Mario::SetState(int state)
 		}
 		//DebugOut(L"dt: %d\n", dt);
 		break;
+	case MARIO_STATE_JUMP_FLAP_HOLD:
+		if (jump_allow == true)
+		{
+			SetState(MARIO_STATE_JUMP);
+			break;
+		}
+		if (vy < 0)
+			break;
+		if (level == MARIO_LEVEL_RACC || level == MARIO_LEVEL_TANU)
+		{
+			startFlap = now;
+			startFlapAni = now;
+			flapping = true;
+			flapAni = true;
+
+		}
+		break;
 	case MARIO_STATE_JUMP_FLAP:
 		if (level == MARIO_LEVEL_RACC || level == MARIO_LEVEL_TANU)
 		{
@@ -777,8 +813,6 @@ void Mario::SetState(int state)
 			flapAni = true;
 			
 		}
-		else
-			state = MARIO_STATE_SHORT_JUMP;
 		break;
 	case MARIO_STATE_CROUCH:
 		if (level != MARIO_LEVEL_SMALL && level != MARIO_LEVEL_FROG && touchGround)
@@ -866,6 +900,8 @@ void Mario::SetState(int state)
 			inTransition = true;
 			tail_whip = false;
 			shoot = false;
+			flapAni = false;
+			flapping = false;
 		}
 		else
 		{
@@ -1011,9 +1047,14 @@ bool Mario::PointCollision(vector<LPGAMEOBJECT>& coObjects, float pointX, float 
 void Mario::Reset()
 {
 	SetState(MARIO_STATE_IDLE);
-	SetLevel(level);
 	SetPosition(start_x, start_y);
-	SetSpeed(0, 0);
+	SetSpeed(0, 0);	
+
+	tail_whip = false;
+	shoot = false;
+	flapAni = false;
+	flapping = false;
+
 	PAUSE = false;
 }
 

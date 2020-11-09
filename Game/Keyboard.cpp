@@ -44,7 +44,13 @@ void Keyboard::KeyState(BYTE* states)
 
 		//Jump high
 		if (game->IsKeyDown(DIK_SPACE))
-			mario->SetState(MARIO_STATE_JUMP);
+		{
+			if (mario->isTouchGround() == false)
+				mario->SetState(MARIO_STATE_JUMP_FLAP_HOLD);	
+			else
+				mario->SetState(MARIO_STATE_JUMP);
+		}
+			
 
 		//Run
 		if (mario->GetLevel() != MARIO_LEVEL_FROG)
