@@ -210,13 +210,17 @@ extern bool PAUSE;
 //////////////
 //Mob Type
 #define ENEMY_GROOMBA_BROWN				100000
+#define ENEMY_KOOPAS_GREEN				200000
 
 //////////////
 //Mob Suffix//
 //////////////
 #define ENEMY_ANI_LEFT					9
 #define ENEMY_ANI_RIGHT					10
-#define ENEMY_ANI_DIE					80
+#define ENEMY_ANI_IMMOBILIZE			11
+#define ENEMY_ANI_ROLLING				12
+#define ENEMY_ANI_COMEBACK				13
+#define ENEMY_ANI_DIE_STOMP				80
 #define ENEMY_ANI_DIE_HIT_LEFT			81
 #define ENEMY_ANI_DIE_HIT_RIGHT			82
 

@@ -87,13 +87,6 @@ void Fireball::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 	}
 
-	else if (x < camPosX - BULLET_SAFE_DELETE_RANGE || x > camPosX + BULLET_SAFE_DELETE_RANGE ||
-		y < camPosY - BULLET_SAFE_DELETE_RANGE || y > camPosY + BULLET_SAFE_DELETE_RANGE)
-	{
-		this->Destroy();
-		return;
-	}
-
 	// No collision occured, proceed normally
 	//DebugOut(L"Size: %d \n", coEvents.size());
 	//DebugOut(L"Result: %d\n", result);
@@ -138,6 +131,7 @@ void Fireball::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			if (e->obj->GetType() == eType::ENEMY)
 			{
 				e->obj->SetState(ENEMY_STATE_HIT);
+				e->obj->SetDirection(direction);
 				SetState(BULLET_STATE_HIT);
 			}
 
@@ -153,6 +147,13 @@ void Fireball::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		delete coEvents[i];
 		coEvents[i] = NULL;
+	}
+
+	if (x < camPosX - BULLET_SAFE_DELETE_RANGE || x > camPosX + BULLET_SAFE_DELETE_RANGE ||
+		y < camPosY - BULLET_SAFE_DELETE_RANGE || y > camPosY + BULLET_SAFE_DELETE_RANGE)
+	{
+		this->Destroy();
+		return;
 	}
 }
 

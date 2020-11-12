@@ -112,7 +112,7 @@ void TestScene::Load()
 	vector<LPGAMEOBJECT>::iterator pos;
 
 	//Group object
-	int length = 4;
+	int length = GROUP.size();
 	for (int x = 0; x < length; x+=4)
 	{
 		left = GROUP[x];
@@ -158,15 +158,26 @@ void TestScene::Load()
 	int placeX;
 	int placeY;
 	int mobType;
-	Groomba* enemy;
+	LPGAMEOBJECT enemy = NULL;
 
-	length = 3;
+	length = ENEMY.size();
 	for (int x = 0; x < length; x += 3)
 	{
 		placeX = ENEMY[x];
 		placeY = ENEMY[x + 1];
 		mobType = ENEMY[x + 2];
-		enemy = new Groomba(placeX, placeY, mobType);
+		switch (mobType)
+		{
+		case ENEMY_GROOMBA_BROWN:
+			enemy = new Groomba(placeX, placeY, mobType);
+			break;
+		case ENEMY_KOOPAS_GREEN:
+			enemy = new Koopas(placeX, placeY, mobType);
+			break;
+		default:
+			DebugOut(L"[ERROR] Unknown mob type: %d\n", mobType);
+		}
+		
 		enemy->SetDrawOrder(ENEMY_ENTITY_DRAW_ORDER);
 		enemy->SetAnimationSet(AnimationManager::GetInstance()->Get(ENEMY_MOB));
 

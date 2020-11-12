@@ -11,6 +11,7 @@
 #include "BrickShiny.h"
 #include "QuestionBlock.h"
 #include "Groomba.h"
+#include "Koopas.h"
 
 #include "Global.h"
 

@@ -7,6 +7,8 @@
 151
 /*Block Cloud*/
 275
+/*Block Question Hit*/
+255
 [ACTIVE BLOCK]
 /*Shiny Brick*/
 91
@@ -33,3 +35,4 @@
 145,24,146,25
 [ENEMY]
 10,25,100000
+13,25,200000

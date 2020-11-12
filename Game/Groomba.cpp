@@ -4,7 +4,7 @@
 Groomba::Groomba(int placeX, int placeY, int mobType)
 {
 	this->x = placeX * STANDARD_SIZE;
-	this->y = placeY * STANDARD_SIZE - 10.0f;
+	this->y = placeY * STANDARD_SIZE - ENEMY_GROOMBA_HEIGHT;
 
 	this->hitByStomp = false;
 	this->hitByBullet = false;
@@ -75,7 +75,7 @@ void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		pointY = this->y;
 
 		if (type == eType::ENEMY)
-			CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY, eType::PLAYER_UNTOUCHABLE });
+			CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY, eType::ENEMY_MOB_DIE, eType::PLAYER_UNTOUCHABLE });
 	}
 	else
 	{
@@ -101,12 +101,6 @@ void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			//Doi co index
 			return;
 		}
-	}
-	else if (x < camPosX - ENTITY_SAFE_DELETE_RANGE*2 || x > camPosX + ENTITY_SAFE_DELETE_RANGE*2 ||
-		y < camPosY - ENTITY_SAFE_DELETE_RANGE || y > camPosY + ENTITY_SAFE_DELETE_RANGE)
-	{
-		this->Destroy();
-		return;
 	}
 
 	// No collision occured, proceed normally
@@ -163,7 +157,7 @@ void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			{
 				if (nx != 0)
 				{	
-					SetState(ENEMY_STATE_INVERSE);
+					direction = -direction;
 					break;
 				}
 			}
@@ -180,6 +174,12 @@ void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		coEvents[i] = NULL;
 	}
 
+	if (x < camPosX - ENTITY_SAFE_DELETE_RANGE * 2 || x > camPosX + ENTITY_SAFE_DELETE_RANGE * 2 ||
+		y < camPosY - ENTITY_SAFE_DELETE_RANGE || y > camPosY + ENTITY_SAFE_DELETE_RANGE)
+	{
+		this->Destroy();
+		return;
+	}
 }
 
 void Groomba::Render()
@@ -193,7 +193,7 @@ void Groomba::Render()
 	}
 	else if (state == ENEMY_STATE_STOMP)
 	{
-		ani = mobType + ENEMY_ANI_DIE;
+		ani = mobType + ENEMY_ANI_DIE_STOMP;
 	}
 	else if (state == ENEMY_STATE_HIT)
 	{
@@ -213,20 +213,10 @@ void Groomba::SetState(int state)
 
 	switch (state)
 	{
-	case ENEMY_STATE_IDLE:
-		pause = true;
-		break;
-	case ENEMY_STATE_MOVING:
-		pause = false;
-		break;
 	case ENEMY_STATE_STOMP:
 		pause = true;
 		timeLeft = now;
 		this->type = eType::ENEMY_MOB_DIE;
-		break;
-	case ENEMY_STATE_INVERSE:
-		direction = -direction;
-		this->state = ENEMY_STATE_MOVING;
 		break;
 	case ENEMY_STATE_HIT:
 		vy = -ENEMY_GROOMBA_DEFLECT_Y;

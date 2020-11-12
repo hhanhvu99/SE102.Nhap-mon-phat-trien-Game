@@ -142,6 +142,9 @@
     <ClCompile Include="Groomba.cpp">
       <Filter>GameObject\Mob\Groomba</Filter>
     </ClCompile>
+    <ClCompile Include="Koopas.cpp">
+      <Filter>GameObject\Mob\Turtle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine.h">
@@ -218,6 +221,9 @@
     </ClInclude>
     <ClInclude Include="Groomba.h">
       <Filter>GameObject\Mob\Groomba</Filter>
+    </ClInclude>
+    <ClInclude Include="Koopas.h">
+      <Filter>GameObject\Mob\Turtle</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

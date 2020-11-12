@@ -75,12 +75,6 @@ void Hammer::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		vx = 0;
 		vy = 0;
 	}
-	else if (x < camPosX - BULLET_SAFE_DELETE_RANGE || x > camPosX + BULLET_SAFE_DELETE_RANGE ||
-		y < camPosY - BULLET_SAFE_DELETE_RANGE || y > camPosY + BULLET_SAFE_DELETE_RANGE)
-	{
-		this->Destroy();
-		return;
-	}
 
 	// No collision occured, proceed normally
 	//DebugOut(L"Size: %d \n", coEvents.size());
@@ -112,6 +106,7 @@ void Hammer::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			if (e->obj->GetType() == eType::ENEMY)
 			{
 				e->obj->SetState(ENEMY_STATE_HIT);
+				e->obj->SetDirection(direction);
 			}
 
 
@@ -125,6 +120,13 @@ void Hammer::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		delete coEvents[i];
 		coEvents[i] = NULL;
+	}
+
+	if (x < camPosX - BULLET_SAFE_DELETE_RANGE || x > camPosX + BULLET_SAFE_DELETE_RANGE ||
+		y < camPosY - BULLET_SAFE_DELETE_RANGE || y > camPosY + BULLET_SAFE_DELETE_RANGE)
+	{
+		this->Destroy();
+		return;
 	}
 }
 

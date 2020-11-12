@@ -11,9 +11,10 @@
 #define ENEMY_GROOMBA_MOVE_SPEED_X		0.02f
 #define ENEMY_GROOMBA_DEFLECT_Y			0.1f
 
-#define ENEMY_GROOMBA_BBOX_OFFSET_X		1.0f
 #define ENEMY_GROOMBA_TIME_LEFT			2000
 
+//Offset
+#define ENEMY_GROOMBA_BBOX_OFFSET_X		1.0f
 #define ENEMY_GROOMBA_DRAW_OFFSET_X		0.0f
 #define ENEMY_GROOMBA_DRAW_OFFSET_Y		1.0f
 
@@ -21,8 +22,7 @@
 #define ENEMY_STATE_IDLE				0
 #define ENEMY_STATE_MOVING				1
 #define ENEMY_STATE_STOMP				2
-#define ENEMY_STATE_INVERSE				3
-#define ENEMY_STATE_HIT					4
+#define ENEMY_STATE_HIT					3
 
 class Groomba : public GameObject
 {
