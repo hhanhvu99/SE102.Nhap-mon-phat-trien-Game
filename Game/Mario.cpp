@@ -222,6 +222,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			{
 				touchGround = true;
 				flapping = false;
+				flapAni = false;
 				countOffGround = 0;
 			}
 			else if (ny > 0)
