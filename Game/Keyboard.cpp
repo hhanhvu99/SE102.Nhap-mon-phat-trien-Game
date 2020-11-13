@@ -41,17 +41,7 @@ void Keyboard::KeyState(BYTE* states)
 			//mario->SetState(MARIO_STATE_IDLE);
 			//return;
 		}
-
-		//Jump high
-		if (game->IsKeyDown(DIK_SPACE))
-		{
-			if (mario->isTouchGround() == false)
-				mario->SetState(MARIO_STATE_JUMP_FLAP_HOLD);	
-			else
-				mario->SetState(MARIO_STATE_JUMP);
-		}
 			
-
 		//Run
 		if (mario->GetLevel() != MARIO_LEVEL_FROG)
 		{
@@ -130,6 +120,7 @@ void Keyboard::OnKeyDown(int KeyCode)
 	switch (KeyCode)
 	{
 	case DIK_X:
+		//Short Jump
 		if (PAUSE == false)
 		{
 			if (mario->isTouchGround() == false)
@@ -139,12 +130,24 @@ void Keyboard::OnKeyDown(int KeyCode)
 		}	
 		break;
 	case DIK_S:
+		//Grabbing
 		if (PAUSE == false)
 			mario->SetState(MARIO_STATE_HOLD);
 		break;
 	case DIK_Q:
+		//Invincible
 		if (PAUSE == false)
 			mario->SetState(MARIO_STATE_INVINCIBLE);
+		break;
+	case DIK_SPACE:
+		//Jump high
+		if (PAUSE == false)
+		{
+			if (mario->isTouchGround() == false)
+				mario->SetState(MARIO_STATE_JUMP_FLAP_HOLD);
+			else
+				mario->SetState(MARIO_STATE_JUMP);
+		}
 		break;
 	case DIK_1:
 		mario->SetLevel(MARIO_LEVEL_SMALL);
@@ -188,6 +191,10 @@ void Keyboard::OnKeyUp(int KeyCode)
 	case DIK_S:
 		if (PAUSE == false)
 			mario->SetState(MARIO_STATE_RELEASE);
+		break;
+	case DIK_SPACE:
+		if (PAUSE == false)
+			mario->SetState(MARIO_STATE_STOP_JUMP);
 		break;
 	}
 }

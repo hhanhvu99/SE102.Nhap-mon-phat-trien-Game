@@ -230,6 +230,8 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				touchGround = true;
 				flapping = false;
 				flapAni = false;
+				startJumping = false;
+				jump_allow = true;
 				countOffGround = 0;
 			}
 			else if (ny > 0)
@@ -400,7 +402,12 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				grabObject->GetWidth(widthObject);
 
 				if (direction > 0)
-					x = this->x + width + MARIO_GRAB_OFFSET_X;
+				{
+					if (level != MARIO_LEVEL_FROG)
+						x = this->x + width + MARIO_GRAB_OFFSET_X;
+					else
+						x = this->x + width + MARIO_GRAB_OFFSET_X - 5.0f;
+				}
 				else
 					x = this->x - widthObject - MARIO_GRAB_OFFSET_X;
 
@@ -414,6 +421,15 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 		else
 			DebugOut(L"[ERROR] Nothing to grab!!!\n");
+	}
+
+	//Jumping
+	if (jump_allow)
+	{
+		if (GetTickCount() - jump_start < MARIO_MAX_JUMPING)
+			vy -= (MARIO_JUMPING_SPEED + MARIO_GRAVITY) * dt;
+		else
+			jump_allow = false;
 	}
 
 	//Attack
@@ -548,8 +564,22 @@ void Mario::Render()
 		}
 		else if (grabbing)
 		{
-			if (direction > 0) ani = level + MARIO_ANI_HOLD_RIGHT;
-			else ani = level + MARIO_ANI_HOLD_LEFT;
+			if (!touchGround)
+			{
+				if (direction > 0) ani = level + MARIO_ANI_HOLD_JUMP_RIGHT;
+				else ani = level + MARIO_ANI_HOLD_JUMP_LEFT;
+			}
+			else if (vx == 0)
+			{
+				if (direction > 0) ani = level + MARIO_ANI_HOLD_IDLE_RIGHT;
+				else ani = level + MARIO_ANI_HOLD_IDLE_LEFT;
+			}
+			else
+			{
+				if (direction > 0) ani = level + MARIO_ANI_HOLD_RIGHT;
+				else ani = level + MARIO_ANI_HOLD_LEFT;
+			}
+			
 		}
 		else if (!touchGround && !jumpCrouch)
 		{
@@ -601,6 +631,7 @@ void Mario::Render()
 							ani = level + MARIO_ANI_JUMP_LEFT;
 					}
 				}
+	
 			}
 
 		}
@@ -767,7 +798,10 @@ void Mario::SetState(int state)
 			else
 			{
 				vx = MARIO_MAX_RUNNING_SPEED;
-				isMax = true;
+				if (level != MARIO_LEVEL_FROG)
+					isMax = true;
+				else
+					isMax = false;
 			}
 			direction = 1;
 		}
@@ -825,7 +859,10 @@ void Mario::SetState(int state)
 			else
 			{
 				vx = -MARIO_MAX_RUNNING_SPEED;
-				isMax = true;
+				if (level != MARIO_LEVEL_FROG)
+					isMax = true;
+				else
+					isMax = false;
 			}
 			direction = -1;
 		}
@@ -848,21 +885,14 @@ void Mario::SetState(int state)
 		{
 			jump_start = now;
 			startJumping = true;
+			jump_allow = true;
 			touchGround = false;
 		}
 
-		if (now - jump_start < MARIO_MAX_JUMPING)
-			vy -= (MARIO_JUMPING_SPEED + MARIO_GRAVITY) * dt;
-		else
-			jump_allow = false;
-
-
-		if (touchGround)
-		{
-			startJumping = false;
-			jump_allow = true;
-		}
 		//DebugOut(L"State: %d\n", state);
+		break;
+	case MARIO_STATE_STOP_JUMP:
+		jump_allow = false;
 		break;
 	case MARIO_STATE_SHORT_JUMP:
 		if (touchGround)
