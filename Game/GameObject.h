@@ -86,6 +86,8 @@ public:
 	void GetSpeed(float& vx, float& vy) { vx = this->vx; vy = this->vy; }
 	void GetIndex(int& x, int& y) { x = this->indexX; y = this->indexY; }
 	void GetDirection(int& direction) { direction = this->direction; }
+	void GetWidth(int& width) { width = this->width; }
+	void GetHeight(int& height) { height = this->height; }
 	int GetDrawOrder() { return this->draw_order; }
 
 	int GetState() { return this->state; }

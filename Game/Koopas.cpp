@@ -13,6 +13,7 @@ Koopas::Koopas(int placeX, int placeY, int mobType)
 	this->comeBack = false;
 	this->shaking = false;
 	this->startShaking = false;
+	this->beingGrab = false;
 
 	this->width = ENEMY_KOOPAS_WIDTH;
 	this->height = ENEMY_KOOPAS_HEIGHT;
@@ -115,6 +116,12 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			comeBack = false;
 			shaking = false;
 			startShaking = false;
+			
+			if (beingGrab)
+			{
+				beingGrab = false;
+				mario->SetState(MARIO_STATE_HIT);
+			}
 
 			offsetX = 0;
 			//Doi co index
@@ -129,6 +136,16 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		vx = direction * ENEMY_KOOPAS_ROLL_SPEED_X;
 	}
+	else if (beingGrab)
+	{
+		if (mario != NULL)
+		{
+			vx = 0;
+			vy = 0;
+		}
+		else
+			DebugOut(L"[ERROR] No Mario!!!\n");
+	}
 
 	// No collision occured, proceed normally
 	//DebugOut(L"Time left: %d \n", GetTickCount() - timeLeft);
@@ -142,7 +159,6 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 	else
 	{
-		float min_tx, min_ty;
 		float rdx = 0;
 		float rdy = 0;
 
@@ -181,6 +197,25 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				{	
 					if (immobilize == false)
 						e->obj->SetState(MARIO_STATE_HIT);
+					else
+					{
+						Mario* mario = dynamic_cast<Mario*>(e->obj);
+
+						if (mario->isGrapping())
+						{
+							this->mario = mario;
+							mario->SetGrabObject(this);
+							mario->SetState(MARIO_STATE_HOLD_SOMETHING);
+							beingGrab = true;
+						}
+						else
+						{
+							mario->SetState(MARIO_STATE_KICK);
+							SetState(ENEMY_STATE_ROLLING);
+							mario->GetDirection(direction);
+							mario->SetPositionBack(min_tx, -nx);
+						}
+					}
 				}
 
 				break;
@@ -189,6 +224,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			{
 				e->obj->SetState(ENEMY_STATE_HIT);
 				e->obj->SetDirection(direction);
+				break;
 			}
 			else
 			{
@@ -263,7 +299,7 @@ void Koopas::Render()
 	}
 
 	animation_set->Get(ani)->Render(x + offsetX, y + offsetY);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void Koopas::SetState(int state)
@@ -295,6 +331,13 @@ void Koopas::SetState(int state)
 		comeBack = false;
 		shaking = false;
 		startShaking = false;
+		beingGrab = false;
+
+		break;
+	case ENEMY_STATE_KICK:
+		SetState(ENEMY_STATE_ROLLING);
+		mario->SetPositionBack(min_tx, -nx);
+		mario = NULL;
 
 		break;
 	case ENEMY_STATE_HIT:

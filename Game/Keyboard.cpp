@@ -130,11 +130,17 @@ void Keyboard::OnKeyDown(int KeyCode)
 	switch (KeyCode)
 	{
 	case DIK_X:
-		if(PAUSE == false)
+		if (PAUSE == false)
+		{
 			if (mario->isTouchGround() == false)
 				mario->SetState(MARIO_STATE_JUMP_FLAP);
 			else
 				mario->SetState(MARIO_STATE_SHORT_JUMP);
+		}	
+		break;
+	case DIK_S:
+		if (PAUSE == false)
+			mario->SetState(MARIO_STATE_HOLD);
 		break;
 	case DIK_Q:
 		if (PAUSE == false)
@@ -173,6 +179,17 @@ void Keyboard::OnKeyDown(int KeyCode)
 		break;
 	}
 
+}
+
+void Keyboard::OnKeyUp(int KeyCode)
+{
+	switch (KeyCode)
+	{
+	case DIK_S:
+		if (PAUSE == false)
+			mario->SetState(MARIO_STATE_RELEASE);
+		break;
+	}
 }
 
 Keyboard* Keyboard::GetInstance()

@@ -17,6 +17,7 @@ Mario::Mario(float x, float y) : GameObject()
 	this->x = x;
 	this->y = y;
 	this->type = eType::PLAYER;
+	this->grabObject = NULL;
 
 	touchGround = false;
 	ani_walk_time = MARIO_ANI_WALKING_TIME_DEFAULT;
@@ -43,7 +44,13 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	// turn off collision when die 
 	if (state != MARIO_STATE_DIE)
-		CalcPotentialCollisions(coObjects, coEvents, { eType::MARIO_BULLET, eType::ENEMY_MOB_DIE, eType::ENEMY });
+	{
+		if (startInvincible)
+			CalcPotentialCollisions(coObjects, coEvents, { eType::MARIO_BULLET, eType::ENEMY_MOB_DIE});
+		else
+			CalcPotentialCollisions(coObjects, coEvents, { eType::MARIO_BULLET, eType::ENEMY_MOB_DIE, eType::ENEMY });
+	}
+		
 	else
 	{
 		vx = 0;
@@ -267,22 +274,22 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					obj->SetState(QUESTION_BLOCK_STATE_HIT);
 				}
 			}
-			/*
-			else if (ny < 0 && touchGround == false)
+			
+			if (startInvincible)
 			{
 				if (obj->GetType() == eType::ENEMY)
 				{
-					obj->SetState(ENEMY_STATE_STOMP);
-					vy = -MARIO_JUMP_DEFLECT_SPEED;
+					obj->SetState(ENEMY_STATE_HIT);
+					obj->SetDirection(direction);
 				}
-			}*/
-			
-			
+			}
+				
 		}
 
 	}
 
 	//DebugOut(L"x: %f -- y:%f\n", x, y);
+	//DebugOut(L"Is holding: %d\n", grabTurtlePress);
 
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++)
@@ -372,6 +379,43 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 	}
 
+	//Grabbing
+	if (grabbing)
+	{
+		if (grabObject != NULL)
+		{
+			if (grabTurtlePress == false)
+			{
+				grabObject->SetState(ENEMY_STATE_KICK);
+				grabObject->SetDirection(direction);
+				grabObject = NULL;
+				grabbing = false;
+
+				SetState(MARIO_STATE_KICK);
+			}
+			else
+			{
+				float x, y;
+				int widthObject;
+				grabObject->GetWidth(widthObject);
+
+				if (direction > 0)
+					x = this->x + width + MARIO_GRAB_OFFSET_X;
+				else
+					x = this->x - widthObject - MARIO_GRAB_OFFSET_X;
+
+				if (level != 1100)
+					y = this->y + MARIO_GRAB_OFFSET_Y;
+				else
+					y = this->y - 1.0f;
+
+				grabObject->SetPosition(x, y);
+			}
+		}
+		else
+			DebugOut(L"[ERROR] Nothing to grab!!!\n");
+	}
+
 	//Attack
 	if (ani != -1)
 	{
@@ -444,6 +488,13 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				
 	}
 	
+	//Kicking
+	if (kicking)
+	{
+		if (GetTickCount() - startKicking > MARIO_ANI_KICK_DURATION)
+			kicking = false;
+	}
+
 	//Shoot
 	if (allowShoot == false)
 	{
@@ -489,6 +540,16 @@ void Mario::Render()
 		{
 			if (direction > 0) ani = level + MARIO_ANI_ATTACK_SET_RIGHT;
 			else ani = level + MARIO_ANI_ATTACK_SET_LEFT;
+		}
+		else if (kicking)
+		{
+			if (direction > 0) ani = level + MARIO_ANI_KICK_RIGHT;
+			else ani = level + MARIO_ANI_KICK_LEFT;
+		}
+		else if (grabbing)
+		{
+			if (direction > 0) ani = level + MARIO_ANI_HOLD_RIGHT;
+			else ani = level + MARIO_ANI_HOLD_LEFT;
 		}
 		else if (!touchGround && !jumpCrouch)
 		{
@@ -643,7 +704,7 @@ void Mario::Render()
 	//this->sprite->Draw(x, y);
 
 	//DebugOut(L"Direction: %d\n", direction);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void Mario::SetState(int state)
@@ -658,6 +719,12 @@ void Mario::SetState(int state)
 	case MARIO_STATE_WALKING_RIGHT:
 		if (!touchRight)
 		{
+			if (grabbing)
+			{
+				SetState(MARIO_STATE_RUNNING_RIGHT);
+				break;
+			}
+
 			if (level != MARIO_LEVEL_FROG)
 			{
 				if (abs(vx) + MARIO_WALKING_SPEED <= MARIO_MAX_WALKING_SPEED)
@@ -672,6 +739,12 @@ void Mario::SetState(int state)
 	case MARIO_STATE_WALKING_RIGHT_FROG:
 		if (!touchRight)
 		{
+			if (grabbing)
+			{
+				SetState(MARIO_STATE_RUNNING_RIGHT);
+				break;
+			}
+
 			if (frog_jumping == false)
 			{
 				startFrogJump = now;
@@ -703,6 +776,12 @@ void Mario::SetState(int state)
 	case MARIO_STATE_WALKING_LEFT:
 		if (!touchLeft)
 		{
+			if (grabbing)
+			{
+				SetState(MARIO_STATE_RUNNING_LEFT);
+				break;
+			}
+
 			if (level != MARIO_LEVEL_FROG)
 			{
 				if (abs(vx) + MARIO_WALKING_SPEED <= MARIO_MAX_WALKING_SPEED)
@@ -718,6 +797,12 @@ void Mario::SetState(int state)
 	case MARIO_STATE_WALKING_LEFT_FROG:
 		if (!touchLeft)
 		{
+			if (grabbing)
+			{
+				SetState(MARIO_STATE_RUNNING_LEFT);
+				break;
+			}
+
 			if (frog_jumping == false)
 			{
 				startFrogJump = now;
@@ -874,41 +959,62 @@ void Mario::SetState(int state)
 			if (abs(vx) < MARIO_BREAK_THRESHOLD) vx = 0;
 		}
 		break;
-	case MARIO_STATE_HIT:
-		if (level != MARIO_LEVEL_SMALL)
+	case MARIO_STATE_HOLD:
+		grabTurtlePress = true;
+		break;
+	case MARIO_STATE_HOLD_SOMETHING:
+		grabbing = true;
+		break;
+	case MARIO_STATE_RELEASE:
+		grabTurtlePress = false;
+		break;
+	case MARIO_STATE_KICK:
+		if (kicking == false)
 		{
-			untouchable_start = now;
-			untouchable_frame = now;
-			untouchable = true;
-			type = eType::PLAYER_UNTOUCHABLE;
-			PAUSE = true;
-
-			if (level > MARIO_LEVEL_BIG)
+			kicking = true;
+			startKicking = now;
+		}
+		break;
+	case MARIO_STATE_HIT:
+		if (startInvincible == false)
+		{
+			if (level != MARIO_LEVEL_SMALL)
 			{
-				level = MARIO_LEVEL_BIG;
-				GameObject::SetState(MARIO_STATE_TRANSITION_1);
-				startTransitionOne = now;
-				SetAnimationSet(AnimationManager::GetInstance()->Get(BULLET));
+				untouchable_start = now;
+				untouchable_frame = now;
+				untouchable = true;
+				type = eType::PLAYER_UNTOUCHABLE;
+				PAUSE = true;
+
+				if (level > MARIO_LEVEL_BIG)
+				{
+					level = MARIO_LEVEL_BIG;
+					GameObject::SetState(MARIO_STATE_TRANSITION_1);
+					startTransitionOne = now;
+					SetAnimationSet(AnimationManager::GetInstance()->Get(BULLET));
+				}
+				else
+				{
+					level = MARIO_LEVEL_SMALL;
+					GameObject::SetState(MARIO_STATE_TRANSITION_2);
+					startTransitionTwo = now;
+					transition_frame = now;
+				}
+
+				inTransition = true;
+				tail_whip = false;
+				shoot = false;
+				flapAni = false;
+				flapping = false;
+				grabbing = false;
 			}
 			else
 			{
-				level = MARIO_LEVEL_SMALL;
-				GameObject::SetState(MARIO_STATE_TRANSITION_2);
-				startTransitionTwo = now;
-				transition_frame = now;
+				grabbing = false;
+				SetState(MARIO_STATE_DIE);
 			}
 
-			inTransition = true;
-			tail_whip = false;
-			shoot = false;
-			flapAni = false;
-			flapping = false;
 		}
-		else
-		{
-			SetState(MARIO_STATE_DIE);
-		}
-		
 			
 		break;
 	case MARIO_STATE_DIE:
@@ -934,7 +1040,6 @@ void Mario::SetLevel(int l)
 		this->offset_BBox_X = MARIO_OFFSET_SMALL_BBOX_X;
 		this->offset_BBox_Y = MARIO_OFFSET_SMALL_BBOX_Y;
 
-		this->x = this->x;
 		this->y = this->y + (MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT);
 
 		break;
@@ -950,6 +1055,12 @@ void Mario::SetLevel(int l)
 		this->offset_Draw_Y = MARIO_OFFSET_BIG_DRAW_Y;
 		this->offset_BBox_X = MARIO_OFFSET_BIG_BBOX_X;
 		this->offset_BBox_Y = MARIO_OFFSET_BIG_BBOX_Y;
+
+		if (prevLevel == MARIO_LEVEL_FROG)
+			this->y = this->y - (MARIO_BIG_BBOX_HEIGHT - MARIO_FROG_BBOX_HEIGHT);
+		else if (prevLevel == MARIO_LEVEL_SMALL)
+			this->y = this->y - (MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT);
+
 		break;
 
 	case MARIO_LEVEL_FROG:
@@ -960,12 +1071,18 @@ void Mario::SetLevel(int l)
 		this->offset_BBox_X = MARIO_OFFSET_FROG_BBOX_X;
 		this->offset_BBox_Y = MARIO_OFFSET_FROG_BBOX_Y;
 
+		if (prevLevel == MARIO_LEVEL_SMALL)
+			this->y = this->y - (MARIO_FROG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT);
+		else
+			this->y = this->y + (MARIO_BIG_BBOX_HEIGHT - MARIO_FROG_BBOX_HEIGHT);
+
 		break;
 	default:
 		DebugOut(L"[ERROR] Unknown Mario level\n");
 		break;
 	}
 
+	prevLevel = l;
 }
 
 void Mario::GetBoundingBox(float& left, float& top, float& right, float& bottom)

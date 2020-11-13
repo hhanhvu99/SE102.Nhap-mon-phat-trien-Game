@@ -2,6 +2,7 @@
 
 #include "GameObject.h"
 #include "TestScene.h"
+#include "Mario.h"
 
 //Basic info
 #define ENEMY_KOOPAS_WIDTH				14
@@ -9,7 +10,7 @@
 
 #define ENEMY_KOOPAS_GRAVITY			0.0005f
 #define ENEMY_KOOPAS_MOVE_SPEED_X		0.02f
-#define ENEMY_KOOPAS_ROLL_SPEED_X		0.15f
+#define ENEMY_KOOPAS_ROLL_SPEED_X		0.17f
 #define ENEMY_KOOPAS_DEFLECT_Y			0.1f
 
 #define ENEMY_KOOPAS_TIME_LEFT			8000
@@ -30,12 +31,17 @@
 #define ENEMY_STATE_STOMP				2
 #define ENEMY_STATE_HIT					3
 #define ENEMY_STATE_ROLLING				4
+#define ENEMY_STATE_KICK				5
 
+class Mario;
 class Koopas : public GameObject
 {
+	Mario* mario = NULL;
+
 	int mobType;
 
 	float nx, ny;
+	float min_tx, min_ty;
 	float pointX, pointY;
 	float offsetX = 0, offsetY = 0;
 	float camPosX, camPosY;
@@ -44,6 +50,7 @@ class Koopas : public GameObject
 	bool immobilize;
 	bool rolling;
 	bool comeBack;
+	bool beingGrab;
 
 	bool startShaking;
 	bool shaking;

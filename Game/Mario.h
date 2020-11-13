@@ -42,6 +42,10 @@
 #define MARIO_STATE_INVINCIBLE			700
 #define MARIO_STATE_UNTOUCHABLE			701
 #define MARIO_STATE_ATTACK				800
+#define MARIO_STATE_HOLD				801
+#define MARIO_STATE_HOLD_SOMETHING		802
+#define MARIO_STATE_RELEASE				803
+#define MARIO_STATE_KICK				804
 #define MARIO_STATE_HIT					900
 #define MARIO_STATE_TRANSITION_1		901
 #define MARIO_STATE_TRANSITION_2		902
@@ -59,6 +63,7 @@
 #define MARIO_FLAP_TIME					200
 #define MARIO_FLAP_DURATION				100
 #define MARIO_FLAP_RUN_DURATION			150
+#define MARIO_ANI_KICK_DURATION			200
 #define MARIO_DIE_TIME					500
 
 //Point collide
@@ -86,6 +91,9 @@
 //Bullet
 #define MARIO_BULLET_OFFSET_X			-8.0f
 #define MARIO_BULLET_OFFSET_Y			8.0f
+//Grab
+#define MARIO_GRAB_OFFSET_X				0.4f
+#define MARIO_GRAB_OFFSET_Y				8.0f
 
 //BBox
 #define MARIO_SMALL_BBOX_WIDTH			13
@@ -104,7 +112,10 @@
 
 class Mario : public GameObject
 {
+	LPGAMEOBJECT grabObject;
+
 	int level;
+	int prevLevel;
 	int ani;
 	int size;
 	int currentFrame;
@@ -113,6 +124,13 @@ class Mario : public GameObject
 
 	float start_x;			// initial position of Mario at scene
 	float start_y;
+
+	float anchor1_X;
+	float anchor1_Y;
+	float anchor2_X;
+	float anchor2_Y;
+	float anchor3_X;
+	float anchor3_Y;
 
 	float pointX;
 	float pointY;
@@ -159,12 +177,16 @@ class Mario : public GameObject
 	DWORD startFlap = 0;
 	DWORD startFlapAni = 0;
 
+	bool kicking = false;
+	DWORD startKicking = 0;
+
 	bool touchLeft = false, touchRight = false;
 	bool isRunning = false;
 	bool isMax = false;
 	bool isCrouch = false;
 	bool jumpCrouch = false;
-	
+	bool grabTurtlePress = false;
+	bool grabbing = false;
 
 	int countTouch = 0;
 	int countOffGround = 0;
@@ -176,8 +198,10 @@ public:
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects = NULL);
 	virtual void Render();
 
+	void SetGrabObject(LPGAMEOBJECT object) { grabObject = object; }
 	void SetState(int state);
 	void SetLevel(int l);
+	void SetPositionBack(float min_tx, int nx) {x += min_tx * dx + nx * 1.0f;}
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
 	int GetLevel() { return this->level; }
 
@@ -187,6 +211,7 @@ public:
 	bool isCrouching() { return isCrouch; }
 	bool isTouchGround() { return touchGround; }
 	bool isAllowJump() { return jump_allow; }
+	bool isGrapping() { return grabTurtlePress; }
 
 	void Reset();
 

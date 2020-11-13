@@ -194,6 +194,13 @@ void TestScene::Load()
 		}
 	);
 
+	sort(collideObjects.begin(), collideObjects.end(),
+		[](const LPGAMEOBJECT& lhs, const LPGAMEOBJECT& rhs)
+		{
+			return lhs->GetDrawOrder() > rhs->GetDrawOrder();
+		}
+	);
+
 	float cx, cy;
 	mario->GetPosition(cx, cy);
 

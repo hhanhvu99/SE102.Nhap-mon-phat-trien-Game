@@ -16,7 +16,7 @@ public:
 	void SetKeyHandler(Mario* mario) { this->mario = mario; }
 	void KeyState(BYTE* states);
 	void OnKeyDown(int KeyCode);
-	void OnKeyUp(int KeyCode) {};
+	void OnKeyUp(int KeyCode);
 
 	static Keyboard* GetInstance();
 };
