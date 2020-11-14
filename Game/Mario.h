@@ -188,6 +188,7 @@ class Mario : public GameObject
 	bool jumpCrouch = false;
 	bool grabTurtlePress = false;
 	bool grabbing = false;
+	bool jumpButtonPressed = false;
 
 	int countTouch = 0;
 	int countOffGround = 0;

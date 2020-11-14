@@ -481,6 +481,11 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 
 	//Flapping
+	if (jumpButtonPressed)
+	{
+		SetState(MARIO_STATE_JUMP_FLAP_HOLD);
+	}
+
 	if (flapping == true)
 	{
 		if (isMax)
@@ -881,6 +886,7 @@ void Mario::SetState(int state)
 		direction = 1;
 		break;
 	case MARIO_STATE_JUMP:
+		jumpButtonPressed = true;
 		if (startJumping == false)
 		{
 			jump_start = now;
@@ -892,6 +898,7 @@ void Mario::SetState(int state)
 		//DebugOut(L"State: %d\n", state);
 		break;
 	case MARIO_STATE_STOP_JUMP:
+		jumpButtonPressed = false;
 		jump_allow = false;
 		break;
 	case MARIO_STATE_SHORT_JUMP:
@@ -904,11 +911,9 @@ void Mario::SetState(int state)
 		//DebugOut(L"dt: %d\n", dt);
 		break;
 	case MARIO_STATE_JUMP_FLAP_HOLD:
+		jumpButtonPressed = true;
 		if (jump_allow == true)
-		{
-			SetState(MARIO_STATE_JUMP);
 			break;
-		}
 		if (vy < 0)
 			break;
 		if (level == MARIO_LEVEL_RACC || level == MARIO_LEVEL_TANU)
