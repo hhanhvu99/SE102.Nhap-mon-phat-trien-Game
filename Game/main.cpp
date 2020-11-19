@@ -66,7 +66,7 @@ void LoadResources()
 	int size = 16;
 	int beginX, beginY, endX, endY, padding = 2;
 	int width = 19;
-	int height = 16;
+	int height = 17;
 	int id = 0;
 
 	//Load sprite của Map

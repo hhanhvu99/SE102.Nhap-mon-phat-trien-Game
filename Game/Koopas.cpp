@@ -80,12 +80,14 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		pointX = this->x + width / 2;
 		pointY = this->y;
-
+		DebugOut(L"Grab: %d \n", beingGrab);
 		if (type == eType::ENEMY)
 		{
-			if (rolling == false)
+			if (beingGrab == true)
+				CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY_MOB_DIE, eType::PLAYER_UNTOUCHABLE, eType::PLAYER });
+			else if (rolling == false)
 				CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY, eType::ENEMY_MOB_DIE, eType::PLAYER_UNTOUCHABLE });
-			else
+			else if (rolling == true)
 				CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY_MOB_DIE, eType::PLAYER_UNTOUCHABLE });
 		}
 				
@@ -148,6 +150,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 
 	// No collision occured, proceed normally
+	
 	//DebugOut(L"Time left: %d \n", GetTickCount() - timeLeft);
 	//DebugOut(L"x: %f\n", offsetX + x);
 	//DebugOut(L"vx: %f - vy: %f\n", vx, vy);
@@ -299,7 +302,7 @@ void Koopas::Render()
 	}
 
 	animation_set->Get(ani)->Render(x + offsetX, y + offsetY);
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 void Koopas::SetState(int state)

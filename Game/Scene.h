@@ -7,6 +7,7 @@ class Scene
 {
 protected:
 	std::vector<int> BLOCKS;
+	std::vector<int> PLATFORM;
 	std::vector<int> ACTIVE_BLOCKS;
 	std::vector<int> GROUP;
 	std::vector<int> ENEMY;

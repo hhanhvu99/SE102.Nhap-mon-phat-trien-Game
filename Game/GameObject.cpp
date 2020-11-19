@@ -73,16 +73,20 @@ LPCOLLISIONEVENT GameObject::SweptAABBEx(LPGAMEOBJECT coO)
 void GameObject::CalcPotentialCollisions(
 	vector<LPGAMEOBJECT>* coObjects,
 	vector<LPCOLLISIONEVENT>& coEvents,
-	vector<eType> exclude)
+	vector<eType> excludeType,
+	LPGAMEOBJECT excludeObject)
 {
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
 		if (this == coObjects->at(i))
 			continue;
 
-		if (exclude.size() != 0)
+		if (excludeObject == coObjects->at(i))
+			continue;
+
+		if (excludeType.size() != 0)
 		{
-			for (eType type : exclude)
+			for (eType type : excludeType)
 			{
 				if (type == coObjects->at(i)->GetType())
 					goto continueLoop;
@@ -132,11 +136,30 @@ void GameObject::FilterCollision(
 		LPCOLLISIONEVENT c = coEvents[i];
 
 		if (c->t < min_tx && c->nx != 0) {
-			min_tx = c->t; nx = c->nx; min_ix = i; rdx = c->dx;
+			if (c->obj->GetType() == eType::PLATFORM)
+			{
+				min_tx = c->t; nx = 0; min_ix = i; rdx = c->dx;
+			}
+			else
+			{
+				min_tx = c->t; nx = c->nx; min_ix = i; rdx = c->dx;
+			}
 		}
 
 		if (c->t < min_ty && c->ny != 0) {
-			min_ty = c->t; ny = c->ny; min_iy = i; rdy = c->dy;
+			if (c->obj->GetType() == eType::PLATFORM)
+			{
+				min_ty = c->t; min_iy = i; rdy = c->dy;
+
+				if (c->ny > 0)
+					ny = 0;
+				else
+					ny = c->ny;
+			}
+			else
+			{
+				min_ty = c->t; ny = c->ny; min_iy = i; rdy = c->dy;
+			}
 		}
 	}
 

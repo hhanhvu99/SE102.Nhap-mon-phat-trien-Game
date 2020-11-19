@@ -203,7 +203,7 @@ void Groomba::Render()
 
 	
 	animation_set->Get(ani)->Render(x + offsetX, y + offsetY);
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 void Groomba::SetState(int state)

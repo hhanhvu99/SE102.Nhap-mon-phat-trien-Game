@@ -9,11 +9,16 @@
 275
 /*Block Question Hit*/
 255
+/*Platform*/
+3, 4, 5, 19, 20, 21, 60, 61, 62, 76, 77, 78, 117, 118, 119, 133, 134, 135
 [ACTIVE BLOCK]
 /*Shiny Brick*/
 91
 /*Question Block*/
 251
+[PLATFORM]
+15,23,17,23
+17,21,19,21
 [GROUP]
 0,26,38,26
 39,25,67,26

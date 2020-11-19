@@ -45,10 +45,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// turn off collision when die 
 	if (state != MARIO_STATE_DIE)
 	{
-		if (startInvincible)
-			CalcPotentialCollisions(coObjects, coEvents, { eType::MARIO_BULLET, eType::ENEMY_MOB_DIE});
-		else
-			CalcPotentialCollisions(coObjects, coEvents, { eType::MARIO_BULLET, eType::ENEMY_MOB_DIE, eType::ENEMY });
+		CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY, eType::MARIO_BULLET, eType::ENEMY_MOB_DIE });
 	}
 		
 	else
@@ -186,7 +183,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		// how to push back Mario if collides with a moving objects, what if Mario is pushed this way into another object?
 		//if (rdx != 0 && rdx!=dx)
-		//	x += nx*abs(rdx); 
+			//x += nx*abs(rdx); 
 
 		// block every object first!
 		this->x += min_tx * dx + nx * 0.4f;
@@ -244,7 +241,8 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		//float magnitude = sqrt(vx * vx + vy * vy);
 		//int sign = Global::Sign(vy);
 
-		
+		//DebugOut(L"mintx: %f -- minty: %f\n", min_tx, min_ty);
+		//DebugOut(L"dx: %f -- dy: %f\n", dx, dy);
 		//DebugOut(L"vx: %f -- vy: %f\n", vx, vy);
 		//DebugOut(L"M: %f\n", magnitude);
 		//DebugOut(L"nx: %f -- ny: %f -- Touch ground: %d\n", nx, ny, touchGround);
@@ -404,7 +402,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				if (direction > 0)
 				{
 					if (level != MARIO_LEVEL_FROG)
-						x = this->x + width + MARIO_GRAB_OFFSET_X;
+						x = this->x + widthObject + MARIO_GRAB_OFFSET_X;
 					else
 						x = this->x + width + MARIO_GRAB_OFFSET_X - 5.0f;
 				}
@@ -417,6 +415,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					y = this->y - 1.0f;
 
 				grabObject->SetPosition(x, y);
+				grabObject->SetSpeed(vx, vy);
 			}
 		}
 		else

@@ -46,6 +46,7 @@ void Scene::LoadBlock(LPCWSTR gameFile)
 		if (line == "[ACTIVE BLOCK]") { option = 2; continue; }
 		if (line == "[GROUP]") { option = 3; continue; }
 		if (line == "[ENEMY]") { option = 4; continue; }
+		if (line == "[PLATFORM]") { option = 5; continue; }
 		if (option == 1)
 		{
 			vector<string> tokens = split(line, ",");
@@ -69,6 +70,12 @@ void Scene::LoadBlock(LPCWSTR gameFile)
 			vector<string> tokens = split(line, ",");
 			for (int i = 0; i < tokens.size(); ++i)
 				ENEMY.push_back(atoi(tokens[i].c_str()));
+		}
+		else if (option == 5)
+		{
+			vector<string> tokens = split(line, ",");
+			for (int i = 0; i < tokens.size(); ++i)
+				PLATFORM.push_back(atoi(tokens[i].c_str()));
 		}
 		else
 		{

@@ -239,6 +239,7 @@ enum eType
 	BLOCK = 01,
 	BACKGROUND = 02,
 	GROUP = 03,
+	PLATFORM = 12,
 
 	//Mario 
 	PLAYER = 04,

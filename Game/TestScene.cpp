@@ -154,6 +154,49 @@ void TestScene::Load()
 		collideObjects.push_back(group);
 	}
 
+	//Group platform object
+	length = PLATFORM.size();
+	for (int x = 0; x < length; x += 4)
+	{
+		left = PLATFORM[x];
+		top = PLATFORM[x + 1];
+		right = PLATFORM[x + 2];
+		bottom = PLATFORM[x + 3];
+		group = new GroupObject();
+
+		//DebugOut(L"Left: %d -- Top: %d -- Right: %d -- Bottom: %d \n", left,top,right,bottom);
+
+		for (int j = top; j <= bottom; ++j)
+			for (int i = left; i <= right; ++i)
+			{
+				for (LPGAMEOBJECT object : gameObjects)
+				{
+					object->GetIndex(indexX, indexY);
+
+					if (i == indexX && j == indexY)
+					{
+						group->Add(object);
+
+						pos = find(gameObjects.begin(), gameObjects.end() - 1, object);
+						gameObjects.erase(pos);
+						gameObjects.shrink_to_fit();
+
+						pos = find(collideObjects.begin(), collideObjects.end() - 1, object);
+						collideObjects.erase(pos);
+						collideObjects.shrink_to_fit();
+
+						//DebugOut(L"Found\n");
+
+						break;
+					}
+				}
+			}
+		group->SetType(eType::PLATFORM);
+		group->SetDrawOrder(BLOCK_DRAW_ORDER);
+		gameObjects.push_back(group);
+		collideObjects.push_back(group);
+	}
+
 	//Add Enemy Mob
 	int placeX;
 	int placeY;
