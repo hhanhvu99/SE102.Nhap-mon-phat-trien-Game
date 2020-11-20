@@ -80,7 +80,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		pointX = this->x + width / 2;
 		pointY = this->y;
-		DebugOut(L"Grab: %d \n", beingGrab);
+		//DebugOut(L"Grab: %d \n", beingGrab);
 		if (type == eType::ENEMY)
 		{
 			if (beingGrab == true)
@@ -187,7 +187,6 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				float vx, vy;
 				e->obj->GetSpeed(vx, vy);
 
-
 				if (e->ny > 0)
 				{
 					if (immobilize == false)
@@ -203,10 +202,10 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					else
 					{
 						Mario* mario = dynamic_cast<Mario*>(e->obj);
+						this->mario = mario;
 
 						if (mario->isGrapping())
 						{
-							this->mario = mario;
 							mario->SetGrabObject(this);
 							mario->SetState(MARIO_STATE_HOLD_SOMETHING);
 							beingGrab = true;
@@ -214,9 +213,8 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						else
 						{
 							mario->SetState(MARIO_STATE_KICK);
-							SetState(ENEMY_STATE_ROLLING);
+							SetState(ENEMY_STATE_KICK);
 							mario->GetDirection(direction);
-							mario->SetPositionBack(min_tx, -nx);
 						}
 					}
 				}

@@ -37,6 +37,9 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// Simple fall down
 	vy += MARIO_GRAVITY * dt;
 
+	if (vy > MARIO_MAX_FALLING_SPEED)
+		vy = MARIO_MAX_FALLING_SPEED;
+
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -184,6 +187,8 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		// how to push back Mario if collides with a moving objects, what if Mario is pushed this way into another object?
 		//if (rdx != 0 && rdx!=dx)
 			//x += nx*abs(rdx); 
+
+		//DebugOut(L"dx: %f -- dy: %f -- min_tx: %f -- min_ty: %f\n", dx, dy, min_tx, min_ty);
 
 		// block every object first!
 		this->x += min_tx * dx + nx * 0.4f;
@@ -739,7 +744,7 @@ void Mario::Render()
 	//this->sprite->Draw(x, y);
 
 	//DebugOut(L"Direction: %d\n", direction);
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 void Mario::SetState(int state)
@@ -762,9 +767,9 @@ void Mario::SetState(int state)
 
 			if (level != MARIO_LEVEL_FROG)
 			{
-				if (abs(vx) + MARIO_WALKING_SPEED <= MARIO_MAX_WALKING_SPEED)
-					vx += MARIO_WALKING_SPEED * dt;
-				else
+				vx += MARIO_WALKING_SPEED * dt;
+					
+				if (abs(vx) > MARIO_MAX_WALKING_SPEED)
 					vx = MARIO_MAX_WALKING_SPEED;
 			}
 			direction = 1;
@@ -785,9 +790,10 @@ void Mario::SetState(int state)
 				startFrogJump = now;
 				frog_jumping = true;
 			}	
-			if (abs(vx) + MARIO_WALKING_SPEED <= MARIO_MAX_WALKING_SPEED)
-				vx += MARIO_WALKING_SPEED * dt;
-			else
+
+			vx += MARIO_WALKING_SPEED * dt;
+
+			if (abs(vx) > MARIO_MAX_WALKING_SPEED)
 				vx = MARIO_MAX_WALKING_SPEED;
 
 			direction = 1;
@@ -797,9 +803,9 @@ void Mario::SetState(int state)
 	case MARIO_STATE_RUNNING_RIGHT:
 		if (!touchRight)
 		{
-			if (abs(vx) + MARIO_RUNNING_SPEED <= MARIO_MAX_RUNNING_SPEED)
-				vx += MARIO_RUNNING_SPEED * dt;
-			else
+			vx += MARIO_RUNNING_SPEED * dt;
+
+			if (abs(vx) > MARIO_MAX_RUNNING_SPEED)
 			{
 				vx = MARIO_MAX_RUNNING_SPEED;
 				if (level != MARIO_LEVEL_FROG)
@@ -807,6 +813,7 @@ void Mario::SetState(int state)
 				else
 					isMax = false;
 			}
+				
 			direction = 1;
 		}
 
@@ -822,9 +829,9 @@ void Mario::SetState(int state)
 
 			if (level != MARIO_LEVEL_FROG)
 			{
-				if (abs(vx) + MARIO_WALKING_SPEED <= MARIO_MAX_WALKING_SPEED)
-					vx += -MARIO_WALKING_SPEED * dt;
-				else
+				vx += -MARIO_WALKING_SPEED * dt;
+
+				if (abs(vx) > MARIO_MAX_WALKING_SPEED)
 					vx = -MARIO_MAX_WALKING_SPEED;
 			}
 			
@@ -846,9 +853,9 @@ void Mario::SetState(int state)
 				startFrogJump = now;
 				frog_jumping = true;
 			}
-			if (abs(vx) + MARIO_WALKING_SPEED <= MARIO_MAX_WALKING_SPEED)
-				vx += -MARIO_WALKING_SPEED * dt;
-			else
+			vx += -MARIO_WALKING_SPEED * dt;
+
+			if (abs(vx) > MARIO_MAX_WALKING_SPEED)
 				vx = -MARIO_MAX_WALKING_SPEED;
 
 			direction = -1;
@@ -858,9 +865,9 @@ void Mario::SetState(int state)
 	case MARIO_STATE_RUNNING_LEFT:
 		if (!touchLeft)
 		{
-			if (abs(vx) + MARIO_RUNNING_SPEED <= MARIO_MAX_RUNNING_SPEED)
-				vx += -MARIO_RUNNING_SPEED * dt;
-			else
+			vx += -MARIO_RUNNING_SPEED * dt;
+
+			if (abs(vx) > MARIO_MAX_RUNNING_SPEED)
 			{
 				vx = -MARIO_MAX_RUNNING_SPEED;
 				if (level != MARIO_LEVEL_FROG)
@@ -1041,10 +1048,12 @@ void Mario::SetState(int state)
 				flapAni = false;
 				flapping = false;
 				grabbing = false;
+				grabTurtlePress = false;
 			}
 			else
 			{
 				grabbing = false;
+				grabTurtlePress = false;
 				SetState(MARIO_STATE_DIE);
 			}
 

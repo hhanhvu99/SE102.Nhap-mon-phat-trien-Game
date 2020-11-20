@@ -5,12 +5,13 @@
 #include "Hammer.h"
 
 //Speed
-#define MARIO_WALKING_SPEED				0.0002f 
-#define MARIO_RUNNING_SPEED				0.0001f 
+#define MARIO_WALKING_SPEED				0.00015f 
+#define MARIO_RUNNING_SPEED				0.00008f 
 #define MARIO_JUMPING_SPEED				0.0025f
 #define MARIO_MAX_WALKING_SPEED			0.1f
 #define MARIO_HALF_MAX_RUNNING_SPEED	0.15f
 #define MARIO_MAX_RUNNING_SPEED			0.2f
+#define MARIO_MAX_FALLING_SPEED			0.2f
 #define MARIO_SLIDE_SPEED				0.0002f
 #define MARIO_BREAK_SPEED				0.0005f
 #define MARIO_RUNNING_BREAK_SPEED		0.01f
@@ -203,7 +204,7 @@ public:
 	void SetGrabObject(LPGAMEOBJECT object) { grabObject = object; }
 	void SetState(int state);
 	void SetLevel(int l);
-	void SetPositionBack(float min_tx, int nx) {x += min_tx * dx + nx * 1.0f;}
+	void SetPositionBack(float min_tx, int nx) {x += min_tx * dx + nx * 3.0f;}
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
 	int GetLevel() { return this->level; }
 
