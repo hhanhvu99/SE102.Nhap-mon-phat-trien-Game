@@ -218,14 +218,11 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						}
 					}
 				}
-
-				break;
 			}
 			else if (e->obj->GetType() == eType::ENEMY)
 			{
 				e->obj->SetState(ENEMY_STATE_HIT);
 				e->obj->SetDirection(direction);
-				break;
 			}
 			else
 			{
@@ -233,7 +230,6 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					direction = 1;
 				else if (nx < 0)
 					direction = -1;
-				break;
 				
 			}
 		}

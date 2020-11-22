@@ -65,7 +65,7 @@ void GameEngine::Init(HWND hWnd)
 
 void GameEngine::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, int top, int right, int bottom, D3DCOLOR color, int angle, float offsetX, float offsetY)
 {
-	D3DXVECTOR3 p(trunc(x - cam_x + offsetX), trunc(y - cam_y + offsetY), 0);
+	D3DXVECTOR3 p(round(x - cam_x + offsetX), round(y - cam_y + offsetY), 0);
 	//D3DXVECTOR3 p(x - cam_x, y - cam_y, 0);
 	D3DXMATRIX anhGoc;
 	D3DXMATRIX scale;

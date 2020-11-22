@@ -53,12 +53,16 @@ LPCOLLISIONEVENT GameObject::SweptAABBEx(LPGAMEOBJECT coO)
 	/*
 	if (coO->GetType() == eType::PLAYER && this->type == eType::ENEMY)
 	{
-		DebugOut(L"-------------\n");
-		DebugOut(L"ml: %f - mt: %f - mr: %f - mb: %f\n", ml, mt, mr, mb);
-		DebugOut(L"rdx: %f - rdy: %f\n", rdx, rdy);
-		DebugOut(L"sl: %f - st: %f - sr: %f - sb: %f\n", sl, st, sr, sb);
-		DebugOut(L"t: %f - nx: %f - ny: %f\n", t, nx, ny);
-	}*/
+		if (mt - sb < 3.0f && ml - sr < 3.0f && sl - mr < 3.0f)
+		{
+			DebugOut(L"-------------\n");
+			DebugOut(L"ml: %f - mt: %f - mr: %f - mb: %f\n", ml, mt, mr, mb);
+			DebugOut(L"sl: %f - st: %f - sr: %f - sb: %f\n", sl, st, sr, sb);
+			DebugOut(L"t: %f - nx: %f - ny: %f\n", t, nx, ny);
+		}
+	}
+	*/
+		
 
 	CollisionEvent* e = new CollisionEvent(t, nx, ny, rdx, rdy, coO);
 	return e;
@@ -90,7 +94,6 @@ void GameObject::CalcPotentialCollisions(
 			{
 				if (type == coObjects->at(i)->GetType())
 					goto continueLoop;
-					
 			}	
 		}
 
@@ -135,7 +138,7 @@ void GameObject::FilterCollision(
 	{
 		LPCOLLISIONEVENT c = coEvents[i];
 
-		if (c->t < min_tx && c->nx != 0) {
+		if (c->nx != 0) {
 			if (c->obj->GetType() == eType::PLATFORM)
 			{
 				min_tx = c->t; nx = 0; min_ix = i; rdx = c->dx;
@@ -144,9 +147,10 @@ void GameObject::FilterCollision(
 			{
 				min_tx = c->t; nx = c->nx; min_ix = i; rdx = c->dx;
 			}
+			coEventsResult.push_back(coEvents[min_ix]);
 		}
 
-		if (c->t < min_ty && c->ny != 0) {
+		if (c->ny != 0) {
 			if (c->obj->GetType() == eType::PLATFORM)
 			{
 				min_ty = c->t; min_iy = i; rdy = c->dy;
@@ -160,11 +164,27 @@ void GameObject::FilterCollision(
 			{
 				min_ty = c->t; ny = c->ny; min_iy = i; rdy = c->dy;
 			}
+			coEventsResult.push_back(coEvents[min_iy]);
 		}
 	}
 
-	if (min_ix >= 0) coEventsResult.push_back(coEvents[min_ix]);
-	if (min_iy >= 0) coEventsResult.push_back(coEvents[min_iy]);
+	sort(coEventsResult.begin(), coEventsResult.end(),
+		[](const LPCOLLISIONEVENT& lhs, const LPCOLLISIONEVENT& rhs)
+		{
+			return lhs->obj->GetDrawOrder() > rhs->obj->GetDrawOrder();
+		}
+	);
+
+	//if (min_ix >= 0) coEventsResult.push_back(coEvents[min_ix]);
+	//if (min_iy >= 0) coEventsResult.push_back(coEvents[min_iy]);
+
+	/*
+	if (this->type == eType::ENEMY)
+	{
+		DebugOut(L"size: %d\n", coEvents.size());
+
+	}
+	*/
 }
 
 
