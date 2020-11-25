@@ -84,6 +84,7 @@ public:
 
 	void GetPosition(float& x, float& y) { x = this->x; y = this->y; }
 	void GetSpeed(float& vx, float& vy) { vx = this->vx; vy = this->vy; }
+	void GetChange(float& dx, float& dy) { dx = this->dx; dy = this->dy; }
 	void GetIndex(int& x, int& y) { x = this->indexX; y = this->indexY; }
 	void GetDirection(int& direction) { direction = this->direction; }
 	void GetWidth(int& width) { width = this->width; }

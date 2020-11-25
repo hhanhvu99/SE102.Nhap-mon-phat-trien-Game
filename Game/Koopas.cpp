@@ -333,7 +333,9 @@ void Koopas::SetState(int state)
 		break;
 	case ENEMY_STATE_KICK:
 		SetState(ENEMY_STATE_ROLLING);
-		mario->SetPositionBack(min_tx, -nx);
+		float dx, dy;
+		mario->GetChange(dx, dy);
+		this->x += direction * (dx + 3.0f);
 		mario = NULL;
 
 		break;
