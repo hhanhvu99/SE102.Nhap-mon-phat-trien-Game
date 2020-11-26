@@ -3,7 +3,7 @@
 #include "Koopas.h"
 #include "debug.h"
 
-Koopas::Koopas(int placeX, int placeY, int mobType)
+Koopas::Koopas(int placeX, int placeY, int mobType, bool hasWing)
 {
 	this->x = placeX * STANDARD_SIZE;
 	this->y = placeY * STANDARD_SIZE - ENEMY_KOOPAS_HEIGHT;
@@ -22,6 +22,7 @@ Koopas::Koopas(int placeX, int placeY, int mobType)
 	this->state = ENEMY_STATE_MOVING;
 	this->direction = 1;
 	this->mobType = mobType;
+	this->hasWing = hasWing;
 
 	this->shakeX = ENEMY_KOOPAS_ANI_SHAKE_X;
 	this->offsetX = ENEMY_KOOPAS_DRAW_OFFSET_X;
@@ -176,8 +177,15 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		this->y += min_ty * dy + ny * 0.4f;
 
 
-		if (vy != 0)
+		if (ny != 0)
+		{
 			vy = 0;
+
+			if (hasWing)
+				if (ny < 0)
+					vy = -ENEMY_KOOPAS_JUMP_SPEED;
+		}
+			
 
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
@@ -189,10 +197,18 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 				if (e->ny > 0)
 				{
-					if (immobilize == false)
-						SetState(ENEMY_STATE_STOMP);
+					if (hasWing)
+					{
+						hasWing = false;
+					}
 					else
-						SetState(ENEMY_STATE_ROLLING);
+					{
+						if (immobilize == false)
+							SetState(ENEMY_STATE_STOMP);
+						else
+							SetState(ENEMY_STATE_ROLLING);
+					}
+					
 					e->obj->SetSpeed(vx, -MARIO_JUMP_DEFLECT_SPEED);
 				}
 				else
@@ -256,27 +272,44 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 void Koopas::Render()
 {
 	int ani = -1;
-	if (comeBack)
+
+	if (hasWing)
 	{
-		ani = mobType + ENEMY_ANI_COMEBACK;
+		if (state == ENEMY_STATE_MOVING)
+		{
+			if (direction > 0) ani = mobType + ENEMY_ANI_RIGHT_WING;
+			else ani = mobType + ENEMY_ANI_LEFT_WING;
+		}
+		else if (state == ENEMY_STATE_HIT)
+		{
+			if (direction > 0) ani = mobType + ENEMY_ANI_DIE_HIT_RIGHT;
+			else ani = mobType + ENEMY_ANI_DIE_HIT_LEFT;
+		}
 	}
-	else if (immobilize)
+	else 
 	{
-		ani = mobType + ENEMY_ANI_IMMOBILIZE;
-	}
-	else if (rolling)
-	{
-		ani = mobType + ENEMY_ANI_ROLLING;
-	}
-	else if (state == ENEMY_STATE_MOVING)
-	{
-		if (direction > 0) ani = mobType + ENEMY_ANI_RIGHT;
-		else ani = mobType + ENEMY_ANI_LEFT;
-	}
-	else if (state == ENEMY_STATE_HIT)
-	{
-		if (direction > 0) ani = mobType + ENEMY_ANI_DIE_HIT_RIGHT;
-		else ani = mobType + ENEMY_ANI_DIE_HIT_LEFT;
+		if (comeBack)
+		{
+			ani = mobType + ENEMY_ANI_COMEBACK;
+		}
+		else if (immobilize)
+		{
+			ani = mobType + ENEMY_ANI_IMMOBILIZE;
+		}
+		else if (rolling)
+		{
+			ani = mobType + ENEMY_ANI_ROLLING;
+		}
+		else if (state == ENEMY_STATE_MOVING)
+		{
+			if (direction > 0) ani = mobType + ENEMY_ANI_RIGHT;
+			else ani = mobType + ENEMY_ANI_LEFT;
+		}
+		else if (state == ENEMY_STATE_HIT)
+		{
+			if (direction > 0) ani = mobType + ENEMY_ANI_DIE_HIT_RIGHT;
+			else ani = mobType + ENEMY_ANI_DIE_HIT_LEFT;
+		}
 	}
 
 	if (shaking)

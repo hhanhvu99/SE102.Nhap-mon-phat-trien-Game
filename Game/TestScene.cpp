@@ -201,21 +201,30 @@ void TestScene::Load()
 	int placeX;
 	int placeY;
 	int mobType;
+	bool hasWing;
 	LPGAMEOBJECT enemy = NULL;
 
 	length = ENEMY.size();
-	for (int x = 0; x < length; x += 3)
+	for (int x = 0; x < length; x += 4)
 	{
 		placeX = ENEMY[x];
 		placeY = ENEMY[x + 1];
 		mobType = ENEMY[x + 2];
+		hasWing = ENEMY[x + 3];
+
 		switch (mobType)
 		{
 		case ENEMY_GROOMBA_BROWN:
-			enemy = new Groomba(placeX, placeY, mobType);
+			enemy = new Groomba(placeX, placeY, mobType, hasWing);
+			break;
+		case ENEMY_GROOMBA_RED:
+			enemy = new Groomba(placeX, placeY, mobType, hasWing);
 			break;
 		case ENEMY_KOOPAS_GREEN:
-			enemy = new Koopas(placeX, placeY, mobType);
+			enemy = new Koopas(placeX, placeY, mobType, hasWing);
+			break;
+		case ENEMY_KOOPAS_RED:
+			enemy = new Koopas(placeX, placeY, mobType, hasWing);
 			break;
 		default:
 			DebugOut(L"[ERROR] Unknown mob type: %d\n", mobType);

@@ -216,7 +216,12 @@ extern bool PAUSE;
 //////////////
 //Mob Type
 #define ENEMY_GROOMBA_BROWN				100000
-#define ENEMY_KOOPAS_GREEN				200000
+#define ENEMY_GROOMBA_RED				200000
+#define ENEMY_KOOPAS_GREEN				300000
+#define ENEMY_KOOPAS_RED				400000
+#define ENEMY_PIRANHA_GREEN				500000
+#define ENEMY_VENUS_GREEN				600000
+#define ENEMY_VENUS_RED					700000
 
 //////////////
 //Mob Suffix//
@@ -226,6 +231,11 @@ extern bool PAUSE;
 #define ENEMY_ANI_IMMOBILIZE			11
 #define ENEMY_ANI_ROLLING				12
 #define ENEMY_ANI_COMEBACK				13
+#define ENEMY_ANI_LEFT_DOWN				14
+#define ENEMY_ANI_RIGHT_DOWN			15
+#define ENEMY_ANI_LEFT_WING				16
+#define ENEMY_ANI_RIGHT_WING			17
+#define ENEMY_ANI_WING_JUMP				18
 #define ENEMY_ANI_DIE_STOMP				80
 #define ENEMY_ANI_DIE_HIT_LEFT			81
 #define ENEMY_ANI_DIE_HIT_RIGHT			82

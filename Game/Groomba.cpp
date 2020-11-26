@@ -1,7 +1,7 @@
 ﻿#include "Groomba.h"
 #include "debug.h"
 
-Groomba::Groomba(int placeX, int placeY, int mobType)
+Groomba::Groomba(int placeX, int placeY, int mobType, bool hasWing)
 {
 	this->x = placeX * STANDARD_SIZE;
 	this->y = placeY * STANDARD_SIZE - ENEMY_GROOMBA_HEIGHT;
@@ -9,13 +9,23 @@ Groomba::Groomba(int placeX, int placeY, int mobType)
 	this->hitByStomp = false;
 	this->hitByBullet = false;
 	this->pause = false;
+	this->touchGround = true;
+	this->countOffGround = 0;
 	this->width = ENEMY_GROOMBA_WIDTH;
 	this->height = ENEMY_GROOMBA_HEIGHT;
 	this->type = eType::ENEMY;
+	this->ani_walk_speed = 100;
 
 	this->state = ENEMY_STATE_MOVING;
 	this->direction = 1;
 	this->mobType = mobType;
+	this->hasWing = hasWing;
+
+	if (hasWing)
+	{
+		numberOfJump = 3;
+		allowJump = false;
+	}	
 
 	this->offsetX = ENEMY_GROOMBA_DRAW_OFFSET_X;
 	this->offsetY = ENEMY_GROOMBA_DRAW_OFFSET_Y;
@@ -74,6 +84,22 @@ void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		pointX = this->x + width/2;
 		pointY = this->y;
 
+		if (hasWing)
+		{
+			if (allowJump == false)
+			{
+				if (numberOfJump == ENEMY_GROOMBA_MAX_JUMP)
+				{
+					timeJump = GetTickCount();
+					numberOfJump = 0;
+
+				}
+				else if (GetTickCount() - timeJump > ENEMY_GROOMBA_TIME_JUMP)
+					allowJump = true;
+			}
+
+		}	
+
 		if (type == eType::ENEMY)
 			CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY, eType::ENEMY_MOB_DIE, eType::PLAYER_UNTOUCHABLE });
 	}
@@ -111,6 +137,14 @@ void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		x += dx;
 		y += dy;
+
+		if (++countOffGround > 3)
+		{
+			touchGround = false;
+		}
+
+		if (vy >= 0)
+			ani_walk_speed = 100;
 	}
 	else
 	{
@@ -129,8 +163,40 @@ void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		this->y += min_ty * dy + ny * 0.4f;
 
 
-		if (vy != 0)
+		if (ny != 0)
+		{
 			vy = 0;
+
+			if (ny < 0)
+			{
+				countOffGround = 0;
+				touchGround = true;
+
+				if (hasWing)
+				{
+					if (allowJump)
+					{
+						if (numberOfJump == ENEMY_GROOMBA_MAX_JUMP - 1)
+						{
+							ani_walk_speed = 40;
+							vy = -ENEMY_GROOMBA_JUMP_LONG;
+						}
+						else
+						{
+							vy = -ENEMY_GROOMBA_JUMP_SHORT;
+						}
+
+						numberOfJump += 1;
+
+						if (numberOfJump == ENEMY_GROOMBA_MAX_JUMP)
+							allowJump = false;
+					}
+
+				}
+			}
+
+		}
+			
 
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
@@ -143,23 +209,26 @@ void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				
 				if (e->ny > 0)
 				{
-					SetState(ENEMY_STATE_STOMP);
+					if (hasWing)
+						hasWing = false;
+					else
+						SetState(ENEMY_STATE_STOMP);
 					e->obj->SetSpeed(vx, -MARIO_JUMP_DEFLECT_SPEED);
+
+					this->y -= min_ty * dy + ny * 0.4f;
 				}
 				else
 				{
 					e->obj->SetState(MARIO_STATE_HIT);
 				}
 
-				break;
 			}
 			else
 			{
-				if (nx != 0)
-				{	
-					direction = -direction;
-					break;
-				}
+				if (nx > 0)
+					direction = 1;
+				else if (nx < 0)
+					direction = -1;
 			}
 		}
 		
@@ -186,24 +255,48 @@ void Groomba::Render()
 {
 	int ani = -1;
 	
-	if (state == ENEMY_STATE_MOVING)
+	if (hasWing)
 	{
-		if (direction > 0) ani = mobType + ENEMY_ANI_RIGHT;
-		else ani = mobType + ENEMY_ANI_LEFT;
+		if (state == ENEMY_STATE_MOVING)
+		{
+			if (touchGround == false)
+			{
+				ani = mobType + ENEMY_ANI_WING_JUMP;
+			}
+			else
+			{
+				if (direction > 0) ani = mobType + ENEMY_ANI_RIGHT_WING;
+				else ani = mobType + ENEMY_ANI_LEFT_WING;
+			}
+			animation_set->Get(ani)->SetTime(ani_walk_speed);
+		}
+		else if (state == ENEMY_STATE_HIT)
+		{
+			if (direction > 0) ani = mobType + ENEMY_ANI_DIE_HIT_RIGHT;
+			else ani = mobType + ENEMY_ANI_DIE_HIT_LEFT;
+		}
 	}
-	else if (state == ENEMY_STATE_STOMP)
+	else
 	{
-		ani = mobType + ENEMY_ANI_DIE_STOMP;
-	}
-	else if (state == ENEMY_STATE_HIT)
-	{
-		if (direction > 0) ani = mobType + ENEMY_ANI_DIE_HIT_RIGHT;
-		else ani = mobType + ENEMY_ANI_DIE_HIT_LEFT;
+		if (state == ENEMY_STATE_MOVING)
+		{
+			if (direction > 0) ani = mobType + ENEMY_ANI_RIGHT;
+			else ani = mobType + ENEMY_ANI_LEFT;
+		}
+		else if (state == ENEMY_STATE_STOMP)
+		{
+			ani = mobType + ENEMY_ANI_DIE_STOMP;
+		}
+		else if (state == ENEMY_STATE_HIT)
+		{
+			if (direction > 0) ani = mobType + ENEMY_ANI_DIE_HIT_RIGHT;
+			else ani = mobType + ENEMY_ANI_DIE_HIT_LEFT;
+		}
 	}
 
 	
 	animation_set->Get(ani)->Render(x + offsetX, y + offsetY);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void Groomba::SetState(int state)

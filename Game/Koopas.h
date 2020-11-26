@@ -12,6 +12,7 @@
 #define ENEMY_KOOPAS_MOVE_SPEED_X		0.02f
 #define ENEMY_KOOPAS_ROLL_SPEED_X		0.17f
 #define ENEMY_KOOPAS_DEFLECT_Y			0.1f
+#define ENEMY_KOOPAS_JUMP_SPEED			0.15f
 
 #define ENEMY_KOOPAS_TIME_LEFT			8000
 #define ENEMY_KOOPAS_TIME_COMEBACK		7000
@@ -47,6 +48,7 @@ class Koopas : public GameObject
 	float camPosX, camPosY;
 	float shakeX;
 
+	bool hasWing;
 	bool immobilize;
 	bool rolling;
 	bool comeBack;
@@ -59,7 +61,7 @@ class Koopas : public GameObject
 	DWORD timeLeft;
 
 public:
-	Koopas(int placeX, int placeY, int mobType);
+	Koopas(int placeX, int placeY, int mobType, bool hasWing);
 
 	void Add();
 	void Destroy();
