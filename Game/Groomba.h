@@ -37,11 +37,9 @@ class Groomba : public GameObject
 	int countOffGround;
 
 	float nx, ny;
-	float pointX, pointY;
 	float offsetX=0, offsetY=0;
 	float camPosX, camPosY;
 
-	bool touchGround;
 	bool hasWing;
 	bool allowJump;
 	bool hitByStomp;

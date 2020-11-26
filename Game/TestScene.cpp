@@ -30,6 +30,11 @@ void TestScene::Remove(LPGAMEOBJECT gameObject)
 	collideObjects.erase(std::remove(collideObjects.begin(), collideObjects.end(), gameObject), collideObjects.end());
 }
 
+void TestScene::GetMarioPos(float& x, float& y)
+{
+	this->mario->GetPosition(x, y);
+}
+
 void TestScene::Load()
 {
 	DebugOut(L"[INFO] Start loading scene resources from : %s \n", sceneFilePath);
@@ -215,16 +220,17 @@ void TestScene::Load()
 		switch (mobType)
 		{
 		case ENEMY_GROOMBA_BROWN:
-			enemy = new Groomba(placeX, placeY, mobType, hasWing);
-			break;
 		case ENEMY_GROOMBA_RED:
 			enemy = new Groomba(placeX, placeY, mobType, hasWing);
 			break;
 		case ENEMY_KOOPAS_GREEN:
-			enemy = new Koopas(placeX, placeY, mobType, hasWing);
-			break;
 		case ENEMY_KOOPAS_RED:
 			enemy = new Koopas(placeX, placeY, mobType, hasWing);
+			break;
+		case ENEMY_PIRANHA_GREEN:
+		case ENEMY_VENUS_GREEN:
+		case ENEMY_VENUS_RED:
+			enemy = new Plant(placeX, placeY, mobType);
 			break;
 		default:
 			DebugOut(L"[ERROR] Unknown mob type: %d\n", mobType);

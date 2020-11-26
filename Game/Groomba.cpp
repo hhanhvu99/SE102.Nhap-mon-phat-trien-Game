@@ -81,9 +81,6 @@ void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		vy += ENEMY_GROMMBA_GRAVITY * dt;
 		vx = direction * ENEMY_GROOMBA_MOVE_SPEED_X;
 
-		pointX = this->x + width/2;
-		pointY = this->y;
-
 		if (hasWing)
 		{
 			if (allowJump == false)
@@ -101,7 +98,7 @@ void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}	
 
 		if (type == eType::ENEMY)
-			CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY, eType::ENEMY_MOB_DIE, eType::PLAYER_UNTOUCHABLE });
+			CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY, eType::ENEMY_BULLET , eType::ENEMY_MOB_DIE, eType::PLAYER_UNTOUCHABLE });
 	}
 	else
 	{

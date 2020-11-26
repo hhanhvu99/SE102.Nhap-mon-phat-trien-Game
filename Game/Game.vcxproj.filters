@@ -65,6 +65,9 @@
     <Filter Include="GameObject\Mob\Turtle">
       <UniqueIdentifier>{aabed23f-e95f-462b-886d-130fe7cb072a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Mob\Plant">
+      <UniqueIdentifier>{33e10f19-6669-4544-aadb-df9aa10364fb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -145,6 +148,9 @@
     <ClCompile Include="Koopas.cpp">
       <Filter>GameObject\Mob\Turtle</Filter>
     </ClCompile>
+    <ClCompile Include="Plant.cpp">
+      <Filter>GameObject\Mob\Plant</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine.h">
@@ -224,6 +230,9 @@
     </ClInclude>
     <ClInclude Include="Koopas.h">
       <Filter>GameObject\Mob\Turtle</Filter>
+    </ClInclude>
+    <ClInclude Include="Plant.h">
+      <Filter>GameObject\Mob\Plant</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

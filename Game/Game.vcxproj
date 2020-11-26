@@ -161,6 +161,7 @@
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mario.cpp" />
+    <ClCompile Include="Plant.cpp" />
     <ClCompile Include="QuestionBlock.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
@@ -189,6 +190,7 @@
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="KeyEventHandler.h" />
     <ClInclude Include="Mario.h" />
+    <ClInclude Include="Plant.h" />
     <ClInclude Include="QuestionBlock.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />

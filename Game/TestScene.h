@@ -12,6 +12,7 @@
 #include "QuestionBlock.h"
 #include "Groomba.h"
 #include "Koopas.h"
+#include "Plant.h"
 
 #include "Global.h"
 
@@ -32,6 +33,7 @@ public:
 	void Destroy(LPGAMEOBJECT gameObject);
 	void Remove(LPGAMEOBJECT gameObject);
 	Mario* GetMario() { return this->mario; }
+	void GetMarioPos(float& x, float& y);
 
 	virtual void Load();
 	virtual void Update(DWORD dt);

@@ -552,6 +552,9 @@ void Mario::Render()
 	//DebugOut(L"State: %d\n", state);
 	//DebugOut(L"Running: %d\n", isRunning);
 	ani = -1;
+
+	DebugOut(L"Transition - State: %d - %d\n", inTransition, state);
+
 	if (state == MARIO_STATE_DIE)
 		ani = MARIO_ANI_DIE;
 	else if (inTransition == false)

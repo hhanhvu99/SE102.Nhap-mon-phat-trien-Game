@@ -21,8 +21,11 @@
 #define BULLET_FIREBALL_TIME_LEFT		200
 class Fireball : public Bullet
 {
+	float unitVectorX, unitVectorY;
+
 public:
 	Fireball(float x, float y, int direction);
+	Fireball(float x, float y, int direction, float unitVectorX, float unitVectorY);
 
 	void SetBulletType(int type) { this->bulletType = type; }
 	void Add();
