@@ -29,7 +29,12 @@ void Sprite::SetOffset(float x, float y)
 	this->offsetY = y;
 }
 
-void Sprite::Draw(float x, float y, D3DCOLOR color, float angle, float offsetX, float offsetY)
+void Sprite::SetAngle(float angle)
+{
+	this->angle = angle;
+}
+
+void Sprite::Draw(float x, float y, D3DCOLOR color)
 {
 	GameEngine* game = GameEngine::GetInstance();
 	game->Draw(x, y, texture, left, top, right, bottom, color, this->angle, this->offsetX, this->offsetY);

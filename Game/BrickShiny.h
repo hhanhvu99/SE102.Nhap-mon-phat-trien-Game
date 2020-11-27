@@ -1,11 +1,13 @@
 #pragma once
 
-#include "GameObject.h"
+#include "ActiveBlock.h"
+#include "Rubbish.h"
 
+#define RUBBISH_OFFSET_X	3.0f
+#define RUBBISH_OFFSET_Y	3.0f
 
-class BrickShiny : public GameObject
+class BrickShiny : public ActiveBlock
 {
-	int hp;
 	float oldX, oldY;
 
 	bool moving;
@@ -13,6 +15,8 @@ class BrickShiny : public GameObject
 
 public:
 	BrickShiny(float x, float y, LPSPRITE sprite = NULL);
+
+	void Destroy();
 
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL);

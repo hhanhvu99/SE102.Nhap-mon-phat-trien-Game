@@ -4,16 +4,15 @@
 
 class ActiveBlock : public GameObject
 {
-	LPANIMATION animationSet;
+protected:
 	int hp;
+	LPGAMEOBJECT item;
 
 public:
-	ActiveBlock(float x, float y, int id, LPSPRITE sprite = NULL);
+	ActiveBlock() {};
+	ActiveBlock(float x, float y, LPSPRITE sprite = NULL);
 
-	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom) {};
-	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL) {};
-	virtual void Render() {};
-	virtual void SetState(int state) { this->state = state; }
+	void SetItem(LPGAMEOBJECT item) { this->item = item; }
 
 	~ActiveBlock();
 };

@@ -158,11 +158,13 @@
     <ClCompile Include="Groomba.cpp" />
     <ClCompile Include="GroupObject.cpp" />
     <ClCompile Include="Hammer.cpp" />
+    <ClCompile Include="Item.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mario.cpp" />
     <ClCompile Include="Plant.cpp" />
     <ClCompile Include="QuestionBlock.cpp" />
+    <ClCompile Include="Rubbish.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Sprite.cpp" />
@@ -187,11 +189,13 @@
     <ClInclude Include="Groomba.h" />
     <ClInclude Include="GroupObject.h" />
     <ClInclude Include="Hammer.h" />
+    <ClInclude Include="Item.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="KeyEventHandler.h" />
     <ClInclude Include="Mario.h" />
     <ClInclude Include="Plant.h" />
     <ClInclude Include="QuestionBlock.h" />
+    <ClInclude Include="Rubbish.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Sprite.h" />

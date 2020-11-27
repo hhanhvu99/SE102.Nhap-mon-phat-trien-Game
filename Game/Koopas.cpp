@@ -85,11 +85,11 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		if (type == eType::ENEMY)
 		{
 			if (beingGrab == true)
-				CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY_MOB_DIE, eType::ENEMY_BULLET, eType::PLAYER_UNTOUCHABLE, eType::PLAYER });
+				CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY_MOB_DIE, eType::ENEMY_BULLET, eType::PLAYER_UNTOUCHABLE, eType::PLAYER, eType::ITEM });
 			else if (rolling == false)
-				CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY, eType::ENEMY_BULLET, eType::ENEMY_MOB_DIE, eType::PLAYER_UNTOUCHABLE });
+				CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY, eType::ENEMY_BULLET, eType::ENEMY_MOB_DIE, eType::PLAYER_UNTOUCHABLE, eType::ITEM });
 			else if (rolling == true)
-				CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY_MOB_DIE, eType::ENEMY_BULLET, eType::PLAYER_UNTOUCHABLE });
+				CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY_MOB_DIE, eType::ENEMY_BULLET, eType::PLAYER_UNTOUCHABLE, eType::ITEM });
 		}
 				
 	}

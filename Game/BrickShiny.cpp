@@ -1,17 +1,24 @@
 #include "BrickShiny.h"
 #include "debug.h"
 
-BrickShiny::BrickShiny(float x, float y, LPSPRITE sprite)
+BrickShiny::BrickShiny(float x, float y, LPSPRITE sprite) : ActiveBlock(x, y, sprite)
 {
 	this->x = oldX = x;
 	this->y = oldY = y;
-	this->sprite = sprite;
 	this->hp = 1;
 	this->width = this->height = STANDARD_SIZE;
 
 	this->moving = false;
 	this->type = eType::BRICK;
 	this->state = BRICK_SHINY_STATE_NORMAL;
+}
+
+void BrickShiny::Destroy()
+{
+	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
+	LPTESTSCENE current = dynamic_cast<LPTESTSCENE>(scene);
+
+	current->Destroy(this);
 }
 
 void BrickShiny::GetBoundingBox(float& left, float& top, float& right, float& bottom)
@@ -101,9 +108,21 @@ void BrickShiny::SetState(int state)
 {
 	this->state = state;
 
-	if (state == BRICK_SHINY_STATE_MULTIPLE)
-		hp = 10;
-	else
-		hp = 1;
+	switch (state)
+	{
+	case BRICK_SHINY_STATE_HIT:
+	{
+		Rubbish* brick1 = new Rubbish(x + RUBBISH_OFFSET_X, y + RUBBISH_OFFSET_Y, RUBBISH_SPEED_X, RUBBISH_SPEED_Y, RUBBISH_DEFLECT_SPEED, -1);
+		Rubbish* brick2 = new Rubbish(x + RUBBISH_OFFSET_X, y + RUBBISH_OFFSET_Y, RUBBISH_SPEED_X, RUBBISH_SPEED_Y, RUBBISH_DEFLECT_SPEED - 0.1f, -1);
+		Rubbish* brick3 = new Rubbish(x + RUBBISH_OFFSET_X, y + RUBBISH_OFFSET_Y, RUBBISH_SPEED_X, RUBBISH_SPEED_Y, RUBBISH_DEFLECT_SPEED, 1);
+		Rubbish* brick4 = new Rubbish(x + RUBBISH_OFFSET_X, y + RUBBISH_OFFSET_Y, RUBBISH_SPEED_X, RUBBISH_SPEED_Y, RUBBISH_DEFLECT_SPEED - 0.1f, 1);
+
+		this->Destroy();
+	}
+		break;
+
+	default:
+		break;
+	}
 
 }

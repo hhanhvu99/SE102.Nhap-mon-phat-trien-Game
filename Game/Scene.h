@@ -11,6 +11,7 @@ protected:
 	std::vector<int> ACTIVE_BLOCKS;
 	std::vector<int> GROUP;
 	std::vector<int> ENEMY;
+	std::vector<int> ITEM;
 
 	KeyEventHandler* key_handler;
 	int id;

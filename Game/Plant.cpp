@@ -150,8 +150,8 @@ void Plant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 
 
-		if (type == eType::ENEMY)
-			CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY, eType::ENEMY_MOB_DIE, eType::PLAYER_UNTOUCHABLE, eType::GROUP });
+		CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY, eType::ENEMY_MOB_DIE, eType::PLAYER_UNTOUCHABLE, eType::GROUP, 
+			eType::ENEMY_BULLET, eType::ITEM});
 	}
 	else
 	{

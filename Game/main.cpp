@@ -56,6 +56,7 @@ void LoadResources()
 	texture->Add(1, L"Asset\\Block\\SpriteSheet.png", NULL);
 	texture->Add(2, L"Asset\\Character\\Mario\\MarioSheet.png", D3DCOLOR_XRGB(68, 145, 190));
 	texture->Add(3, L"Asset\\Character\\Enemy\\MobSheet.png", NULL);
+	texture->Add(4, L"Asset\\Item\\ItemSheet.png", NULL);
 	texture->Add(ID_TEX_BBOX, L"Asset\\Debug\\BoundingBox.png", NULL);
 
 	SpriteManager* spriteData = SpriteManager::GetInstance();
@@ -105,6 +106,10 @@ void LoadResources()
 	sheet = texture->Get(3);
 	spriteData->Load(L"Script\\Assets\\Sprites\\EnemyMobSprites.txt", sheet);
 
+	//--Item--//
+	sheet = texture->Get(4);
+	spriteData->Load(L"Script\\Assets\\Sprites\\ItemSprites.txt", sheet);
+
 	////////////////////////
 	//---Load animation---//
 	////////////////////////
@@ -117,6 +122,9 @@ void LoadResources()
 
 	//--Mob--//
 	aniData->Load(L"Script\\Assets\\Animations\\EnemyAnimations.txt");
+
+	//--Item--//
+	aniData->Load(L"Script\\Assets\\Animations\\ItemAnimations.txt");
 	
 	////////////////////
 	//---Load Array---//

@@ -48,7 +48,10 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// turn off collision when die 
 	if (state != MARIO_STATE_DIE)
 	{
-		CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY, eType::MARIO_BULLET, eType::ENEMY_MOB_DIE });
+		if (startInvincible)
+			CalcPotentialCollisions(coObjects, coEvents, { eType::MARIO_BULLET, eType::ENEMY_MOB_DIE });
+		else
+			CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY, eType::MARIO_BULLET, eType::ENEMY_MOB_DIE });
 	}
 		
 	else
@@ -78,6 +81,10 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			untouchable = false;
 			type = eType::PLAYER;
 		}
+		else
+		{
+			type = eType::PLAYER_UNTOUCHABLE;
+		}
 	}
 
 	if (inTransition)
@@ -93,6 +100,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				SetAnimationSet(AnimationManager::GetInstance()->Get(MARIO));
 				PAUSE = false;
 				SetLevel(level);
+				type = eType::PLAYER;
 			}
 		}
 		else
@@ -102,6 +110,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				inTransition = false;
 				PAUSE = false;
 				SetLevel(level);
+				type = eType::PLAYER;
 			}
 		}
 		
@@ -268,6 +277,50 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			LPCOLLISIONEVENT e = coEventsResult[i];
 			LPGAMEOBJECT obj = e->obj;
 
+			if (obj->GetType() == eType::ITEM)
+			{
+				
+				Item* item = static_cast<Item*>(obj);
+
+				switch (item->getItemType())
+				{
+				case ITEM_MUSHROOM_RED:
+					oldLevel = level;
+					level = MARIO_LEVEL_BIG;
+
+					if (oldLevel == MARIO_LEVEL_SMALL)
+						SetState(MARIO_STATE_UP);
+					else
+						level = oldLevel;
+
+					item->Destroy();
+					break;
+
+				case ITEM_SUPER_STAR:
+					SetState(MARIO_STATE_INVINCIBLE);
+					item->Destroy();
+					break;
+
+				case ITEM_SUPER_LEAF:
+					oldLevel = level;
+					level = MARIO_LEVEL_RACC;
+
+					if (oldLevel == MARIO_LEVEL_BIG)
+						SetState(MARIO_STATE_UP);
+					else
+						level = oldLevel;
+
+					item->Destroy();
+					break;
+					break;
+
+				default:
+					break;
+				}
+
+				continue;
+			}
+
 			if (ny > 0)
 			{
 				if (obj->GetType() == eType::BRICK)
@@ -279,7 +332,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					obj->SetState(QUESTION_BLOCK_STATE_HIT);
 				}
 			}
-			
+
 			if (startInvincible)
 			{
 				if (obj->GetType() == eType::ENEMY)
@@ -288,6 +341,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					obj->SetDirection(direction);
 				}
 			}
+			
 				
 		}
 
@@ -553,8 +607,6 @@ void Mario::Render()
 	//DebugOut(L"Running: %d\n", isRunning);
 	ani = -1;
 
-	DebugOut(L"Transition - State: %d - %d\n", inTransition, state);
-
 	if (state == MARIO_STATE_DIE)
 		ani = MARIO_ANI_DIE;
 	else if (inTransition == false)
@@ -674,48 +726,44 @@ void Mario::Render()
 	}
 
 	D3DCOLOR color = D3DCOLOR_ARGB(255, 255, 255, 255);
-	if (untouchable)
+	if (inTransition)
 	{
-		if (inTransition == false)
+		if (state == MARIO_STATE_TRANSITION_1)
 		{
-			if (GetTickCount() - untouchable_frame > MARIO_ANI_UNTOUCHABLE_TIME)
-			{
-				color = D3DCOLOR_ARGB(128, 255, 255, 255);
-				untouchable_frame = GetTickCount();
-			}
-			else
-			{
-				color = D3DCOLOR_ARGB(255, 255, 255, 255);
-			}
+			if (direction > 0) ani = BULLET_EFFECT_POP + BULLET_ANI_RIGHT;
+			else ani = BULLET_EFFECT_POP + BULLET_ANI_LEFT;
+			offset_Draw_X = (width - STANDARD_SIZE) / 2;
+			offset_Draw_Y = (height - STANDARD_SIZE) / 2;
+			ani_walk_time = 50;
 		}
 		else
 		{
-			if (state == MARIO_STATE_TRANSITION_1)
+			if (GetTickCount() - transition_frame > MARIO_TRANSITION_2_CYCLE)
 			{
-				if (direction > 0) ani = BULLET_EFFECT_POP + BULLET_ANI_RIGHT;
-				else ani = BULLET_EFFECT_POP + BULLET_ANI_LEFT;
-				offset_Draw_X = (width - STANDARD_SIZE) / 2;
-				offset_Draw_Y = (height - STANDARD_SIZE) / 2;
-				ani_walk_time = 50;
+				if (direction > 0) ani = oldLevel + MARIO_ANI_IDLE_RIGHT;
+				else ani = oldLevel + MARIO_ANI_IDLE_LEFT;
+				transition_frame = GetTickCount();
 			}
 			else
 			{
-				if (GetTickCount() - transition_frame > MARIO_TRANSITION_2_CYCLE)
-				{
-					if (direction > 0) ani = MARIO_LEVEL_BIG + MARIO_ANI_IDLE_RIGHT;
-					else ani = MARIO_LEVEL_BIG + MARIO_ANI_IDLE_LEFT;
-					transition_frame = GetTickCount();
-				}
-				else
-				{
-					if (direction > 0) ani = MARIO_LEVEL_BIG + MARIO_ANI_TRANSITION_RIGHT;
-					else ani = MARIO_LEVEL_BIG + MARIO_ANI_TRANSITION_LEFT;
-					color = D3DCOLOR_ARGB(128, 255, 255, 255);
-				}
-
+				if (direction > 0) ani = MARIO_LEVEL_BIG + MARIO_ANI_TRANSITION_RIGHT;
+				else ani = MARIO_LEVEL_BIG + MARIO_ANI_TRANSITION_LEFT;
+				color = D3DCOLOR_ARGB(128, 255, 255, 255);
 			}
+
 		}
-		
+	}	
+	else if (untouchable)
+	{
+		if (GetTickCount() - untouchable_frame > MARIO_ANI_UNTOUCHABLE_TIME)
+		{
+			color = D3DCOLOR_ARGB(128, 255, 255, 255);
+			untouchable_frame = GetTickCount();
+		}
+		else
+		{
+			color = D3DCOLOR_ARGB(255, 255, 255, 255);
+		}
 	}
 	else if (startInvincible)
 	{
@@ -1039,6 +1087,7 @@ void Mario::SetState(int state)
 				}
 				else
 				{
+					oldLevel = MARIO_LEVEL_BIG;
 					level = MARIO_LEVEL_SMALL;
 					GameObject::SetState(MARIO_STATE_TRANSITION_2);
 					startTransitionTwo = now;
@@ -1062,6 +1111,38 @@ void Mario::SetState(int state)
 
 		}
 			
+		break;
+	case MARIO_STATE_UP:
+		if (startInvincible == false)
+		{
+			untouchable_frame = now;
+			type = eType::PLAYER_UNTOUCHABLE;
+			PAUSE = true;
+
+			if (oldLevel != MARIO_LEVEL_SMALL)
+			{
+				GameObject::SetState(MARIO_STATE_TRANSITION_1);
+				startTransitionOne = now;
+				SetAnimationSet(AnimationManager::GetInstance()->Get(BULLET));
+			}
+			else
+			{
+				GameObject::SetState(MARIO_STATE_TRANSITION_2);
+				startTransitionTwo = now;
+				transition_frame = now;
+			}
+
+			inTransition = true;
+			tail_whip = false;
+			shoot = false;
+			flapAni = false;
+			flapping = false;
+			grabbing = false;
+			grabTurtlePress = false;
+			
+
+		}
+
 		break;
 	case MARIO_STATE_DIE:
 		PAUSE = true;

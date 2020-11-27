@@ -1,11 +1,10 @@
 #include "QuestionBlock.h"
 #include "debug.h"
 
-QuestionBlock::QuestionBlock(float x, float y, LPSPRITE sprite)
+QuestionBlock::QuestionBlock(float x, float y, LPSPRITE sprite) : ActiveBlock(x, y, sprite)
 {
 	this->x = oldX = x;
 	this->y = oldY = y;
-	this->sprite = sprite;
 	this->width = this->height = STANDARD_SIZE;
 
 	this->hit = false;
@@ -74,6 +73,12 @@ void QuestionBlock::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			{
 				vy = 0;
 				y = oldY;
+
+				if (item)
+				{
+					item->SetState(ITEM_STATE_SHOW);
+					item = NULL;
+				}
 			}
 		}
 		

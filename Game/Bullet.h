@@ -3,7 +3,6 @@
 
 class Bullet : public GameObject
 {
-#pragma message ("Bullet added")
 protected:
 	float nx, ny;
 	float offsetX, offsetY;

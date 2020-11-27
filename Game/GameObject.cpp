@@ -143,6 +143,10 @@ void GameObject::FilterCollision(
 			{
 				min_tx = c->t; nx = 0; min_ix = i; rdx = c->dx;
 			}
+			else if (c->obj->GetType() == eType::ITEM)
+			{
+				min_tx = nx = rdx = 0; min_ix = i;
+			}
 			else
 			{
 				min_tx = c->t; nx = c->nx; min_ix = i; rdx = c->dx;
@@ -159,6 +163,10 @@ void GameObject::FilterCollision(
 					ny = 0;
 				else
 					ny = c->ny;
+			}
+			else if (c->obj->GetType() == eType::ITEM)
+			{
+				min_ty = ny = rdy = 0; min_iy = i;
 			}
 			else
 			{

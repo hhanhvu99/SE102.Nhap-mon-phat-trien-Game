@@ -50,7 +50,7 @@ public:
 				LPDIRECT3DTEXTURE9 texture, 
 				int left, int top, int right, int bottom, 
 				D3DCOLOR color = D3DCOLOR_ARGB(255,255,255,255),
-				int angle = 0,
+				float angle = 0,
 				float offset_X = 0,
 				float offset_Y = 0
 	);

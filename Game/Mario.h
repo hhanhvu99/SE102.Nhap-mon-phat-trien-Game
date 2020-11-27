@@ -3,6 +3,7 @@
 #include "Bullet.h"
 #include "Fireball.h"
 #include "Hammer.h"
+#include "Item.h"
 
 //Speed
 #define MARIO_WALKING_SPEED				0.00015f 
@@ -49,8 +50,9 @@
 #define MARIO_STATE_RELEASE				803
 #define MARIO_STATE_KICK				804
 #define MARIO_STATE_HIT					900
-#define MARIO_STATE_TRANSITION_1		901
-#define MARIO_STATE_TRANSITION_2		902
+#define MARIO_STATE_UP					901
+#define MARIO_STATE_TRANSITION_1		902
+#define MARIO_STATE_TRANSITION_2		903
 #define MARIO_STATE_DIE					1000
 
 //Time
@@ -117,6 +119,7 @@ class Mario : public GameObject
 	LPGAMEOBJECT grabObject;
 
 	int level;
+	int oldLevel;
 	int prevLevel;
 	int ani;
 	int size;

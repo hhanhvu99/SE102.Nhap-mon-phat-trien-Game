@@ -44,6 +44,12 @@
 
 #define BLOCK_MOVING_TIME				20
 
+//Item
+#define ITEM_STATE_IDLE					0
+#define ITEM_STATE_SHOW					1
+#define ITEM_STATE_MOVING				2
+#define ITEM_STATE_HIT					3
+
 //Entity
 #define ENTITY_SAFE_DELETE_RANGE		300.0f
 
@@ -194,6 +200,7 @@ extern bool PAUSE;
 #define BULLET_FIREBALL_TYPE_TOAD		30000
 #define BULLET_HAMMER_TYPE				40000
 #define BULLET_EFFECT_POP				50000
+#define BULLET_EFFECT_RUBBISH			51000
 
 /////////////////
 //Bullet Suffix//
@@ -244,6 +251,26 @@ extern bool PAUSE;
 #define ENEMY_ANI_DIE_HIT_LEFT			81
 #define ENEMY_ANI_DIE_HIT_RIGHT			82
 
+////////
+//Item//
+////////
+#define ITEM_ID							6765
+
+///Type
+#define ITEM_MUSHROOM_RED				1000000
+#define ITEM_MUSHROOM_GREEN				1100000
+#define ITEM_SUPER_LEAF					2000000
+#define ITEM_LEAF						2100000
+#define ITEM_SUPER_STAR					3000000
+#define ITEM_PWING						4000000
+#define ITEM_FIRE_FLOWER				5000000
+
+///////////////
+//Item Suffix//
+///////////////
+#define ITEM_ANI_LEFT					1
+#define ITEM_ANI_RIGHT					2
+
 enum eType
 {
 	//None
@@ -266,6 +293,9 @@ enum eType
 	//Active Block
 	BRICK = 10,
 	QUESTION = 11,
+
+	//Item
+	ITEM = 13,
 
 	//Bullet
 	MARIO_BULLET = 50,

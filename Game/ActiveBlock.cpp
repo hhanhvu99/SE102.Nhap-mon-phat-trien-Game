@@ -1,11 +1,8 @@
 #include "ActiveBlock.h"
 #include "debug.h"
 
-ActiveBlock::ActiveBlock(float x, float y, int id, LPSPRITE sprite)
+ActiveBlock::ActiveBlock(float x, float y, LPSPRITE sprite)
 {
-	this->x = x;
-	this->y = y;
 	this->sprite = sprite;
-	this->hp = 1;
-	
+	this->item = NULL;
 }

@@ -63,7 +63,7 @@ void GameEngine::Init(HWND hWnd)
 	Utility function to wrap LPD3DXSPRITE::Draw
 */
 
-void GameEngine::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, int top, int right, int bottom, D3DCOLOR color, int angle, float offsetX, float offsetY)
+void GameEngine::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, int top, int right, int bottom, D3DCOLOR color, float angle, float offsetX, float offsetY)
 {
 	D3DXVECTOR3 p(round(x - cam_x + offsetX), round(y - cam_y + offsetY), 0);
 	//D3DXVECTOR3 p(x - cam_x, y - cam_y, 0);
@@ -79,7 +79,7 @@ void GameEngine::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, in
 
 	//DebugOut(L"Direction: %d\n", angle);
 
-	if (angle == 180)
+	if (angle == 180.0f)
 	{
 		spriteHandler->GetTransform(&anhGoc);
 		D3DXVECTOR2 center(p.x + (right-left)/2 , p.y);
@@ -90,11 +90,22 @@ void GameEngine::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, in
 		spriteHandler->Draw(texture, &r, NULL, &p, color);
 		spriteHandler->SetTransform(&anhGoc);
 	}
-	else if (angle == 90)
+	else if (angle == 90.0f)
 	{
 		spriteHandler->GetTransform(&anhGoc);
 		D3DXVECTOR2 center(p.x + (right - left) / 2, p.y + (right - left) / 2);
 		D3DXMatrixTransformation2D(&scale, NULL, 0.0f, NULL, &center, D3DXToRadian(180.0f), NULL);
+		anhCuoi = anhGoc * scale;
+
+		spriteHandler->SetTransform(&anhCuoi);
+		spriteHandler->Draw(texture, &r, NULL, &p, color);
+		spriteHandler->SetTransform(&anhGoc);
+	}
+	else if (angle != 0.0f)
+	{
+		spriteHandler->GetTransform(&anhGoc);
+		D3DXVECTOR2 center(p.x + (right - left) / 2, p.y + (right - left) / 2);
+		D3DXMatrixTransformation2D(&scale, NULL, 0.0f, NULL, &center, D3DXToRadian(angle), NULL);
 		anhCuoi = anhGoc * scale;
 
 		spriteHandler->SetTransform(&anhCuoi);

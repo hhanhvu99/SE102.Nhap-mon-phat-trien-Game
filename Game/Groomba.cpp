@@ -98,7 +98,8 @@ void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}	
 
 		if (type == eType::ENEMY)
-			CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY, eType::ENEMY_BULLET , eType::ENEMY_MOB_DIE, eType::PLAYER_UNTOUCHABLE });
+			CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY, eType::ENEMY_BULLET , 
+				eType::ENEMY_MOB_DIE, eType::PLAYER_UNTOUCHABLE, eType::ITEM });
 	}
 	else
 	{

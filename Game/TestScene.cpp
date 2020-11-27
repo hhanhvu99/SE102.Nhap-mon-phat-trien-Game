@@ -19,15 +19,23 @@ void TestScene::Add(LPGAMEOBJECT gameObject)
 
 void TestScene::Destroy(LPGAMEOBJECT gameObject)
 {
-	gameObjects.erase(std::remove(gameObjects.begin(), gameObjects.end(), gameObject), gameObjects.end());
 	collideObjects.erase(std::remove(collideObjects.begin(), collideObjects.end(), gameObject), collideObjects.end());
-
-	delete gameObject;
+	deleteList.push_back(gameObject);
 }
 
 void TestScene::Remove(LPGAMEOBJECT gameObject)
 {
 	collideObjects.erase(std::remove(collideObjects.begin(), collideObjects.end(), gameObject), collideObjects.end());
+}
+
+void TestScene::Add_Visual(LPGAMEOBJECT gameObject)
+{
+	gameObjects.push_back(gameObject);
+}
+
+void TestScene::Destroy_Visual(LPGAMEOBJECT gameObject)
+{
+	deleteList.push_back(gameObject);
 }
 
 void TestScene::GetMarioPos(float& x, float& y)
@@ -241,6 +249,46 @@ void TestScene::Load()
 
 	}
 
+	//Add Item
+	int itemType;
+	LPGAMEOBJECT item = NULL;
+	ActiveBlock* newObject;
+	int indexObj_x, indexObj_y;
+
+	length = ITEM.size();
+	for (int x = 0; x < length; x += 3)
+	{
+		indexX = ITEM[x];
+		indexY = ITEM[x + 1];
+		itemType = ITEM[x + 2];
+
+		switch (itemType)
+		{
+		case ITEM_MUSHROOM_RED:
+		case ITEM_MUSHROOM_GREEN:
+		case ITEM_SUPER_LEAF:
+		case ITEM_SUPER_STAR:
+			item = new Item(indexX * STANDARD_SIZE, indexY * STANDARD_SIZE, itemType);
+			break;
+		default:
+			DebugOut(L"[ERROR] Unknown item type: %d\n", mobType);
+		}
+
+		for (auto object : collideObjects)
+		{
+			object->GetIndex(indexObj_x, indexObj_y);
+			if (indexObj_x == indexX && indexObj_y == indexY)
+			{
+				newObject = static_cast<ActiveBlock*>(object);
+				newObject->SetItem(item);
+			}
+		}
+
+		item->SetDrawOrder(BLOCK_DRAW_ORDER);
+		item->SetAnimationSet(AnimationManager::GetInstance()->Get(ITEM_ID));
+
+	}
+
 	Keyboard::GetInstance()->SetKeyHandler(mario);
 	mario->SetAnimationSet(AnimationManager::GetInstance()->Get(MARIO));
 	mario->SetLevel(MARIO_LEVEL_SMALL);
@@ -274,14 +322,21 @@ void TestScene::Load()
 
 void TestScene::Update(DWORD dt)
 {
+	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
+	if (mario == NULL) return;
+
 	for (auto x : gameObjects)
 	{
 		x->Update(dt, &collideObjects);
 	}
 	
-
-	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
-	if (mario == NULL) return;
+	//Delete object
+	for (auto deleteObject : deleteList)
+	{
+		gameObjects.erase(std::remove(gameObjects.begin(), gameObjects.end(), deleteObject), gameObjects.end());
+		delete deleteObject;
+	}
+	deleteList.clear();
 
 }
 
@@ -289,7 +344,8 @@ void TestScene::Render()
 {
 	for (auto x : gameObjects)
 	{
-		x->Render();
+		if (x != NULL)
+			x->Render();
 	}
 }
 

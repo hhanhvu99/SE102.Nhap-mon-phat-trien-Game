@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Scene.h"
-
 #include "Keyboard.h"
 
 #include "Block.h"
@@ -13,6 +12,7 @@
 #include "Groomba.h"
 #include "Koopas.h"
 #include "Plant.h"
+#include "Item.h"
 
 #include "Global.h"
 
@@ -25,13 +25,18 @@ protected:
 	Mario* mario;
 	vector<LPGAMEOBJECT> gameObjects;
 	vector<LPGAMEOBJECT> collideObjects;
+	vector<LPGAMEOBJECT> deleteList;
 
 public:
 
 	TestScene(int id, LPCWSTR filePath);
+
 	void Add(LPGAMEOBJECT gameObject);
 	void Destroy(LPGAMEOBJECT gameObject);
 	void Remove(LPGAMEOBJECT gameObject);
+	void Add_Visual(LPGAMEOBJECT gameObject);
+	void Destroy_Visual(LPGAMEOBJECT gameObject);
+
 	Mario* GetMario() { return this->mario; }
 	void GetMarioPos(float& x, float& y);
 

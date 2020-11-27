@@ -41,12 +41,6 @@
     <Filter Include="GameObject\ActiveBlock">
       <UniqueIdentifier>{1df4e83b-39d8-41bb-8780-5e1a452c8073}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameObject\Brick">
-      <UniqueIdentifier>{42a15de3-1417-4c84-b167-458153430c88}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameObject\QuestionBlock">
-      <UniqueIdentifier>{36a5c75c-d928-4a90-b6c3-a6f47a88add7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameObject\Bullet">
       <UniqueIdentifier>{c7a41fd8-ee91-4f42-a1cb-b0f57adbc5d4}</UniqueIdentifier>
     </Filter>
@@ -67,6 +61,18 @@
     </Filter>
     <Filter Include="GameObject\Mob\Plant">
       <UniqueIdentifier>{33e10f19-6669-4544-aadb-df9aa10364fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Item">
+      <UniqueIdentifier>{e3743ff6-fdbf-4322-9461-0cf811fa8c57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\ActiveBlock\Brick">
+      <UniqueIdentifier>{42a15de3-1417-4c84-b167-458153430c88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\ActiveBlock\QuestionBlock">
+      <UniqueIdentifier>{36a5c75c-d928-4a90-b6c3-a6f47a88add7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\ActiveBlock\Effect">
+      <UniqueIdentifier>{ee04e947-e073-488d-8836-db8be41b95d6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -128,10 +134,10 @@
       <Filter>GameObject\ActiveBlock</Filter>
     </ClCompile>
     <ClCompile Include="QuestionBlock.cpp">
-      <Filter>GameObject\QuestionBlock</Filter>
+      <Filter>GameObject\ActiveBlock\QuestionBlock</Filter>
     </ClCompile>
     <ClCompile Include="BrickShiny.cpp">
-      <Filter>GameObject\Brick</Filter>
+      <Filter>GameObject\ActiveBlock\Brick</Filter>
     </ClCompile>
     <ClCompile Include="Fireball.cpp">
       <Filter>GameObject\Bullet\Fireball</Filter>
@@ -150,6 +156,12 @@
     </ClCompile>
     <ClCompile Include="Plant.cpp">
       <Filter>GameObject\Mob\Plant</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>GameObject\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Rubbish.cpp">
+      <Filter>GameObject\ActiveBlock\Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -211,10 +223,10 @@
       <Filter>GameObject\ActiveBlock</Filter>
     </ClInclude>
     <ClInclude Include="QuestionBlock.h">
-      <Filter>GameObject\QuestionBlock</Filter>
+      <Filter>GameObject\ActiveBlock\QuestionBlock</Filter>
     </ClInclude>
     <ClInclude Include="BrickShiny.h">
-      <Filter>GameObject\Brick</Filter>
+      <Filter>GameObject\ActiveBlock\Brick</Filter>
     </ClInclude>
     <ClInclude Include="Fireball.h">
       <Filter>GameObject\Bullet\Fireball</Filter>
@@ -233,6 +245,12 @@
     </ClInclude>
     <ClInclude Include="Plant.h">
       <Filter>GameObject\Mob\Plant</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>GameObject\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Rubbish.h">
+      <Filter>GameObject\ActiveBlock\Effect</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
