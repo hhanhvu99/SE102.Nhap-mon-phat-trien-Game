@@ -13,6 +13,8 @@ public:
 	ActiveBlock(float x, float y, LPSPRITE sprite = NULL);
 
 	void SetItem(LPGAMEOBJECT item) { this->item = item; }
+	LPGAMEOBJECT GetItem() { return this->item; }
+	bool hasItem() { return item; }
 
 	~ActiveBlock();
 };

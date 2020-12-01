@@ -312,6 +312,8 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 					item->Destroy();
 					break;
+				case ITEM_COIN:
+					item->Destroy();
 					break;
 
 				default:

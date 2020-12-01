@@ -19,13 +19,18 @@ void TestScene::Add(LPGAMEOBJECT gameObject)
 
 void TestScene::Destroy(LPGAMEOBJECT gameObject)
 {
-	collideObjects.erase(std::remove(collideObjects.begin(), collideObjects.end(), gameObject), collideObjects.end());
+	auto objectDelete = std::find(collideObjects.begin(), collideObjects.end(), gameObject);
+	if (objectDelete != collideObjects.end())
+		collideObjects.erase(objectDelete);
+
 	deleteList.push_back(gameObject);
 }
 
 void TestScene::Remove(LPGAMEOBJECT gameObject)
 {
-	collideObjects.erase(std::remove(collideObjects.begin(), collideObjects.end(), gameObject), collideObjects.end());
+	auto objectDelete = std::find(collideObjects.begin(), collideObjects.end(), gameObject);
+	if (objectDelete != collideObjects.end())
+		collideObjects.erase(objectDelete);
 }
 
 void TestScene::Add_Visual(LPGAMEOBJECT gameObject)
@@ -94,13 +99,20 @@ void TestScene::Load()
 					break;
 					
 				case QUESTION_BLOCK_ANI:
+				{
 					gameObject = new QuestionBlock(STANDARD_SIZE * i, STANDARD_SIZE * j, sprites->Get(QUESTION_BLOCK_ANI_HIT));
 					gameObject->SetIndex(i, j);
 					gameObject->SetDrawOrder(ACTIVE_BLOCK_DRAW_ORDER);
 					gameObject->SetAnimationSet(AnimationManager::GetInstance()->Get(ACTIVE_BLOCK));
+					LPGAMEOBJECT coin = new Coin(STANDARD_SIZE * i, STANDARD_SIZE * j, ITEM_COIN, false);
+					coin->SetDrawOrder(BLOCK_DRAW_ORDER);
+					coin->SetAnimationSet(AnimationManager::GetInstance()->Get(ITEM_ID));
+					static_cast<QuestionBlock*>(gameObject)->SetItem(coin);
 
 					this->gameObjects.push_back(gameObject);
 					this->collideObjects.push_back(gameObject);
+				}
+					
 					break;
 
 				default:
@@ -108,6 +120,15 @@ void TestScene::Load()
 					break;
 				}
 				
+			}
+			else if (id == ITEM_COIN_ID)
+			{
+				gameObject = new Coin(STANDARD_SIZE * i, STANDARD_SIZE * j, ITEM_COIN, true);
+				gameObject->SetDrawOrder(BLOCK_DRAW_ORDER);
+				gameObject->SetAnimationSet(AnimationManager::GetInstance()->Get(ITEM_ID));
+
+				this->gameObjects.push_back(gameObject);
+				this->collideObjects.push_back(gameObject);
 			}
 			else
 			{
@@ -266,9 +287,13 @@ void TestScene::Load()
 		{
 		case ITEM_MUSHROOM_RED:
 		case ITEM_MUSHROOM_GREEN:
+			item = new Mushroom(indexX * STANDARD_SIZE, indexY * STANDARD_SIZE, itemType);
+			break;
 		case ITEM_SUPER_LEAF:
+			item = new SuperLeaf(indexX * STANDARD_SIZE, indexY * STANDARD_SIZE, itemType);
+			break;
 		case ITEM_SUPER_STAR:
-			item = new Item(indexX * STANDARD_SIZE, indexY * STANDARD_SIZE, itemType);
+			item = new SuperStar(indexX * STANDARD_SIZE, indexY * STANDARD_SIZE, itemType);
 			break;
 		default:
 			DebugOut(L"[ERROR] Unknown item type: %d\n", mobType);
@@ -280,6 +305,10 @@ void TestScene::Load()
 			if (indexObj_x == indexX && indexObj_y == indexY)
 			{
 				newObject = static_cast<ActiveBlock*>(object);
+
+				if (newObject->hasItem())
+					Destroy_Visual(newObject->GetItem());
+
 				newObject->SetItem(item);
 			}
 		}
@@ -338,6 +367,8 @@ void TestScene::Update(DWORD dt)
 	}
 	deleteList.clear();
 
+	//soLanUpdate += 1;
+	//DebugOut(L"Update lan thu: %d\n", soLanUpdate);
 }
 
 void TestScene::Render()

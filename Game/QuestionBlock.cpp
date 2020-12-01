@@ -11,6 +11,7 @@ QuestionBlock::QuestionBlock(float x, float y, LPSPRITE sprite) : ActiveBlock(x,
 	this->moving = false;
 	this->type = eType::QUESTION;
 	this->state = QUESTION_BLOCK_STATE_NORMAL;
+
 }
 
 void QuestionBlock::GetBoundingBox(float& left, float& top, float& right, float& bottom)

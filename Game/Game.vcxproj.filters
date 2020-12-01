@@ -74,6 +74,18 @@
     <Filter Include="GameObject\ActiveBlock\Effect">
       <UniqueIdentifier>{ee04e947-e073-488d-8836-db8be41b95d6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Item\SuperLeaf">
+      <UniqueIdentifier>{a1094414-11e1-44d0-b280-457a933a237e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Item\RedMushroom">
+      <UniqueIdentifier>{36a4df03-e40e-438b-8d16-a22cb381450c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Item\SuperStar">
+      <UniqueIdentifier>{d0611f8f-db75-444e-be09-59561fb06f7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Item\Coin">
+      <UniqueIdentifier>{dd3a6468-348b-4fa1-a678-5ad24f376500}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -163,6 +175,18 @@
     <ClCompile Include="Rubbish.cpp">
       <Filter>GameObject\ActiveBlock\Effect</Filter>
     </ClCompile>
+    <ClCompile Include="Coin.cpp">
+      <Filter>GameObject\Item\Coin</Filter>
+    </ClCompile>
+    <ClCompile Include="SuperLeaf.cpp">
+      <Filter>GameObject\Item\SuperLeaf</Filter>
+    </ClCompile>
+    <ClCompile Include="SuperStar.cpp">
+      <Filter>GameObject\Item\SuperStar</Filter>
+    </ClCompile>
+    <ClCompile Include="Mushroom.cpp">
+      <Filter>GameObject\Item\RedMushroom</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine.h">
@@ -251,6 +275,18 @@
     </ClInclude>
     <ClInclude Include="Rubbish.h">
       <Filter>GameObject\ActiveBlock\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Coin.h">
+      <Filter>GameObject\Item\Coin</Filter>
+    </ClInclude>
+    <ClInclude Include="SuperLeaf.h">
+      <Filter>GameObject\Item\SuperLeaf</Filter>
+    </ClInclude>
+    <ClInclude Include="SuperStar.h">
+      <Filter>GameObject\Item\SuperStar</Filter>
+    </ClInclude>
+    <ClInclude Include="Mushroom.h">
+      <Filter>GameObject\Item\RedMushroom</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

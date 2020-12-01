@@ -12,7 +12,10 @@
 #include "Groomba.h"
 #include "Koopas.h"
 #include "Plant.h"
-#include "Item.h"
+#include "SuperLeaf.h"
+#include "SuperStar.h"
+#include "Mushroom.h"
+#include "Coin.h"
 
 #include "Global.h"
 
@@ -26,6 +29,8 @@ protected:
 	vector<LPGAMEOBJECT> gameObjects;
 	vector<LPGAMEOBJECT> collideObjects;
 	vector<LPGAMEOBJECT> deleteList;
+
+	int soLanUpdate = 0;
 
 public:
 

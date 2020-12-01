@@ -3,6 +3,7 @@
 #include <d3d9.h>
 #include <d3dx9.h>
 
+//Basic Info
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 240 
 #define MAX_FRAME_RATE 120
@@ -264,6 +265,8 @@ extern bool PAUSE;
 #define ITEM_SUPER_STAR					3000000
 #define ITEM_PWING						4000000
 #define ITEM_FIRE_FLOWER				5000000
+#define ITEM_COIN						6000000
+#define ITEM_COIN_ID					270
 
 ///////////////
 //Item Suffix//

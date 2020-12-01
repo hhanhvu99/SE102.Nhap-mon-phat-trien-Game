@@ -150,6 +150,7 @@
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="BrickShiny.cpp" />
     <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="Coin.cpp" />
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="Fireball.cpp" />
     <ClCompile Include="GameEngine.cpp" />
@@ -164,11 +165,14 @@
     <ClCompile Include="Mario.cpp" />
     <ClCompile Include="Plant.cpp" />
     <ClCompile Include="QuestionBlock.cpp" />
+    <ClCompile Include="Mushroom.cpp" />
     <ClCompile Include="Rubbish.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteManager.cpp" />
+    <ClCompile Include="SuperLeaf.cpp" />
+    <ClCompile Include="SuperStar.cpp" />
     <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Koopas.cpp" />
@@ -181,6 +185,7 @@
     <ClInclude Include="Block.h" />
     <ClInclude Include="BrickShiny.h" />
     <ClInclude Include="Bullet.h" />
+    <ClInclude Include="Coin.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="Fireball.h" />
     <ClInclude Include="GameEngine.h" />
@@ -195,11 +200,14 @@
     <ClInclude Include="Mario.h" />
     <ClInclude Include="Plant.h" />
     <ClInclude Include="QuestionBlock.h" />
+    <ClInclude Include="Mushroom.h" />
     <ClInclude Include="Rubbish.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteManager.h" />
+    <ClInclude Include="SuperLeaf.h" />
+    <ClInclude Include="SuperStar.h" />
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Koopas.h" />

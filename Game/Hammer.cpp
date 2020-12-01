@@ -60,7 +60,7 @@ void Hammer::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		vy += BULLET_HAMMER_GRAVITY * dt;
 		vx = direction * BULLET_HAMMER_SPEED_X;
-		CalcPotentialCollisions(coObjects, coEvents, { eType::PLAYER });
+		CalcPotentialCollisions(coObjects, coEvents, {}, eType::ENEMY);
 	}
 	else
 	{

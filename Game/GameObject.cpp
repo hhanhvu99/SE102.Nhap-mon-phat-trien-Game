@@ -78,30 +78,36 @@ void GameObject::CalcPotentialCollisions(
 	vector<LPGAMEOBJECT>* coObjects,
 	vector<LPCOLLISIONEVENT>& coEvents,
 	vector<eType> excludeType,
-	LPGAMEOBJECT excludeObject)
+	eType excludeObject)
 {
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
 		if (this == coObjects->at(i))
 			continue;
 
-		if (excludeObject == coObjects->at(i))
-			continue;
-
-		if (excludeType.size() != 0)
+		if (excludeObject != eType::NONE)
 		{
-			for (eType type : excludeType)
+			if (excludeObject != coObjects->at(i)->GetType())
+				continue;
+		}
+		else
+		{
+			if (excludeType.size() != 0)
 			{
-				if (type == coObjects->at(i)->GetType())
-					goto continueLoop;
-			}	
+				for (eType type : excludeType)
+				{
+					if (type == coObjects->at(i)->GetType())
+						goto continueLoop;
+				}
+			}
+
+			if (false)
+			{
+			continueLoop:
+				continue;
+			}
 		}
 
-		if (false)
-		{
-		continueLoop:
-			continue;
-		}
 			
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
 		

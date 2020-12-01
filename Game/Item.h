@@ -1,7 +1,6 @@
 #pragma once
 
 #include "GameObject.h"
-#include "TestScene.h"
 
 //Basic info
 #define ITEM_MOVE_SPEED_X			0.04f
@@ -14,32 +13,25 @@
 #define ITEM_FRICTION				0.001f
 #define ITEM_LEAF_BOUNDARY			0.1f
 
+#define ITEM_COIN_GRAVITY			0.001f
+#define ITEM_COIN_JUMP_SPEED		0.3f
+
 #define ITEM_SAFE_DELETE_RANGE		300.0f
 
 
 class Item : public GameObject
 {
-	float boundaryUp;
+protected:
 	float camPosX, camPosY;
 	int itemType;
-
-	bool showUp;
-	bool stop;
-	bool leafBreak;
-	bool leafBreak_Y;
 
 public:
 	Item(float x, float y, int itemType);
 
-	void Add();
-	void Destroy();
+	virtual void Add() = 0;
+	virtual void Destroy() = 0;
 	int getItemType() { return this->itemType; }
-	bool isShowUp() { return this->showUp; }
 
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
-	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL);
-	virtual void Render();
-	virtual void SetState(int state);
 
-	~Item();
 };
