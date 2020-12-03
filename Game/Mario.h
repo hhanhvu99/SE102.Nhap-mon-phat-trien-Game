@@ -15,7 +15,7 @@
 #define MARIO_MAX_FALLING_SPEED			0.2f
 #define MARIO_SLIDE_SPEED				0.0002f
 #define MARIO_BREAK_SPEED				0.0005f
-#define MARIO_RUNNING_BREAK_SPEED		0.01f
+#define MARIO_RUNNING_BREAK_SPEED		0.001f
 
 #define MARIO_JUMP_SPEED_Y				0.3f
 #define MARIO_JUMP_DEFLECT_SPEED		0.15f
@@ -48,7 +48,9 @@
 #define MARIO_STATE_HOLD				801
 #define MARIO_STATE_HOLD_SOMETHING		802
 #define MARIO_STATE_RELEASE				803
-#define MARIO_STATE_KICK				804
+#define MARIO_STATE_RELEASE_FULL		804
+#define MARIO_STATE_KICK				805
+#define MARIO_STATE_HOLD_SWITCH			806
 #define MARIO_STATE_HIT					900
 #define MARIO_STATE_UP					901
 #define MARIO_STATE_TRANSITION_1		902
@@ -68,11 +70,15 @@
 #define MARIO_FLAP_DURATION				100
 #define MARIO_FLAP_RUN_DURATION			150
 #define MARIO_ANI_KICK_DURATION			200
+#define MARIO_SWITCHING_TIME			80
+#define MARIO_SWITCHING_DURATION		240
 #define MARIO_DIE_TIME					500
 
 //Point collide
 #define MARIO_POINT_COLLIDE_OFFSET_X	8.0f
 #define MARIO_POINT_COLLIDE_OFFSET_Y	0.5f
+#define MARIO_POINT_TAIL_OFFSET_X		4.0f
+#define MARIO_POINT_TAIL_OFFSET_Y		18.0f
 
 //Offset for different Mario level
 //Small Mario
@@ -124,11 +130,13 @@ class Mario : public GameObject
 	int ani;
 	int size;
 	int currentFrame;
+	int directionGrab;
 
 	float nx = 0, ny;
 
 	float start_x;			// initial position of Mario at scene
 	float start_y;
+	float tempVx;
 
 	float anchor1_X;
 	float anchor1_Y;
@@ -141,6 +149,8 @@ class Mario : public GameObject
 	float pointY;
 	float pointX2;
 	float pointY2;
+	float pointTail_X;
+	float pointTail_Y;
 
 	int ani_walk_time;
 	float offset_Draw_X, offset_Draw_Y, offset_BBox_X, offset_BBox_Y;
@@ -184,6 +194,9 @@ class Mario : public GameObject
 
 	bool kicking = false;
 	DWORD startKicking = 0;
+
+	bool switching = false;
+	DWORD startSwitching = 0;
 
 	bool touchLeft = false, touchRight = false;
 	bool isRunning = false;

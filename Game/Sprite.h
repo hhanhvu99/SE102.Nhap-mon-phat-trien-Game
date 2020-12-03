@@ -24,6 +24,7 @@ public:
 	void SetOffset(float x, float y);
 	void SetAngle(float angle);
 	void Draw(float x, float y, D3DCOLOR color = D3DCOLOR_ARGB(255,255,255,255));
+	void Draw(float x, float y, float angle, D3DCOLOR color = D3DCOLOR_ARGB(255, 255, 255, 255));
 };
 
 typedef Sprite* LPSPRITE;

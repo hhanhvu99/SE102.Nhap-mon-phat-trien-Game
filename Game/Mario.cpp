@@ -18,6 +18,7 @@ Mario::Mario(float x, float y) : GameObject()
 	this->y = y;
 	this->type = eType::PLAYER;
 	this->grabObject = NULL;
+	this->directionGrab = 0;
 
 	touchGround = false;
 	ani_walk_time = MARIO_ANI_WALKING_TIME_DEFAULT;
@@ -151,15 +152,18 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		pointX = this->x + direction * (MARIO_POINT_COLLIDE_OFFSET_X);
 		pointX2 = pointX;
+		pointTail_X = pointX - MARIO_POINT_TAIL_OFFSET_X;
 	}
 	else if (direction > 0)
 	{
 		pointX = this->x + width + direction * (MARIO_POINT_COLLIDE_OFFSET_X);
 		pointX2 = pointX;
+		pointTail_X = pointX + MARIO_POINT_TAIL_OFFSET_X;
 	}
 		
 	pointY = this->y + MARIO_POINT_COLLIDE_OFFSET_Y;
 	pointY2 = this->y + this->height - MARIO_POINT_COLLIDE_OFFSET_Y;
+	pointTail_Y = this->y + MARIO_POINT_TAIL_OFFSET_Y;
 
 	bool result = PointCollision(*coObjects, pointX, pointY);
 	bool result2 = PointCollision(*coObjects, pointX2, pointY2);
@@ -451,6 +455,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				grabObject->SetDirection(direction);
 				grabObject = NULL;
 				grabbing = false;
+				directionGrab = 0;
 
 				SetState(MARIO_STATE_KICK);
 			}
@@ -460,23 +465,64 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				int widthObject;
 				grabObject->GetWidth(widthObject);
 
-				if (direction > 0)
+				if (switching == false)
 				{
-					if (level != MARIO_LEVEL_FROG)
-						x = this->x + widthObject + MARIO_GRAB_OFFSET_X;
+					if (direction > 0)
+					{
+						if (level != MARIO_LEVEL_FROG)
+							x = this->x + widthObject + MARIO_GRAB_OFFSET_X;
+						else
+							x = this->x + width + MARIO_GRAB_OFFSET_X - 5.0f;
+					}
 					else
-						x = this->x + width + MARIO_GRAB_OFFSET_X - 5.0f;
-				}
-				else
-					x = this->x - widthObject - MARIO_GRAB_OFFSET_X;
+						x = this->x - widthObject - MARIO_GRAB_OFFSET_X;
 
-				if (level != 1100)
-					y = this->y + MARIO_GRAB_OFFSET_Y;
-				else
-					y = this->y - 1.0f;
+					if (level != 1100)
+						y = this->y + MARIO_GRAB_OFFSET_Y;
+					else
+						y = this->y - 1.0f;
+
+				}	
+				else //Switching
+				{
+					if (GetTickCount() - startSwitching >= MARIO_SWITCHING_DURATION * 2 / 3)
+					{
+						if (direction > 0)
+						{
+							if (level != MARIO_LEVEL_FROG)
+								x = this->x + widthObject + MARIO_GRAB_OFFSET_X;
+							else
+								x = this->x + width + MARIO_GRAB_OFFSET_X - 5.0f;
+						}
+						else
+							x = this->x - widthObject - MARIO_GRAB_OFFSET_X;
+						switching = false;
+					}
+					else if (GetTickCount() - startSwitching >= MARIO_SWITCHING_DURATION * 1 / 3)
+						x = this->x + (widthObject - width) / 2;
+					else
+					{
+						if (direction < 0)
+						{
+							if (level != MARIO_LEVEL_FROG)
+								x = this->x + widthObject + MARIO_GRAB_OFFSET_X;
+							else
+								x = this->x + width + MARIO_GRAB_OFFSET_X - 5.0f;
+						}
+						else
+							x = this->x - widthObject - MARIO_GRAB_OFFSET_X;
+					}
+
+					if (level != 1100)
+						y = this->y + MARIO_GRAB_OFFSET_Y;
+					else
+						y = this->y - 1.0f;
+
+					ani_walk_time = MARIO_SWITCHING_TIME;
+				}
 
 				grabObject->SetPosition(x, y);
-				grabObject->SetSpeed(vx, vy);
+				grabObject->SetSpeed(0, 0);
 			}
 		}
 		else
@@ -527,14 +573,20 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (tail_whip)
 	{
 		LPGAMEOBJECT enemy = NULL;
-		if (PointCollision(*coObjects, pointX2, pointY2, enemy))
+		if (PointCollision(*coObjects, pointTail_X, pointTail_Y, enemy))
 		{
 			if(enemy == NULL)
 				DebugOut(L"NULL \n");
 			else
 			{
-				enemy->SetState(ENEMY_STATE_HIT);
 				enemy->SetDirection(direction);
+				enemy->SetState(ENEMY_STATE_HIT_TAIL);
+				
+				if (direction > 0)
+					enemy->SetPosition(pointTail_X , pointTail_Y - enemy->GetHeight());
+				else
+					enemy->SetPosition(pointTail_X - enemy->GetWidth(), pointTail_Y - enemy->GetHeight());
+
 			}
 			
 		}
@@ -635,15 +687,20 @@ void Mario::Render()
 				if (direction > 0) ani = level + MARIO_ANI_HOLD_JUMP_RIGHT;
 				else ani = level + MARIO_ANI_HOLD_JUMP_LEFT;
 			}
-			else if (vx == 0)
+			else if (switching)
 			{
-				if (direction > 0) ani = level + MARIO_ANI_HOLD_IDLE_RIGHT;
-				else ani = level + MARIO_ANI_HOLD_IDLE_LEFT;
+				if (direction > 0) ani = level + MARIO_ANI_HOLD_L_TO_R;
+				else ani = level + MARIO_ANI_HOLD_R_TO_L;
 			}
-			else
+			else if (vx != 0)
 			{
 				if (direction > 0) ani = level + MARIO_ANI_HOLD_RIGHT;
 				else ani = level + MARIO_ANI_HOLD_LEFT;
+			}
+			else
+			{
+				if (direction > 0) ani = level + MARIO_ANI_HOLD_IDLE_RIGHT;
+				else ani = level + MARIO_ANI_HOLD_IDLE_LEFT;
 			}
 			
 		}
@@ -781,18 +838,11 @@ void Mario::Render()
 		if (indexPalette >= lengthPalette)
 			indexPalette = 0;
 	}
-
-	//DebugOut(L"Ani id: %d\n", ani);
-	/*
-	if (ani == MARIO_ANI_FIRE_SHOOT_RIGHT)
-	{
-		DebugOut(L"Fire!!!\n");
-		DebugOut(L"Ani id: %d\n", ani);
-	}*/
 		
-	
+
 	animation_set->Get(ani)->SetTime(ani_walk_time);
 	animation_set->Get(ani)->Render(x + offset_Draw_X, y + offset_Draw_Y, color);
+	
 
 	//this->sprite->Draw(x, y);
 
@@ -820,10 +870,14 @@ void Mario::SetState(int state)
 
 			if (level != MARIO_LEVEL_FROG)
 			{
-				vx += MARIO_WALKING_SPEED * dt;
-					
-				if (abs(vx) > MARIO_MAX_WALKING_SPEED)
+				tempVx = abs(vx);
+				
+				if (tempVx < MARIO_MAX_WALKING_SPEED)
+					vx += MARIO_WALKING_SPEED * dt;
+				else if (tempVx >= MARIO_MAX_WALKING_SPEED && tempVx < MARIO_MAX_WALKING_SPEED + 0.01f)
 					vx = MARIO_MAX_WALKING_SPEED;
+				else
+					vx -= Global::Sign(vx) * MARIO_SLIDE_SPEED * dt;
 			}
 			direction = 1;
 		}
@@ -882,10 +936,15 @@ void Mario::SetState(int state)
 
 			if (level != MARIO_LEVEL_FROG)
 			{
-				vx += -MARIO_WALKING_SPEED * dt;
+				tempVx = abs(vx);
 
-				if (abs(vx) > MARIO_MAX_WALKING_SPEED)
+				if (tempVx < MARIO_MAX_WALKING_SPEED)
+					vx += -MARIO_WALKING_SPEED * dt;
+				else if (tempVx >= MARIO_MAX_WALKING_SPEED && tempVx < MARIO_MAX_WALKING_SPEED + 0.01f)
 					vx = -MARIO_MAX_WALKING_SPEED;
+				else
+					vx -= Global::Sign(vx) * MARIO_SLIDE_SPEED * dt;
+
 			}
 			
 			direction = -1;
@@ -933,16 +992,28 @@ void Mario::SetState(int state)
 
 		break;
 	case MARIO_STATE_BREAK_LEFT:
-		if (isRunning) vx -= Global::Sign(vx) * MARIO_RUNNING_BREAK_SPEED;
+		if (isRunning) vx -= Global::Sign(vx) * MARIO_RUNNING_BREAK_SPEED * dt;
 		else vx -= Global::Sign(vx) * MARIO_BREAK_SPEED * dt;
-		if (vx < 0) vx = 0;
+		if (vx < 0)	vx = 0;
 		direction = -1;
 		break;
 	case MARIO_STATE_BREAK_RIGHT:
-		if (isRunning) vx -= Global::Sign(vx) * MARIO_RUNNING_BREAK_SPEED;
+		if (isRunning) vx -= Global::Sign(vx) * MARIO_RUNNING_BREAK_SPEED * dt;
 		else vx -= Global::Sign(vx) * MARIO_BREAK_SPEED * dt;
-		if (vx > 0) vx = 0;
+		if (vx > 0)	vx = 0;
 		direction = 1;
+		break;
+	case MARIO_STATE_HOLD_SWITCH:
+		if (grabbing == false)
+			return;
+
+		if (direction != directionGrab)
+		{
+			directionGrab = direction;
+			switching = true;
+			startSwitching = now;
+		}
+		
 		break;
 	case MARIO_STATE_JUMP:
 		jumpButtonPressed = true;
@@ -1058,9 +1129,19 @@ void Mario::SetState(int state)
 		break;
 	case MARIO_STATE_HOLD_SOMETHING:
 		grabbing = true;
+		directionGrab = direction;
 		break;
 	case MARIO_STATE_RELEASE:
 		grabTurtlePress = false;
+		break;
+	case MARIO_STATE_RELEASE_FULL:
+		if (grabbing)
+		{
+			grabbing = false;
+			grabObject->SetState(ENEMY_STATE_RELEASE);
+			grabTurtlePress = false;
+			grabObject = NULL;
+		}
 		break;
 	case MARIO_STATE_KICK:
 		if (kicking == false)
@@ -1101,13 +1182,25 @@ void Mario::SetState(int state)
 				shoot = false;
 				flapAni = false;
 				flapping = false;
-				grabbing = false;
-				grabTurtlePress = false;
+				
+				if (grabbing)
+				{
+					grabbing = false;
+					grabObject->SetState(ENEMY_STATE_RELEASE);
+					grabTurtlePress = false;
+					grabObject = NULL;
+				}
 			}
 			else
 			{
-				grabbing = false;
-				grabTurtlePress = false;
+				if (grabbing)
+				{
+					grabbing = false;
+					grabObject->SetState(ENEMY_STATE_RELEASE);
+					grabTurtlePress = false;
+					grabObject = NULL;
+				}
+
 				SetState(MARIO_STATE_DIE);
 			}
 

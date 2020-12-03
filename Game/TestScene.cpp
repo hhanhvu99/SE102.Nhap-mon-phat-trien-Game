@@ -265,7 +265,11 @@ void TestScene::Load()
 			DebugOut(L"[ERROR] Unknown mob type: %d\n", mobType);
 		}
 		
-		enemy->SetDrawOrder(ENEMY_ENTITY_DRAW_ORDER);
+		if (mobType >= ENEMY_PIRANHA_GREEN)
+			enemy->SetDrawOrder(ENEMY_ENTITY_PLANT_DRAW_ORDER);
+		else
+			enemy->SetDrawOrder(ENEMY_ENTITY_DRAW_ORDER);
+
 		enemy->SetAnimationSet(AnimationManager::GetInstance()->Get(ENEMY_MOB));
 
 	}

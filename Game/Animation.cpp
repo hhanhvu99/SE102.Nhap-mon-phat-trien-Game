@@ -45,6 +45,41 @@ void Animation::Render(float x, float y, D3DCOLOR color)
 	frames[currentFrame]->GetSprite()->Draw(x, y, color);
 }
 
+bool Animation::RenderOnce(float x, float y, D3DCOLOR color)
+{
+	DWORD now = GetTickCount();
+	if (currentFrame == -1)
+	{
+		currentFrame = 0;
+		lastFrameTime = now;
+	}
+	else
+	{
+		DWORD t = frames[currentFrame]->GetTime();
+		DWORD different = now - lastFrameTime;
+
+		if (different > t && different <= t + 100)
+		{
+			++currentFrame;
+			lastFrameTime = now;
+			if (currentFrame == frames.size())
+			{
+				currentFrame = 0;
+				return false;
+			}
+				
+		}
+		else if (different > t + 100)
+		{
+			currentFrame = 0;
+			lastFrameTime = now;
+		}
+	}
+
+	frames[currentFrame]->GetSprite()->Draw(x, y, color);
+	return true;
+}
+
 void Animation::Render(float x, float y, float rotate, D3DCOLOR color)
 {
 	DWORD now = GetTickCount();
@@ -72,8 +107,7 @@ void Animation::Render(float x, float y, float rotate, D3DCOLOR color)
 		}
 	}
 
-	frames[currentFrame]->GetSprite()->SetAngle(rotate);
-	frames[currentFrame]->GetSprite()->Draw(x, y, color);
+	frames[currentFrame]->GetSprite()->Draw(x, y, rotate, color);
 }
 
 void Animation::SetTime(DWORD time)

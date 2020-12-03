@@ -231,21 +231,27 @@ void Plant::Render()
 {
 	int ani = -1;
 
-	if (moving)
+	if (mobType >= ENEMY_VENUS_GREEN)
 	{
-		if (direction == 1) ani = mobType + ENEMY_ANI_MOVE_LEFT_UP;
-		else if (direction == 2) ani = mobType + ENEMY_ANI_MOVE_LEFT_DOWN;
-		else if (direction == 3) ani = mobType + ENEMY_ANI_MOVE_RIGHT_UP;
-		else if (direction == 4) ani = mobType + ENEMY_ANI_MOVE_RIGHT_DOWN;
+		if (moving)
+		{
+			if (direction == 1) ani = mobType + ENEMY_ANI_MOVE_LEFT_UP;
+			else if (direction == 2) ani = mobType + ENEMY_ANI_MOVE_LEFT_DOWN;
+			else if (direction == 3) ani = mobType + ENEMY_ANI_MOVE_RIGHT_UP;
+			else if (direction == 4) ani = mobType + ENEMY_ANI_MOVE_RIGHT_DOWN;
+		}
+		else
+		{
+			if (direction == 1) ani = mobType + ENEMY_ANI_LEFT;
+			else if (direction == 2) ani = mobType + ENEMY_ANI_LEFT_DOWN;
+			else if (direction == 3) ani = mobType + ENEMY_ANI_RIGHT;
+			else if (direction == 4) ani = mobType + ENEMY_ANI_RIGHT_DOWN;
+		}
 	}
 	else
 	{
-		if (direction == 1) ani = mobType + ENEMY_ANI_LEFT;
-		else if (direction == 2) ani = mobType + ENEMY_ANI_LEFT_DOWN;
-		else if (direction == 3) ani = mobType + ENEMY_ANI_RIGHT;
-		else if (direction == 4) ani = mobType + ENEMY_ANI_RIGHT_DOWN;
+		ani = mobType + ENEMY_ANI_LEFT;
 	}
-	
 
 	animation_set->Get(ani)->Render(x + offsetX, y + offsetY);
 	RenderBoundingBox();
@@ -284,6 +290,7 @@ void Plant::SetState(int state)
 	break;
 
 	case ENEMY_STATE_HIT:
+	case ENEMY_STATE_HIT_TAIL:
 		vy = 0;
 
 		moving = false;

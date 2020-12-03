@@ -40,3 +40,9 @@ void Sprite::Draw(float x, float y, D3DCOLOR color)
 	game->Draw(x, y, texture, left, top, right, bottom, color, this->angle, this->offsetX, this->offsetY);
 	
 }
+
+void Sprite::Draw(float x, float y, float angle, D3DCOLOR color)
+{
+	GameEngine* game = GameEngine::GetInstance();
+	game->Draw(x, y, texture, left, top, right, bottom, color, angle, this->offsetX, this->offsetY);
+}

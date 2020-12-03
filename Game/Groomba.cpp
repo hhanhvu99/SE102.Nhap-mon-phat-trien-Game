@@ -310,6 +310,7 @@ void Groomba::SetState(int state)
 		this->type = eType::ENEMY_MOB_DIE;
 		break;
 	case ENEMY_STATE_HIT:
+	case ENEMY_STATE_HIT_TAIL:
 		vy = -ENEMY_GROOMBA_DEFLECT_Y;
 
 		this->type = eType::ENEMY_MOB_DIE;

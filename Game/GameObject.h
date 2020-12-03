@@ -89,6 +89,8 @@ public:
 	void GetDirection(int& direction) { direction = this->direction; }
 	void GetWidth(int& width) { width = this->width; }
 	void GetHeight(int& height) { height = this->height; }
+	int GetWidth() { return this->width; }
+	int GetHeight() { return this->height; }
 	int GetDrawOrder() { return this->draw_order; }
 
 	int GetState() { return this->state; }

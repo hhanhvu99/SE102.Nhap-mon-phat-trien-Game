@@ -174,6 +174,10 @@ void GameObject::FilterCollision(
 			{
 				min_ty = ny = rdy = 0; min_iy = i;
 			}
+			else if (c->obj->GetType() == eType::PLAYER)
+			{
+				min_ty = ny = rdy = 0; min_iy = i;
+			}
 			else
 			{
 				min_ty = c->t; ny = c->ny; min_iy = i; rdy = c->dy;

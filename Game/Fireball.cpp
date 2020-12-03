@@ -82,7 +82,7 @@ void Fireball::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			vy += BULLET_FIREBALL_GRAVITY * dt;
 			vx = direction * BULLET_FIREBALL_SPEED_X;
 			if (state != BULLET_STATE_HIT)
-				CalcPotentialCollisions(coObjects, coEvents, { eType::PLAYER , eType::ENEMY_MOB_DIE });
+				CalcPotentialCollisions(coObjects, coEvents, { eType::PLAYER , eType::ENEMY_MOB_DIE, eType::ITEM });
 		}
 		else
 		{
@@ -90,7 +90,7 @@ void Fireball::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			vx = unitVectorX * BULLET_FIREBALL_SPEED_X;
 			if (state != BULLET_STATE_HIT)
 				CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY, eType::ENEMY_BULLET, eType::ENEMY_MOB_DIE, 
-					eType::BLOCK, eType::GROUP, eType::BRICK, eType::QUESTION, eType::PLAYER_UNTOUCHABLE, eType::PLATFORM });
+					eType::BLOCK, eType::GROUP, eType::BRICK, eType::QUESTION, eType::PLAYER_UNTOUCHABLE, eType::PLATFORM , eType::ITEM });
 		}
 		
 	}
