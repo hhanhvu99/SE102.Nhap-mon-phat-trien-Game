@@ -240,6 +240,7 @@ int Run()
 	int done = 0;
 	DWORD frameStart = GetTickCount();
 	DWORD accumulator = 0;
+	DWORD timePass = 0;
 	const DWORD timeStep = 16;
 	float tickPerFrame = 1000.0f / MAX_FRAME_RATE;
 
@@ -275,6 +276,7 @@ int Run()
 				accumulator -= timeStep;
 			}
 			
+
 			Render();
 		}
 		else
@@ -282,6 +284,14 @@ int Run()
 			Sleep((DWORD)tickPerFrame - dt);
 		}
 		
+		timePass += dt;
+
+		if (timePass >= 1000)
+		{
+			Global::GetInstance()->time -= 1;
+			timePass -= 1000;
+		}
+
 	}
 
 	return 1;

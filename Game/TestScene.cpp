@@ -323,12 +323,18 @@ void TestScene::Load()
 	}
 
 	//Setup HUD
-	Global::GetInstance()->Setup(3, HUD_ICON_MARIO, 1, 7, 0, 0, 0, HUD_ITEM_EMPTY, HUD_ITEM_EMPTY, HUD_ITEM_EMPTY);
+	Global::GetInstance()->Setup(3, HUD_ICON_MARIO, 1, 7, 0, 300, 0, HUD_ITEM_MUSHROOM, HUD_ITEM_FLOWER, HUD_ITEM_STAR);
 	HUD* mainFrame = new HUD(eType::HUD_MAIN_FRAME);
 	HUD* playerIcon = new HUD(eType::HUD_PLAYER_ICON);
 	HUD* playerLive = new HUD(eType::HUD_PLAYER_LIVE);
 	HUD* world = new HUD(eType::HUD_WORLD);
 	HUD* speed = new HUD(eType::HUD_SPEEDOMETER);
+	HUD* point = new HUD(eType::HUD_POINT);
+	HUD* money = new HUD(eType::HUD_MONEY);
+	HUD* time = new HUD(eType::HUD_TIME);
+	HUD* cardOne = new HUD(eType::HUD_CARD_ONE);
+	HUD* cardTwo = new HUD(eType::HUD_CARD_TWO);
+	HUD* cardThree = new HUD(eType::HUD_CARD_THREE);
 
 	Keyboard::GetInstance()->SetKeyHandler(mario);
 	mario->SetAnimationSet(AnimationManager::GetInstance()->Get(MARIO));
