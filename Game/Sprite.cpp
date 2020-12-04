@@ -13,6 +13,8 @@ Sprite::Sprite(int id, int left, int top, int right, int bottom, LPDIRECT3DTEXTU
 	this->offsetX = offsetX;
 	this->offsetY = offsetY;
 	this->texture = tex;
+	this->width = right - left;
+	this->height = bottom - top;
 }
 
 void Sprite::SetDirection(int direction)

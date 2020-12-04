@@ -159,6 +159,8 @@
     <ClCompile Include="Groomba.cpp" />
     <ClCompile Include="GroupObject.cpp" />
     <ClCompile Include="Hammer.cpp" />
+    <ClCompile Include="HUD.cpp" />
+    <ClCompile Include="HUD_Object.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="main.cpp" />
@@ -194,6 +196,8 @@
     <ClInclude Include="Groomba.h" />
     <ClInclude Include="GroupObject.h" />
     <ClInclude Include="Hammer.h" />
+    <ClInclude Include="HUD.h" />
+    <ClInclude Include="HUD_Object.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="KeyEventHandler.h" />

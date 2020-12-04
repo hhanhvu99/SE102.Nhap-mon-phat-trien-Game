@@ -4,8 +4,8 @@
 #include <d3dx9.h>
 
 //Basic Info
-#define SCREEN_WIDTH 320
-#define SCREEN_HEIGHT 240 
+#define SCREEN_WIDTH 256
+#define SCREEN_HEIGHT 224 
 #define MAX_FRAME_RATE 120
 #define STANDARD_SIZE 16
 
@@ -17,7 +17,8 @@
 #define PLAYER_DRAW_ORDER				4
 #define ENEMY_ENTITY_DRAW_ORDER			5
 #define BULLET_DRAW_ORDER				6
-
+#define HUD_FRAME_DRAW_ORDER			7
+#define HUD_TEXT_DRAW_ORDER				8
 
 /*Define Active Block*/
 //Animation
@@ -277,6 +278,36 @@ extern bool PAUSE;
 #define ITEM_ANI_LEFT					1
 #define ITEM_ANI_RIGHT					2
 
+///////
+//HUD//
+///////
+#define HUD_ID							10000000
+
+//Bonus Point
+#define HUD_BONUS_POINT_100				100
+#define HUD_BONUS_POINT_200				200
+#define HUD_BONUS_POINT_400				400
+#define HUD_BONUS_POINT_800				800
+#define HUD_BONUS_POINT_1000			1000
+#define HUD_BONUS_POINT_2000			2000
+#define HUD_BONUS_POINT_4000			4000
+#define HUD_BONUS_POINT_8000			8000
+#define HUD_BONUS_POINT_UP				10000
+
+//Icon
+#define HUD_ICON_MARIO					20000
+#define HUD_ICON_ARROW_BRIGHT			20001
+#define HUD_ICON_BUTTON_BRIGHT			20002
+#define HUD_ICON_ARROW_DARK				20003
+#define HUD_ICON_BUTTON_DARK			20004
+
+//Main Frame
+#define HUD_FRAME						30000
+#define HUD_ITEM_EMPTY					30001
+#define HUD_ITEM_MUSHROOM				30002
+#define HUD_ITEM_FLOWER					30003
+#define HUD_ITEM_STAR					30004
+
 enum eType
 {
 	//None
@@ -305,17 +336,51 @@ enum eType
 
 	//Bullet
 	MARIO_BULLET = 50,
-	ENEMY_BULLET = 51
-	
+	ENEMY_BULLET = 51,
 
+	//HUD
+	HUD_MAIN_FRAME = 100,
+	HUD_PLAYER_ICON = 101,
+	HUD_PLAYER_LIVE = 102,
+	HUD_WORLD = 103,
+	HUD_SPEEDOMETER = 104,
+	HUD_POINT = 105,
+	HUD_MONEY = 106,
+	HUD_TIME = 107,
+	HUD_CARD_ONE = 108,
+	HUD_CARD_TWO = 109,
+	HUD_CARD_THREE = 110,
+	HUD_BUBBLE = 111
 
 	
 };
 
 class Global
 {
+	static Global* __instance;
+
 public:
+	//HUD
+	int live, player, world, point, time, money;
+	int cardOne, cardTwo, cardThree;
+	int frameHUD_x, frameHUD_y;
+	int speed;
+
+	void Setup(int live, int player, int world, int speed, int point, int time, int money, int cardOne, int cardTwo, int cardThree)
+	{
+		this->live = live;
+		this->player = player;
+		this->world = world;
+		this->speed = speed;
+		this->point = point;
+		this->money = money;
+		this->time = time;
+		this->cardOne = cardOne;
+		this->cardTwo = cardTwo;
+		this->cardThree = cardThree;
+	}
 	static int Sign(float x) { return (x > 0) - (x < 0); }
+	static Global* GetInstance();
 
 };
 

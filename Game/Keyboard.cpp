@@ -80,7 +80,10 @@ void Keyboard::KeyState(BYTE* states)
 						mario->SetState(MARIO_STATE_WALKING_RIGHT);
 					else
 						mario->SetState(MARIO_STATE_WALKING_RIGHT_FROG);
-			mario->SetState(MARIO_STATE_HOLD_SWITCH);
+
+			if (mario->isGrapping())
+				mario->SetState(MARIO_STATE_HOLD_SWITCH);
+
 			return;
 		}
 		else if (game->IsKeyDown(DIK_LEFT))
@@ -95,7 +98,10 @@ void Keyboard::KeyState(BYTE* states)
 						mario->SetState(MARIO_STATE_WALKING_LEFT);
 					else
 						mario->SetState(MARIO_STATE_WALKING_LEFT_FROG);
-			mario->SetState(MARIO_STATE_HOLD_SWITCH);
+
+			if (mario->isGrapping())
+				mario->SetState(MARIO_STATE_HOLD_SWITCH);
+
 			return;
 		}
 		else

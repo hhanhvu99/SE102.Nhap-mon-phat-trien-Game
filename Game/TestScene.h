@@ -17,6 +17,8 @@
 #include "Mushroom.h"
 #include "Coin.h"
 
+#include "HUD.h"
+
 #include "Global.h"
 
 using namespace std;

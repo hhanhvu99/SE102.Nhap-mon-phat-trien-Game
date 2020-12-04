@@ -250,7 +250,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						e->obj->SetState(MARIO_STATE_HIT);
 					else
 					{
-						if (mario->isGrapping())
+						if (mario->isGrappingPress())
 						{
 							mario->SetGrabObject(this);
 							mario->SetState(MARIO_STATE_HOLD_SOMETHING);

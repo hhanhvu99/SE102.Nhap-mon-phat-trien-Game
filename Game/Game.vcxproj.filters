@@ -86,6 +86,9 @@
     <Filter Include="GameObject\Item\Coin">
       <UniqueIdentifier>{dd3a6468-348b-4fa1-a678-5ad24f376500}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\HUD">
+      <UniqueIdentifier>{999b5618-2d1e-40c3-b229-4e0002a81299}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -187,6 +190,12 @@
     <ClCompile Include="Mushroom.cpp">
       <Filter>GameObject\Item\RedMushroom</Filter>
     </ClCompile>
+    <ClCompile Include="HUD.cpp">
+      <Filter>GameObject\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="HUD_Object.cpp">
+      <Filter>GameObject\HUD</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine.h">
@@ -287,6 +296,12 @@
     </ClInclude>
     <ClInclude Include="Mushroom.h">
       <Filter>GameObject\Item\RedMushroom</Filter>
+    </ClInclude>
+    <ClInclude Include="HUD.h">
+      <Filter>GameObject\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="HUD_Object.h">
+      <Filter>GameObject\HUD</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

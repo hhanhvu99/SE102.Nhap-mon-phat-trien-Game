@@ -37,7 +37,7 @@ Groomba::Groomba(int placeX, int placeY, int mobType, bool hasWing)
 void Groomba::Add()
 {
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
-	LPTESTSCENE current = dynamic_cast<LPTESTSCENE>(scene);
+	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
 	current->Add(this);
 
 }
@@ -45,7 +45,7 @@ void Groomba::Add()
 void Groomba::Destroy()
 {
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
-	LPTESTSCENE current = dynamic_cast<LPTESTSCENE>(scene);
+	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
 	current->Destroy(this);
 
 }
@@ -53,7 +53,7 @@ void Groomba::Destroy()
 void Groomba::Remove()
 {
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
-	LPTESTSCENE current = dynamic_cast<LPTESTSCENE>(scene);
+	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
 	current->Remove(this);
 }
 

@@ -79,7 +79,11 @@ void GameEngine::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, in
 
 	//DebugOut(L"Direction: %d\n", angle);
 
-	if (angle == 180.0f)
+	if (angle == 0.0f)
+	{
+		spriteHandler->Draw(texture, &r, NULL, &p, color);
+	}
+	else if (angle == 180.0f)
 	{
 		spriteHandler->GetTransform(&anhGoc);
 		D3DXVECTOR2 center(p.x + (right-left)/2 , p.y);
@@ -112,10 +116,7 @@ void GameEngine::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, in
 		spriteHandler->Draw(texture, &r, NULL, &p, color);
 		spriteHandler->SetTransform(&anhGoc);
 	}
-	else
-	{
-		spriteHandler->Draw(texture, &r, NULL, &p, color);
-	}
+	
 }
 
 int GameEngine::IsKeyDown(int KeyCode)

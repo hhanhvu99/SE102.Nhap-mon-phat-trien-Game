@@ -652,7 +652,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	cx -= game->GetScreenWidth() / 2;
 	cy -= game->GetScreenHeight() / 2;
 
-	GameEngine::GetInstance()->SetCamPos(cx, 250.0f);
+	GameEngine::GetInstance()->SetCamPos(cx, 280.0f);
 }
 
 void Mario::Render()
@@ -1004,9 +1004,6 @@ void Mario::SetState(int state)
 		direction = 1;
 		break;
 	case MARIO_STATE_HOLD_SWITCH:
-		if (grabbing == false)
-			return;
-
 		if (direction != directionGrab)
 		{
 			directionGrab = direction;

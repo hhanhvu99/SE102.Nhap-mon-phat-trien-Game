@@ -230,7 +230,8 @@ public:
 	bool isCrouching() { return isCrouch; }
 	bool isTouchGround() { return touchGround; }
 	bool isAllowJump() { return jump_allow; }
-	bool isGrapping() { return grabTurtlePress; }
+	bool isGrappingPress() { return grabTurtlePress; }
+	bool isGrapping() { return grabbing; }
 
 	void Reset();
 
