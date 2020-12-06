@@ -153,7 +153,13 @@ void Coin::SetState(int state)
 		
 		break;
 	case ITEM_STATE_HIT:
+	{
+		LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
+		LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
+		current->FloatTextCoin(x, y);
+
 		this->Destroy();
+	}
 		break;
 	default:
 		break;

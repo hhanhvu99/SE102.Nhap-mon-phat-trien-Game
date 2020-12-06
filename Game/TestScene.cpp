@@ -48,6 +48,74 @@ void TestScene::GetMarioPos(float& x, float& y)
 	this->mario->GetPosition(x, y);
 }
 
+void TestScene::FloatText(float x, float y)
+{
+	combo += 1;
+	HUD* temp;
+
+	y = y - FLOAT_TEXT_HEIGHT;
+
+	switch (combo)
+	{
+	case 1:
+		temp = new HUD(x, y, HUD_BONUS_POINT_100);
+		break;
+	case 2:
+		temp = new HUD(x, y, HUD_BONUS_POINT_200);
+		break;
+	case 3:
+		temp = new HUD(x, y, HUD_BONUS_POINT_400);
+		break;
+	case 4:
+		temp = new HUD(x, y, HUD_BONUS_POINT_800);
+		break;
+	case 5:
+		temp = new HUD(x, y, HUD_BONUS_POINT_1000);
+		break;
+	case 6:
+		temp = new HUD(x, y, HUD_BONUS_POINT_2000);
+		break;
+	case 7:
+		temp = new HUD(x, y, HUD_BONUS_POINT_4000);
+		break;
+	case 8:
+		temp = new HUD(x, y, HUD_BONUS_POINT_8000);
+		break;
+	case 9:
+		temp = new HUD(x, y, HUD_BONUS_POINT_UP);
+		break;
+	default:
+		break;
+	}
+
+	temp = NULL;
+
+}
+
+void TestScene::FloatTextCoin(float x, float y)
+{
+	y = y - FLOAT_TEXT_HEIGHT;
+
+	HUD* temp = new HUD(x, y, HUD_BONUS_POINT_100);
+
+}
+
+void TestScene::SortGameObject()
+{
+	for (std::size_t j = 1; j < gameObjects.size(); ++j)
+	{
+		LPGAMEOBJECT key = gameObjects[j];
+		int i = j - 1;
+
+		while (i >= 0 && gameObjects[i]->GetDrawOrder() > key->GetDrawOrder())
+		{
+			gameObjects[i + 1] = gameObjects[i];
+			--i;
+		}
+		gameObjects[i + 1] = key;
+	}
+}
+
 void TestScene::Load()
 {
 	DebugOut(L"[INFO] Start loading scene resources from : %s \n", sceneFilePath);
@@ -384,6 +452,13 @@ void TestScene::Update(DWORD dt)
 		delete deleteObject;
 	}
 	deleteList.clear();
+
+	//Sort Game objects by draw order
+	SortGameObject();
+
+	//Check if touch ground
+	if (mario->isTouchGround())
+		combo = 0;
 
 	//soLanUpdate += 1;
 	//DebugOut(L"Update lan thu: %d\n", soLanUpdate);

@@ -381,20 +381,26 @@ void Koopas::SetState(int state)
 	switch (state)
 	{
 	case ENEMY_STATE_STOMP:
+	{
 		vx = 0;
 
 		timeLeft = now;
 		comeBack = false;
 		shaking = false;
 		startShaking = false;
-		
+
 		if (immobilize == false)
 		{
 			immobilize = true;
 			rolling = false;
-		
+
 		}
 
+		LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
+		LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
+		current->FloatText(x, y);
+	}
+		
 		break;
 	case ENEMY_STATE_ROLLING:
 	{
@@ -437,14 +443,22 @@ void Koopas::SetState(int state)
 		beingGrab = false;
 		break;
 	case ENEMY_STATE_HIT:
+	{
 		vy = -ENEMY_KOOPAS_DEFLECT_Y;
 
 		immobilize = false;
 		hasWing = false;
 		this->type = eType::ENEMY_MOB_DIE;
 		this->Remove();
+
+		LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
+		LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
+		current->FloatText(x, y);
+	}	
+
 		break;
 	case ENEMY_STATE_HIT_TAIL:
+	{
 		vy = -ENEMY_KOOPAS_DEFLECT_TAIL;
 		vx = direction * ENEMY_KOOPAS_WHIP_SPEED;
 
@@ -458,7 +472,11 @@ void Koopas::SetState(int state)
 		immobilize = true;
 		rolling = false;
 
-		
+		LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
+		LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
+		current->FloatText(x, y);
+	}
+			
 		break;
 	}
 }

@@ -21,6 +21,8 @@
 
 #include "Global.h"
 
+#define FLOAT_TEXT_HEIGHT		8.0f
+
 using namespace std;
 
 class Mario;
@@ -32,6 +34,7 @@ protected:
 	vector<LPGAMEOBJECT> collideObjects;
 	vector<LPGAMEOBJECT> deleteList;
 
+	int combo = 0;
 	int soLanUpdate = 0;
 
 public:
@@ -46,6 +49,9 @@ public:
 
 	Mario* GetMario() { return this->mario; }
 	void GetMarioPos(float& x, float& y);
+	void FloatText(float x, float y);
+	void FloatTextCoin(float x, float y);
+	void SortGameObject();
 
 	virtual void Load();
 	virtual void Update(DWORD dt);

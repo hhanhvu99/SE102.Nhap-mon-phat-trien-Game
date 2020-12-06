@@ -4,7 +4,7 @@
 Plant::Plant(int placeX, int placeY, int mobType)
 {
 	this->x = placeX * STANDARD_SIZE + ENEMY_PLANT_OFFSET_X;
-	this->y = placeY * STANDARD_SIZE;
+	this->y = placeY * STANDARD_SIZE + ENEMY_PLANT_OFFSET_Y;
 	
 
 	this->pause = false;
@@ -19,7 +19,7 @@ Plant::Plant(int placeX, int placeY, int mobType)
 	this->direction = 1;
 	this->mobType = mobType;
 
-	this->boundaryY_UP = round(this->y - this->height) + 1.0f;
+	this->boundaryY_UP = round(this->y - this->height - ENEMY_PLANT_OFFSET_Y) + 1.0f;
 	this->boundaryY_DOWN = this->y;
 
 	this->showFace = false;
@@ -291,6 +291,7 @@ void Plant::SetState(int state)
 
 	case ENEMY_STATE_HIT:
 	case ENEMY_STATE_HIT_TAIL:
+	{
 		vy = 0;
 
 		moving = false;
@@ -298,6 +299,12 @@ void Plant::SetState(int state)
 
 		this->type = eType::ENEMY_MOB_DIE;
 		this->Destroy();
+
+		LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
+		LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
+		current->FloatText(x, y);
+	}
+
 		break;
 	}
 }

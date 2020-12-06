@@ -311,10 +311,17 @@ void Groomba::SetState(int state)
 		break;
 	case ENEMY_STATE_HIT:
 	case ENEMY_STATE_HIT_TAIL:
+	{
 		vy = -ENEMY_GROOMBA_DEFLECT_Y;
 
 		this->type = eType::ENEMY_MOB_DIE;
 		this->Remove();
+
+		LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
+		LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
+		current->FloatText(x, y);
+	}	
+
 		break;
 	}
 }

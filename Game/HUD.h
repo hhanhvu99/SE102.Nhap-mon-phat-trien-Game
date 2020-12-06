@@ -5,11 +5,11 @@
 #include "HUD_Object.h"
 
 //Basic Info
-#define HUD_BUBBLE_JUMP			0.1f
-#define HUD_BUBBLE_GRAVITY		0.0005f
+#define HUD_BUBBLE_JUMP				0.07f
+#define HUD_BUBBLE_GRAVITY			0.0001f
 
 //Offset
-#define HUD_ARROW_SPACING		8
+#define HUD_ARROW_SPACING			8
 
 //Position
 #define HUD_PLAYER_ICON_X			11
@@ -62,7 +62,7 @@ class HUD : public GameObject
 
 public:
 	HUD(eType type);
-	HUD(float x, float y, bool isBubble, int number, eType type);
+	HUD(float x, float y, int number);
 
 	void Add();
 	void Destroy();

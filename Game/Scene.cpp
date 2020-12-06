@@ -96,3 +96,13 @@ void Scene::LoadBlock(LPCWSTR gameFile)
 	DebugOut(L"[INFO] Loading game animations : %s has been loaded successfully\n", gameFile);
 
 }
+
+Scene::~Scene()
+{
+	BLOCKS.clear();
+	PLATFORM.clear();
+	ACTIVE_BLOCKS.clear();
+	GROUP.clear();
+	ENEMY.clear();
+	ITEM.clear();
+}

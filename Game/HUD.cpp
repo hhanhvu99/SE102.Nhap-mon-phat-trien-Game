@@ -15,13 +15,13 @@ HUD::HUD(eType type)
 	this->Add();
 }
 
-HUD::HUD(float x, float y, bool isBubble, int number, eType type)
+HUD::HUD(float x, float y, int number)
 {
 	this->x = x;
 	this->y = y;
-	this->isBubble = isBubble;
+	this->isBubble = true;
 	this->number = number;
-	this->type = type;
+	this->type = eType::HUD_BUBBLE;
 	this->instance = GameEngine::GetInstance();
 	this->global = Global::GetInstance();
 
@@ -213,6 +213,8 @@ void HUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (isBubble)
 	{
 		GameObject::Update(dt);
+		x += dx;
+		y += dy;
 
 		vy += HUD_BUBBLE_GRAVITY * dt;
 
