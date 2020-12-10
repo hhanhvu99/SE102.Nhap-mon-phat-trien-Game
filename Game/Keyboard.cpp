@@ -6,7 +6,7 @@ Keyboard* Keyboard::__instance = NULL;
 
 void Keyboard::KeyState(BYTE* states)
 {
-	if (PAUSE == false)
+	if (PAUSE == false && AUTO == false)
 	{
 		GameEngine* game = GameEngine::GetInstance();
 
@@ -125,86 +125,93 @@ void Keyboard::OnKeyDown(int KeyCode)
 {
 	//DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
 
-	switch (KeyCode)
+	if (AUTO == false)
 	{
-	case DIK_X:
-		//Short Jump
-		if (PAUSE == false)
+		switch (KeyCode)
 		{
-			if (mario->isTouchGround() == false)
-				mario->SetState(MARIO_STATE_JUMP_FLAP);
-			else
-				mario->SetState(MARIO_STATE_SHORT_JUMP);
-		}	
-		break;
-	case DIK_S:
-		//Grabbing
-		if (PAUSE == false)
-			mario->SetState(MARIO_STATE_HOLD);
-		break;
-	case DIK_Q:
-		//Invincible
-		if (PAUSE == false)
-			mario->SetState(MARIO_STATE_INVINCIBLE);
-		break;
-	case DIK_SPACE:
-		//Jump high
-		if (PAUSE == false)
-		{
-			if (mario->isTouchGround() == false)
-				mario->SetState(MARIO_STATE_JUMP_FLAP_HOLD);
-			else
-				mario->SetState(MARIO_STATE_JUMP);
+		case DIK_X:
+			//Short Jump
+			if (PAUSE == false)
+			{
+				if (mario->isTouchGround() == false)
+					mario->SetState(MARIO_STATE_JUMP_FLAP);
+				else
+					mario->SetState(MARIO_STATE_SHORT_JUMP);
+			}
+			break;
+		case DIK_S:
+			//Grabbing
+			if (PAUSE == false)
+				mario->SetState(MARIO_STATE_HOLD);
+			break;
+		case DIK_Q:
+			//Invincible
+			if (PAUSE == false)
+				mario->SetState(MARIO_STATE_INVINCIBLE);
+			break;
+		case DIK_SPACE:
+			//Jump high
+			if (PAUSE == false)
+			{
+				if (mario->isTouchGround() == false)
+					mario->SetState(MARIO_STATE_JUMP_FLAP_HOLD);
+				else
+					mario->SetState(MARIO_STATE_JUMP);
+			}
+			break;
+		case DIK_1:
+			mario->SetLevel(MARIO_LEVEL_SMALL);
+			mario->Reset();
+			break;
+		case DIK_2:
+			mario->SetLevel(MARIO_LEVEL_BIG);
+			mario->Reset();
+			break;
+		case DIK_3:
+			mario->SetLevel(MARIO_LEVEL_FIRE);
+			mario->Reset();
+			break;
+		case DIK_4:
+			mario->SetLevel(MARIO_LEVEL_RACC);
+			mario->Reset();
+			break;
+		case DIK_5:
+			mario->SetLevel(MARIO_LEVEL_FROG);
+			mario->Reset();
+			break;
+		case DIK_6:
+			mario->SetLevel(MARIO_LEVEL_TANU);
+			mario->Reset();
+			break;
+		case DIK_7:
+			mario->SetLevel(MARIO_LEVEL_HAM);
+			mario->Reset();
+			break;
+		case DIK_A:
+			mario->Reset();
+			break;
 		}
-		break;
-	case DIK_1:
-		mario->SetLevel(MARIO_LEVEL_SMALL);
-		mario->Reset();
-		break;
-	case DIK_2:
-		mario->SetLevel(MARIO_LEVEL_BIG);
-		mario->Reset();
-		break;
-	case DIK_3:
-		mario->SetLevel(MARIO_LEVEL_FIRE);
-		mario->Reset();
-		break;
-	case DIK_4:
-		mario->SetLevel(MARIO_LEVEL_RACC);
-		mario->Reset();
-		break;
-	case DIK_5:
-		mario->SetLevel(MARIO_LEVEL_FROG);
-		mario->Reset();
-		break;
-	case DIK_6:
-		mario->SetLevel(MARIO_LEVEL_TANU);
-		mario->Reset();
-		break;
-	case DIK_7:
-		mario->SetLevel(MARIO_LEVEL_HAM);
-		mario->Reset();
-		break;
-	case DIK_A:
-		mario->Reset();
-		break;
 	}
 
 }
 
 void Keyboard::OnKeyUp(int KeyCode)
 {
-	switch (KeyCode)
+	if (AUTO == false)
 	{
-	case DIK_S:
-		if (PAUSE == false)
-			mario->SetState(MARIO_STATE_RELEASE);
-		break;
-	case DIK_SPACE:
-		if (PAUSE == false)
-			mario->SetState(MARIO_STATE_STOP_JUMP);
-		break;
+		switch (KeyCode)
+		{
+		case DIK_S:
+			if (PAUSE == false)
+				mario->SetState(MARIO_STATE_RELEASE);
+			break;
+		case DIK_SPACE:
+			if (PAUSE == false)
+				mario->SetState(MARIO_STATE_STOP_JUMP);
+			break;
+		}
 	}
+	
 }
 
 Keyboard* Keyboard::GetInstance()

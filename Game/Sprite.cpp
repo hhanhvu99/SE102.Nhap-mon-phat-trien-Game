@@ -36,6 +36,19 @@ void Sprite::SetAngle(float angle)
 	this->angle = angle;
 }
 
+void Sprite::SetRegion(int left, int top, int right, int bottom)
+{
+	this->left = left;
+	this->top = top;
+	this->right = right;
+	this->bottom = bottom;
+}
+
+void Sprite::SetTexture(LPDIRECT3DTEXTURE9 tex)
+{
+	this->texture = tex;
+}
+
 void Sprite::Draw(float x, float y, D3DCOLOR color)
 {
 	GameEngine* game = GameEngine::GetInstance();

@@ -68,6 +68,7 @@ void SuperLeaf::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					if (leafBreak)
 					{
 						vx -= ITEM_FRICTION * dt;
+						vy -= ITEM_FRICTION_UP * dt;
 
 						if (vx <= 0)
 							stop = true;
@@ -75,6 +76,7 @@ void SuperLeaf::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					else if (vx >= ITEM_LEAF_BOUNDARY)
 					{
 						leafBreak = true;
+						vy = 0;
 					}
 					else
 						vx += ITEM_LEAF_SPEED_X * dt;
@@ -84,6 +86,7 @@ void SuperLeaf::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					if (leafBreak)
 					{
 						vx += ITEM_FRICTION * dt;
+						vy -= ITEM_FRICTION_UP * dt;
 
 						if (vx >= 0)
 							stop = true;
@@ -91,6 +94,7 @@ void SuperLeaf::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					else if (vx <= -ITEM_LEAF_BOUNDARY)
 					{
 						leafBreak = true;
+						vy = 0;
 					}
 					else
 						vx += -ITEM_LEAF_SPEED_X * dt;

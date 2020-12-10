@@ -15,9 +15,19 @@ SpriteManager* SpriteManager::GetInstance()
 
 void SpriteManager::Add(int id, int left, int top, int right, int bottom, LPDIRECT3DTEXTURE9 tex, float angle, float offsetX, float offsetY)
 {
-	LPSPRITE s = new Sprite(id, left, top, right, bottom, tex, angle, offsetX, offsetY);
-	sprites[id] = s;
-
+	if (sprites.find(id) != sprites.end())
+	{
+		sprites[id]->SetTexture(tex);
+		sprites[id]->SetRegion(left, top, right, bottom);
+		sprites[id]->SetAngle(angle);
+		sprites[id]->SetOffset(offsetX, offsetY);
+	}
+	else
+	{
+		LPSPRITE s = new Sprite(id, left, top, right, bottom, tex, angle, offsetX, offsetY);
+		sprites[id] = s;
+	}
+	
 	//DebugOut(L"[INFO] sprite added: %d, %d, %d, %d, %d \n", id, left, top, right, bottom);
 }
 

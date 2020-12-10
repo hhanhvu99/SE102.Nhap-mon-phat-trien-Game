@@ -87,6 +87,9 @@ static const D3DCOLOR InvicibilityPalette[] = {
 //Pause Movement
 extern bool PAUSE;
 
+//Auto move
+extern bool AUTO;
+
 //Animation Time
 #define MARIO_ANI_WALKING_TIME_DEFAULT	150
 #define MARIO_ANI_WALKING_TIME_WARMUP	80
@@ -308,6 +311,25 @@ extern bool PAUSE;
 #define HUD_ITEM_FLOWER					30003
 #define HUD_ITEM_STAR					30004
 
+////////
+//Menu//
+////////
+#define MENU							7976
+
+#define MENU_TITLE_TEXT					323
+#define MENU_TITLE_TEXT_BRIGHT			324
+
+#define MENU_ANI_NUMBER					328
+
+//Menu Draw Order
+#define MENU_DRAW_ORDER_TREE			1
+#define MENU_DRAW_ORDER_RIBBON_BG		2
+#define MENU_DRAW_ORDER_RIBBON			3
+#define MENU_DRAW_ORDER_TITLE			4
+#define MENU_DRAW_ORDER_ENEMY			5
+#define MENU_DRAW_ORDER_PLAYER			6
+#define MENU_DRAW_ORDER_ITEM			7
+
 enum eType
 {
 	//None
@@ -350,7 +372,10 @@ enum eType
 	HUD_CARD_ONE = 108,
 	HUD_CARD_TWO = 109,
 	HUD_CARD_THREE = 110,
-	HUD_BUBBLE = 111
+	HUD_BUBBLE = 111,
+
+	//Menu
+	MENU_TITLE = 200
 
 	
 };
@@ -365,6 +390,8 @@ public:
 	int cardOne, cardTwo, cardThree;
 	int frameHUD_x, frameHUD_y;
 	int speed;
+
+	D3DCOLOR background_color = D3DCOLOR_XRGB(255, 255, 255);
 
 	void Setup(int live, int player, int world, int speed, int point, int time, int money, int cardOne, int cardTwo, int cardThree)
 	{

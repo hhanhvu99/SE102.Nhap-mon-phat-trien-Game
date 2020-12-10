@@ -127,14 +127,14 @@ void TestScene::Load()
 	int id;
 	LPGAMEOBJECT gameObject;
 	LPSPRITEMANAGER sprites = SpriteManager::GetInstance();
-	mario = new Mario(45.0f, 350.0f);
-	mario->SetDrawOrder(PLAYER_DRAW_ORDER);
+	//mario = new Mario(45.0f, 350.0f);
+	//mario->SetDrawOrder(PLAYER_DRAW_ORDER);
 
 	gameObjects.clear();
 	collideObjects.clear();
 
-	gameObjects.push_back(mario);
-	collideObjects.push_back(mario);
+	//gameObjects.push_back(mario);
+	//collideObjects.push_back(mario);
 
 	for (int j = 0; j < height; ++j)
 	{
@@ -391,6 +391,7 @@ void TestScene::Load()
 	}
 
 	//Setup HUD
+	/*
 	Global::GetInstance()->Setup(3, HUD_ICON_MARIO, 1, 7, 0, 300, 0, HUD_ITEM_MUSHROOM, HUD_ITEM_FLOWER, HUD_ITEM_STAR);
 	HUD* mainFrame = new HUD(eType::HUD_MAIN_FRAME);
 	HUD* playerIcon = new HUD(eType::HUD_PLAYER_ICON);
@@ -402,11 +403,11 @@ void TestScene::Load()
 	HUD* time = new HUD(eType::HUD_TIME);
 	HUD* cardOne = new HUD(eType::HUD_CARD_ONE);
 	HUD* cardTwo = new HUD(eType::HUD_CARD_TWO);
-	HUD* cardThree = new HUD(eType::HUD_CARD_THREE);
+	HUD* cardThree = new HUD(eType::HUD_CARD_THREE);*/
 
-	Keyboard::GetInstance()->SetKeyHandler(mario);
-	mario->SetAnimationSet(AnimationManager::GetInstance()->Get(MARIO));
-	mario->SetLevel(MARIO_LEVEL_SMALL);
+	//Keyboard::GetInstance()->SetKeyHandler(mario);
+	//mario->SetAnimationSet(AnimationManager::GetInstance()->Get(MARIO));
+	//mario->SetLevel(MARIO_LEVEL_SMALL);
 
 	sort(gameObjects.begin(), gameObjects.end(), 
 		[](const LPGAMEOBJECT& lhs, const LPGAMEOBJECT& rhs)
@@ -422,14 +423,14 @@ void TestScene::Load()
 		}
 	);
 
-	float cx, cy;
-	mario->GetPosition(cx, cy);
+	//float cx, cy;
+	//mario->GetPosition(cx, cy);
 
-	GameEngine* game = GameEngine::GetInstance();
-	cx -= game->GetScreenWidth() / 2;
-	cy -= game->GetScreenHeight() / 2;
+	//GameEngine* game = GameEngine::GetInstance();
+	//cx -= game->GetScreenWidth() / 2;
+	//cy -= game->GetScreenHeight() / 2;
 
-	GameEngine::GetInstance()->SetCamPos(cx, 250.0f);
+	//GameEngine::GetInstance()->SetCamPos(cx, 250.0f);
 
 	DebugOut(L"[INFO] Done loading scene resources %s\n", sceneFilePath);
 }
@@ -438,7 +439,7 @@ void TestScene::Load()
 void TestScene::Update(DWORD dt)
 {
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
-	if (mario == NULL) return;
+	//if (mario == NULL) return;
 
 	for (auto x : gameObjects)
 	{
@@ -457,8 +458,9 @@ void TestScene::Update(DWORD dt)
 	SortGameObject();
 
 	//Check if touch ground
+	/*
 	if (mario->isTouchGround())
-		combo = 0;
+		combo = 0;*/
 
 	//soLanUpdate += 1;
 	//DebugOut(L"Update lan thu: %d\n", soLanUpdate);

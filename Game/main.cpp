@@ -15,6 +15,8 @@
 #include "AnimationManager.h"
 
 #include "TestScene.h"
+#include "Intro.h"
+
 #include "Mario.h"
 #include "Keyboard.h"
 
@@ -24,8 +26,6 @@
 #define BRICK_TEXTURE_PATH L"brick.png"
 #define MARIO_TEXTURE_PATH L"mario.png"
 
-
-#define BACKGROUND_COLOR D3DCOLOR_XRGB(156, 252, 240)
 
 using namespace std;
 
@@ -58,6 +58,7 @@ void LoadResources()
 	texture->Add(3, L"Asset\\Character\\Enemy\\MobSheet.png", NULL);
 	texture->Add(4, L"Asset\\Item\\ItemSheet.png", NULL);
 	texture->Add(5, L"Asset\\HUD\\HUD_Sheet.png", NULL);
+	texture->Add(6, L"Asset\\Menu\\MenuSheet.png", NULL);
 	texture->Add(ID_TEX_BBOX, L"Asset\\Debug\\BoundingBox.png", NULL);
 
 	SpriteManager* spriteData = SpriteManager::GetInstance();
@@ -68,7 +69,7 @@ void LoadResources()
 	int size = 16;
 	int beginX, beginY, endX, endY, padding = 2;
 	int width = 19;
-	int height = 17;
+	int height = 18;
 	int id = 0;
 
 	//Load sprite của Map
@@ -115,6 +116,10 @@ void LoadResources()
 	sheet = texture->Get(5);
 	spriteData->Load(L"Script\\Assets\\Sprites\\HUD_Sprites.txt", sheet);
 
+	//--Menu--//
+	sheet = texture->Get(6);
+	spriteData->Load(L"Script\\Assets\\Sprites\\MenuSprites.txt", sheet);
+
 	////////////////////////
 	//---Load animation---//
 	////////////////////////
@@ -130,16 +135,20 @@ void LoadResources()
 
 	//--Item--//
 	aniData->Load(L"Script\\Assets\\Animations\\ItemAnimations.txt");
+
+	//--Menu--//
+	aniData->Load(L"Script\\Assets\\Animations\\MenuAnimation.txt");
 	
 	////////////////////
 	//---Load Array---//
 	////////////////////
-	LPSCENE testMap = new TestScene(1, L"Script\\Map\\TestMap.txt");
+	//LPSCENE testMap = new TestScene(1, L"Script\\Map\\TestMap.txt");
+	LPSCENE intro = new Intro(2, L"Script\\Map\\Intro.txt");
 
-	testMap->LoadBlock(L"Script\\Assets\\Block\\Block.txt");
+	intro->LoadBlock(L"Script\\Assets\\Block\\Intro.txt");
 
 	LPSCENEMANAGER sceneManager = SceneManager::GetInstance();
-	sceneManager->Load(testMap);
+	sceneManager->Load(intro);
 
 	DebugOut(L"[INFO] Loading map successfully\n");
 }
@@ -170,7 +179,7 @@ void Render()
 	if (d3ddv->BeginScene())
 	{
 		// Clear back buffer with a color
-		d3ddv->ColorFill(bb, NULL, BACKGROUND_COLOR);
+		d3ddv->ColorFill(bb, NULL, Global::GetInstance()->background_color);
 
 		spriteHandler->Begin(D3DXSPRITE_ALPHABLEND);
 
@@ -207,15 +216,24 @@ HWND CreateGameWindow(HINSTANCE hInstance, int nCmdShow, int ScreenWidth, int Sc
 
 	RegisterClassEx(&wc);
 
+	RECT wnd = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
+	RECT dt;
+	GetClientRect(GetDesktopWindow(), &dt);
+	AdjustWindowRect(&wnd, WS_OVERLAPPEDWINDOW, FALSE);
+	int w = (wnd.right - wnd.left) - 1;
+	int h = (wnd.bottom - wnd.top) - 1;
+	int x = ((dt.right - dt.left) - w) / 2;
+	int y = ((dt.bottom - dt.top) - h) / 2;
+
 	HWND hWnd =
 		CreateWindow(
 			WINDOW_CLASS_NAME,
 			MAIN_WINDOW_TITLE,
 			WS_OVERLAPPEDWINDOW, // WS_EX_TOPMOST | WS_VISIBLE | WS_POPUP,
-			CW_USEDEFAULT,
-			CW_USEDEFAULT,
-			ScreenWidth,
-			ScreenHeight,
+			x,
+			y,
+			w,
+			h,
 			NULL,
 			NULL,
 			hInstance,

@@ -21,6 +21,34 @@ void GroupObject::Add(LPGAMEOBJECT& gameObject)
 
 }
 
+void GroupObject::Move(float x, float y)
+{
+	float currentX, currentY;
+	this->x += x;
+	this->y += y;
+
+	for (LPGAMEOBJECT object : group)
+	{
+		object->GetPosition(currentX, currentY);
+		object->SetPosition(currentX + x, currentY + y);
+	}
+}
+
+void GroupObject::SetGroupPos(float x, float y)
+{
+	float currentX, currentY;
+	float dx = this->x - x;
+	float dy = this->y - y;
+	this->x = x;
+	this->y = y;
+
+	for (LPGAMEOBJECT object : group)
+	{
+		object->GetPosition(currentX, currentY);
+		object->SetPosition(currentX + dx, currentY + dy);
+	}
+}
+
 GroupObject::GroupObject()
 {
 	left = top = 70000;
@@ -42,7 +70,6 @@ void GroupObject::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	for (LPGAMEOBJECT object : group)
 	{
-		object->SetSpeed(vx, vy);
 		object->Update(dt);
 	}
 

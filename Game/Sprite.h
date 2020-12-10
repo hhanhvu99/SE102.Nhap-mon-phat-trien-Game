@@ -28,6 +28,8 @@ public:
 	void SetDirection(int direction);
 	void SetOffset(float x, float y);
 	void SetAngle(float angle);
+	void SetRegion(int left, int top, int right, int bottom);
+	void SetTexture(LPDIRECT3DTEXTURE9 tex);
 
 	int GetWidth() { return width; };
 	int GetHeight() { return height; };

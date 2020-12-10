@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.4" tiledversion="1.4.2" orientation="orthogonal" renderorder="right-down" width="20" height="14" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="1">
+ <editorsettings>
+  <export target="Intro.csv" format="csv"/>
+ </editorsettings>
+ <tileset firstgid="1" source="../../../../../../../../../Program Files/Tiled/TileSet/Stage Tile.tsx"/>
+ <imagelayer id="2" name="Image Layer 1" locked="1" opacity="0.5">
+  <image source="../../../../../Assets/Tile/Menu/Menu.png" width="320" height="224"/>
+ </imagelayer>
+ <layer id="1" name="Tile Layer 1" width="20" height="14">
+  <data encoding="csv">
+0,0,308,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,327,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,324,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,306,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,329,0,0,0,0,0,0,0,0,0,0,
+0,0,307,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+305,305,305,326,305,326,305,326,305,326,305,326,305,326,305,326,305,326,305,305,
+0,0,328,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+</map>

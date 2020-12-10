@@ -89,6 +89,9 @@
     <Filter Include="GameObject\HUD">
       <UniqueIdentifier>{999b5618-2d1e-40c3-b229-4e0002a81299}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameEngine\Scene\Intro">
+      <UniqueIdentifier>{f1c99e0a-c5c4-4d32-aaf1-8a0978e9c162}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -196,6 +199,9 @@
     <ClCompile Include="HUD_Object.cpp">
       <Filter>GameObject\HUD</Filter>
     </ClCompile>
+    <ClCompile Include="Intro.cpp">
+      <Filter>GameEngine\Scene\Intro</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine.h">
@@ -302,6 +308,9 @@
     </ClInclude>
     <ClInclude Include="HUD_Object.h">
       <Filter>GameObject\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="Intro.h">
+      <Filter>GameEngine\Scene\Intro</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

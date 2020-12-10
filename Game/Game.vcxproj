@@ -161,6 +161,7 @@
     <ClCompile Include="Hammer.cpp" />
     <ClCompile Include="HUD.cpp" />
     <ClCompile Include="HUD_Object.cpp" />
+    <ClCompile Include="Intro.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="main.cpp" />
@@ -198,6 +199,7 @@
     <ClInclude Include="Hammer.h" />
     <ClInclude Include="HUD.h" />
     <ClInclude Include="HUD_Object.h" />
+    <ClInclude Include="Intro.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="KeyEventHandler.h" />

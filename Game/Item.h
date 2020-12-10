@@ -10,7 +10,8 @@
 
 #define ITEM_LEAF_SPEED_X			0.0002f
 #define ITEM_LEAF_SPEED_Y			0.00007f
-#define ITEM_FRICTION				0.001f
+#define ITEM_FRICTION				0.0007f
+#define ITEM_FRICTION_UP			0.00015f
 #define ITEM_LEAF_BOUNDARY			0.1f
 
 #define ITEM_COIN_GRAVITY			0.001f
