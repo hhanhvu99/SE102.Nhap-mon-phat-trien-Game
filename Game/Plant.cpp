@@ -219,7 +219,7 @@ void Plant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		coEvents[i] = NULL;
 	}
 
-	if (x < camPosX - ENTITY_SAFE_DELETE_RANGE * 2 || x > camPosX + ENTITY_SAFE_DELETE_RANGE * 2 ||
+	if (x < camPosX - ENTITY_SAFE_DELETE_RANGE || x > camPosX + ENTITY_SAFE_DELETE_RANGE ||
 		y < camPosY - ENTITY_SAFE_DELETE_RANGE || y > camPosY + ENTITY_SAFE_DELETE_RANGE)
 	{
 		this->Destroy();

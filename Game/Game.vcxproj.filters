@@ -92,6 +92,9 @@
     <Filter Include="GameEngine\Scene\Intro">
       <UniqueIdentifier>{f1c99e0a-c5c4-4d32-aaf1-8a0978e9c162}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Intro">
+      <UniqueIdentifier>{8fa03c70-a5f4-4b64-a2b9-2bdb4c5da334}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -202,6 +205,12 @@
     <ClCompile Include="Intro.cpp">
       <Filter>GameEngine\Scene\Intro</Filter>
     </ClCompile>
+    <ClCompile Include="KoopasIntro.cpp">
+      <Filter>GameObject\Intro</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerIntro.cpp">
+      <Filter>GameObject\Intro</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine.h">
@@ -311,6 +320,12 @@
     </ClInclude>
     <ClInclude Include="Intro.h">
       <Filter>GameEngine\Scene\Intro</Filter>
+    </ClInclude>
+    <ClInclude Include="KoopasIntro.h">
+      <Filter>GameObject\Intro</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerIntro.h">
+      <Filter>GameObject\Intro</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -5,6 +5,19 @@ Intro::Intro(int id, LPCWSTR filePath) : TestScene(id, filePath)
 {
 }
 
+bool Intro::OutSideCam(LPGAMEOBJECT object)
+{
+	float x, y;
+	float cx, cy;
+	object->GetPosition(x, y);
+	GameEngine::GetInstance()->GetCamPos(cx, cy);
+
+	if (x < cx - object->GetWidth() || x > cx + SCREEN_WIDTH || y < cy - object->GetHeight() || y > cy + SCREEN_HEIGHT)
+		return true;
+
+	return false;
+}
+
 void Intro::Load()
 {
 	TestScene::Load();
@@ -84,13 +97,13 @@ void Intro::Load()
 	}
 
 
-	GameEngine* game = GameEngine::GetInstance();
 	GameEngine::GetInstance()->SetCamPos(32.0f, 0.0f);
 
 	ribbon_top->SetDisableDraw();
 	tree1->SetDisableDraw();
 	tree2->SetDisableDraw();
 	number->SetDisableDraw();
+
 }
 
 void Intro::Update(DWORD dt)
@@ -98,6 +111,7 @@ void Intro::Update(DWORD dt)
 	TestScene::Update(dt);
 	DWORD now = GetTickCount();
 	
+	//Stage
 	if (moveRibbon)
 	{
 		float x, y;
@@ -109,61 +123,123 @@ void Intro::Update(DWORD dt)
 			setSpeed = false;
 		}
 
-		
 		if (y < -MENU_RIBBON_LIMIT)
 		{
 			moveRibbon = false;
 			ribbon->SetSpeed(0, 0);
 
-			moveTitle = true;
-			setSpeed = true;
+
+			allowEntity = true;
+		}
+		else if (y < -MENU_RIBBON_LIMIT / 2)
+		{
+			if (allowCreate)
+			{
+				mario = new PlayerIntro(272.0f, 152.0f);
+				mario->SetAnimationSet(AnimationManager::GetInstance()->Get(MARIO));
+				mario->SetLevel(MARIO_LEVEL_BIG);
+				mario->SetDrawOrder(MENU_DRAW_ORDER_PLAYER);
+				mario->SetDirection(-1);
+				gameObjects.push_back(mario);
+				collideObjects.push_back(mario);
+
+				luigi = new PlayerIntro(32.0f, 152.0f);
+				luigi->SetAnimationSet(AnimationManager::GetInstance()->Get(MARIO));
+				luigi->SetLevel(LUIGI_LEVEL_BIG);
+				luigi->SetDrawOrder(MENU_DRAW_ORDER_PLAYER);
+				gameObjects.push_back(luigi);
+				collideObjects.push_back(luigi);
+
+				allowCreate = false;
+			}
 		}
 			
 	}
 	else if (moveTitle)
 	{
-		float x, y;
-		float xNum, yNum;
-		title->GetPosition(x, y);
-		number->GetPosition(xNum, yNum);
+		DWORD timePass = now - waittingTime;
 
-		if (setSpeed)
+		if (timePass > MENU_TIME_TITLE_WAIT)
 		{
-			title->SetSpeed(0, MENU_TITLE_MOVE_Y);
-			number->SetSpeed(0, MENU_TITLE_MOVE_Y);
-			setSpeed = false;
-		}
+			float x, y;
+			float xNum, yNum;
+			title->GetPosition(x, y);
+			number->GetPosition(xNum, yNum);
 
-		if (y > MENU_TITLE_Y && shaking == false)
-		{
-			title->SetSpeed(0, 0);
-			number->SetSpeed(0, 0);
-			shaking = true;
-		}
-		
-		else if (shaking)
-		{
-			if (startShaking)
+			if (setSpeed)
 			{
-				shakingTime = now;
-				startShaking = false;
+				title->SetSpeed(0, MENU_TITLE_MOVE_Y);
+				number->SetSpeed(0, MENU_TITLE_MOVE_Y);
+				setSpeed = false;
 			}
 
-			if (now - shakingTime > MENU_TITLE_MAX_TIME)
+			if (y > MENU_TITLE_Y && shaking == false)
 			{
-				moveTitle = false;
-				shaking = false;
-
 				title->SetSpeed(0, 0);
 				number->SetSpeed(0, 0);
+				shaking = true;
+			}
+			else if (shaking)
+			{
+				if (startShaking)
+				{
+					shakingTime = now;
+					startShaking = false;
+				}
 
-				title->SetPosition(x, MENU_TITLE_Y);
-				number->SetPosition(xNum, MENU_NUMBER_Y);
+				if (now - shakingTime > MENU_TITLE_MAX_TIME)
+				{
+					moveTitle = false;
+					shaking = false;
 
-				allowTranform = true;
+					title->SetSpeed(0, 0);
+					number->SetSpeed(0, 0);
+
+					title->SetPosition(x, MENU_TITLE_Y);
+					number->SetPosition(xNum, MENU_NUMBER_Y);
+
+					allowTranform = true;
+				}
+			}
+
+			if (allowCreateTurtleShell)
+			{
+				turtleShell = new KoopasIntro(9, -5, ENEMY_KOOPAS_GREEN, true);
+				turtleShell->SetDrawOrder(MENU_DRAW_ORDER_ENEMY);
+				turtleShell->SetAnimationSet(AnimationManager::GetInstance()->Get(ENEMY_MOB));
+
+				KoopasIntro* buzzyShell = new KoopasIntro(13, -3, ENEMY_BEETLE, true);
+				buzzyShell->SetDrawOrder(MENU_DRAW_ORDER_ENEMY);
+				buzzyShell->SetAnimationSet(AnimationManager::GetInstance()->Get(ENEMY_MOB));
+
+				groomba = new Groomba(6, -2, ENEMY_GROOMBA_BROWN, false);
+				groomba->SetDrawOrder(MENU_DRAW_ORDER_ENEMY);
+				groomba->SetAnimationSet(AnimationManager::GetInstance()->Get(ENEMY_MOB));
+				groomba->SetDirection(-1);
+				groomba->SetState(ENEMY_STATE_IDLE);
+
+				Mushroom* mushroom = new Mushroom(4 * STANDARD_SIZE, -1 * STANDARD_SIZE, ITEM_MUSHROOM_RED);
+				mushroom->SetDrawOrder(MENU_DRAW_ORDER_ITEM);
+				mushroom->SetAnimationSet(AnimationManager::GetInstance()->Get(ITEM_ID));
+				mushroom->SetDirection(-1);
+				mushroom->SetState(ITEM_STATE_DROP);
+
+				SuperLeaf* leaf = new SuperLeaf(10 * STANDARD_SIZE, -1 * STANDARD_SIZE, ITEM_SUPER_LEAF);
+				leaf->SetDrawOrder(MENU_DRAW_ORDER_ITEM);
+				leaf->SetAnimationSet(AnimationManager::GetInstance()->Get(ITEM_ID));
+				leaf->SetType(eType::ITEM);
+				leaf->SetState(ITEM_STATE_MOVING);
+
+				SuperStar* star = new SuperStar(15 * STANDARD_SIZE, -1 * STANDARD_SIZE, ITEM_SUPER_STAR);
+				star->SetDrawOrder(MENU_DRAW_ORDER_ITEM);
+				star->SetAnimationSet(AnimationManager::GetInstance()->Get(ITEM_ID));
+				star->SetDirection(1);
+				star->SetState(ITEM_STATE_DROP);
+
+				allowCreateTurtleShell = false;
 			}
 		}
-		
+	
 	}
 	else if (allowTranform)
 	{
@@ -233,7 +309,208 @@ void Intro::Update(DWORD dt)
 
 	}
 
+	//Entity
+	if (allowEntity)
+	{
+		if (startEntity)
+		{
+			timeEntity = now;
+			startEntity = false;
+		}
 
+		if (allowPartOne)
+		{
+			DWORD timePass = now - timeEntity;
+
+			if (timePass > MENU_TIME_ENTITY_THREE)
+			{
+				if (!mario->IsStop())
+					mario->SetState(MARIO_STATE_IDLE);
+				else
+					allowPartOne = false;
+			}
+			else if (timePass > MENU_TIME_ENTITY_TWO)
+			{
+				if (stageTwoFirst)
+				{
+					luigi->SetState(MARIO_STATE_SHORT_JUMP);
+					stageTwoFirst = false;
+				}
+
+			}
+			else if (timePass > MENU_TIME_ENTITY_ONE)
+			{
+				mario->SetState(MARIO_STATE_WALKING_LEFT);
+				luigi->SetState(MARIO_STATE_WALKING_RIGHT);
+			}
+			else
+			{
+				mario->SetState(MARIO_STATE_WALK_LEFT_NO_MOVE);
+				luigi->SetState(MARIO_STATE_WALK_RIGHT_NO_MOVE);
+			}
+		}
+
+
+		if (mario->GetState() == MARIO_STATE_CROUCH)
+		{
+			float x, y;
+			float cx, cy;
+			float vx, vy;
+			GameEngine::GetInstance()->GetCamPos(cx, cy);
+			luigi->GetPosition(x, y);
+			luigi->GetSpeed(vx, vy);
+
+			if (y < cy)
+			{
+				luigi->SetSpeed(vx, 0.2f);
+				mario->SetState(MARIO_STATE_HIT_RELEASE);
+				mario->SetState(MARIO_STATE_IDLE);
+
+				
+				moveTitle = true;
+				setSpeed = true;
+
+				waittingTime = now;
+			}
+		}
+		else if (mario->IsHitByShell())
+		{
+			DWORD timePass = now - timeHitShell;
+
+			if (hitByShell)
+			{
+				timeHitShell = now;
+				hitByShell = false;
+			}
+			else if (timePass > MENU_MARIO_TITLE_4)
+			{
+				mario->SetState(MARIO_STATE_LONG_JUMP);
+				mario->SetState(MARIO_STATE_HIT_RELEASE_2);
+			}
+			else if (timePass > MENU_MARIO_TITLE_3)
+			{
+				mario->SetState(MARIO_STATE_TITLE_2);
+			}
+			else if (timePass > MENU_MARIO_TITLE_2)
+			{
+				mario->SetState(MARIO_STATE_IDLE);
+			}
+			else
+			{
+				mario->SetState(MARIO_STATE_TITLE_1);
+			}
+
+			if (OutSideCam(luigi))
+			{
+				luigi->SetState(MARIO_STATE_IDLE);
+				luigi->SetSpeed(0.0f, 0.0f);
+				luigi->SetDirection(-1);
+				luigi->SetType(eType::ENEMY_MOB_DIE);
+			}
+		}
+		else if (mario->GetLevel() == MARIO_LEVEL_RACC)
+		{
+			if (groomba != NULL)
+			{
+				if (inRaccoonFirst)
+				{
+					groomba->SetState(ENEMY_STATE_MOVING);
+					inRaccoonFirst = false;
+				}
+				
+				
+				float mX, mY;
+				float gX, gY;
+
+				groomba->GetPosition(gX, gY);
+				mario->GetPosition(mX, mY);
+
+				if (mX <= gX + 2 * groomba->GetWidth())
+				{
+					mario->SetState(MARIO_STATE_STOP_JUMP);
+				}
+				else
+				{
+					mario->SetState(MARIO_STATE_JUMP_FLAP_HOLD);
+					mario->SetState(MARIO_STATE_WALKING_LEFT);
+				}
+
+				if (groomba->GetState() == ENEMY_STATE_STOMP)
+				{
+					groomba = NULL;
+					mario->SlowDown();
+					inRaccoonFirst = true;
+				}
+			}
+			else if (mario->isTouchGround())
+			{
+				DWORD timePass = now - timeRaccoon;
+
+				if (inRaccoonFirst)
+				{
+					timeRaccoon = now;
+					inRaccoonFirst = false;
+				}
+
+				float vx, vy;
+				mario->GetSpeed(vx, vy);
+
+				if (vx < 0)
+				{
+					turtleShell->SetGrapper(mario);
+					mario->SetState(MARIO_STATE_BREAK_RIGHT);
+				}
+				else
+				{
+					allowPartTwo = true;
+				}
+
+				if (allowPartTwo)
+				{
+					if (timePass > MENU_MARIO_SECOND_3)
+					{
+						mario->SetState(MARIO_STATE_IDLE);
+						luigi->SetState(MARIO_STATE_HOLD);
+						luigi->SetState(MARIO_STATE_IDLE);
+					}
+					else if (timePass > MENU_MARIO_SECOND_2)
+					{
+						mario->SetState(MARIO_STATE_IDLE);
+						luigi->SetState(MARIO_STATE_HOLD);
+						luigi->SetState(MARIO_STATE_WALKING_LEFT);
+					}
+					else if (timePass > MENU_MARIO_SECOND_1)
+					{
+						mario->SetState(MARIO_STATE_IDLE);
+						luigi->SetState(MARIO_STATE_HOLD);
+						luigi->SetPosition(MENU_LUIGI_POSITION_X, MENU_LUIGI_POSITION_Y);
+					}
+					else
+					{
+						mario->SetState(MARIO_STATE_WALKING_RIGHT);
+					}
+
+					if (OutSideCam(turtleShell) && turtleShellFirst)
+					{
+						if (turtleShell->GetState() != ENEMY_STATE_BEING_GRAB)
+						{
+							luigi->SetType(eType::PLAYER);
+							turtleShell->SetGrapper(luigi);
+							turtleShell->SetState(ENEMY_STATE_BEING_GRAB);
+							turtleShellFirst = false;
+						}
+		
+						luigi->SetState(MARIO_STATE_HOLD);
+					}
+
+				}
+					
+			}
+			
+		}
+
+	}
+	
 }
 
 void Intro::Render()
@@ -249,6 +526,8 @@ void Intro::Render()
 		number->SetPosition(shakeXNum, shakeYNum + sign * MENU_TITLE_VIBRATION);
 
 	}
+
+	//DebugOut(L"Render Size: %d\n", gameObjects.size());
 
 	TestScene::Render();
 }

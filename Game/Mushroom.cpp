@@ -76,6 +76,11 @@ void Mushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		return;
 	}
 
+	if (state == ITEM_STATE_DROP)
+	{
+		vx = 0;
+	}
+
 	GameEngine::GetInstance()->GetCamPos(camPosX, camPosY);
 
 	// No collision occured, proceed normally
@@ -100,6 +105,12 @@ void Mushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		this->x += min_tx * dx + nx * 0.4f;
 		this->y += min_ty * dy + ny * 0.4f;
+
+		if (ny != 0)
+		{
+			if (state == ITEM_STATE_DROP)
+				state = ITEM_STATE_MOVING;
+		}
 
 		if (nx > 0)
 			direction = 1;

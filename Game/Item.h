@@ -8,16 +8,16 @@
 #define ITEM_JUMP_SPEED				0.2f
 #define ITEM_GRAVITY				0.0005f
 
-#define ITEM_LEAF_SPEED_X			0.0002f
-#define ITEM_LEAF_SPEED_Y			0.00007f
-#define ITEM_FRICTION				0.0007f
-#define ITEM_FRICTION_UP			0.00015f
+#define ITEM_LEAF_SPEED_X			0.00025f
+#define ITEM_LEAF_SPEED_Y			0.00022f
+#define ITEM_FRICTION				0.0008f
+#define ITEM_FRICTION_UP			0.00023f
 #define ITEM_LEAF_BOUNDARY			0.1f
 
 #define ITEM_COIN_GRAVITY			0.001f
 #define ITEM_COIN_JUMP_SPEED		0.3f
 
-#define ITEM_SAFE_DELETE_RANGE		300.0f
+#define ITEM_SAFE_DELETE_RANGE		600.0f
 
 
 class Item : public GameObject

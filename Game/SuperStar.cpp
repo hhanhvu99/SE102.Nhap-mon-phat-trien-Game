@@ -76,6 +76,11 @@ void SuperStar::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		return;
 	}
 
+	if (state == ITEM_STATE_DROP)
+	{
+		vx = 0;
+	}
+
 	GameEngine::GetInstance()->GetCamPos(camPosX, camPosY);
 
 	// No collision occured, proceed normally
@@ -106,7 +111,12 @@ void SuperStar::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			vy = 0;
 
 			if (ny < 0)
-				vy = -ITEM_JUMP_SPEED;
+			{
+				if (state == ITEM_STATE_DROP)
+					state = ITEM_STATE_MOVING;
+				else
+					vy = -ITEM_JUMP_SPEED;
+			}	
 
 		}
 

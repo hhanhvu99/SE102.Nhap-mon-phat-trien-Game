@@ -164,9 +164,11 @@
     <ClCompile Include="Intro.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="Keyboard.cpp" />
+    <ClCompile Include="KoopasIntro.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mario.cpp" />
     <ClCompile Include="Plant.cpp" />
+    <ClCompile Include="PlayerIntro.cpp" />
     <ClCompile Include="QuestionBlock.cpp" />
     <ClCompile Include="Mushroom.cpp" />
     <ClCompile Include="Rubbish.cpp" />
@@ -203,8 +205,10 @@
     <ClInclude Include="Item.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="KeyEventHandler.h" />
+    <ClInclude Include="KoopasIntro.h" />
     <ClInclude Include="Mario.h" />
     <ClInclude Include="Plant.h" />
+    <ClInclude Include="PlayerIntro.h" />
     <ClInclude Include="QuestionBlock.h" />
     <ClInclude Include="Mushroom.h" />
     <ClInclude Include="Rubbish.h" />

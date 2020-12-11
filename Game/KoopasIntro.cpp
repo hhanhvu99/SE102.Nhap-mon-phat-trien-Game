@@ -1,16 +1,20 @@
-#include "Koopas.h"
+#include "KoopasIntro.h"
 #include "debug.h"
 
-Koopas::Koopas(int placeX, int placeY, int mobType, bool hasWing)
+KoopasIntro::KoopasIntro(int placeX, int placeY, int mobType, bool inShell)
 {
 	this->x = placeX * STANDARD_SIZE;
 	this->y = placeY * STANDARD_SIZE - ENEMY_KOOPAS_HEIGHT;
 
-	this->immobilize = false;
+	if (inShell)
+		SetState(ENEMY_STATE_STOMP);
+	else
+	{
+		state = ENEMY_STATE_MOVING;
+		this->immobilize = false;
+	}
+	
 	this->rolling = false;
-	this->comeBack = false;
-	this->shaking = false;
-	this->startShaking = false;
 	this->beingGrab = false;
 	this->upSideDown = false;
 
@@ -18,30 +22,34 @@ Koopas::Koopas(int placeX, int placeY, int mobType, bool hasWing)
 	this->height = ENEMY_KOOPAS_HEIGHT;
 	this->type = eType::ENEMY;
 
-	this->state = ENEMY_STATE_MOVING;
 	this->direction = 1;
 	this->mobType = mobType;
-	this->hasWing = hasWing;
 
-	this->shakeX = ENEMY_KOOPAS_ANI_SHAKE_X;
-	this->offsetX = ENEMY_KOOPAS_DRAW_OFFSET_X;
-	this->offsetY = ENEMY_KOOPAS_DRAW_OFFSET_Y;
+	if (mobType == ENEMY_BEETLE)
+	{
+		this->offsetX = 0;
+		this->offsetY = 0;
+	}
+	else
+	{
+		this->offsetX = ENEMY_KOOPAS_DRAW_OFFSET_X;
+		this->offsetY = ENEMY_KOOPAS_DRAW_OFFSET_Y;
+	}
+	
 
 	this->Add();
 
 }
 
-void Koopas::Add()
+void KoopasIntro::Add()
 {
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
 	LPTESTSCENE current = dynamic_cast<LPTESTSCENE>(scene);
 	current->Add(this);
 
-	mario = current->GetMario();
-
 }
 
-void Koopas::Destroy()
+void KoopasIntro::Destroy()
 {
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
 	LPTESTSCENE current = dynamic_cast<LPTESTSCENE>(scene);
@@ -49,14 +57,19 @@ void Koopas::Destroy()
 
 }
 
-void Koopas::Remove()
+void KoopasIntro::Remove()
 {
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
 	LPTESTSCENE current = dynamic_cast<LPTESTSCENE>(scene);
 	current->Remove(this);
 }
 
-void Koopas::GetBoundingBox(float& left, float& top, float& right, float& bottom)
+void KoopasIntro::SetGrapper(PlayerIntro* player)
+{
+	this->mario = player;
+}
+
+void KoopasIntro::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
 	left = x + ENEMY_KOOPAS_BBOX_OFFSET_X;
 	top = y;
@@ -65,7 +78,7 @@ void Koopas::GetBoundingBox(float& left, float& top, float& right, float& bottom
 	//DebugOut(L"left: %f - top: %f - right: %f - bottom: %f\n", left, top, right, bottom);
 }
 
-void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+void KoopasIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	// Calculate dx, dy 
 	GameObject::Update(dt);
@@ -79,21 +92,15 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		vy += ENEMY_KOOPAS_GRAVITY * dt;
 
-		if (upSideDown)
+		if (!immobilize)
 		{
-			if (immobilize)
-			{
-				if (abs(vx) < ENEMY_KOOPAS_THRESHOLD)
-					vx = 0;
-				else
-					vx -= Global::Sign(vx) * ENEMY_KOOPAS_FRICTION * dt;
-			}
-		}
-		else
-		{
-			if (!immobilize)
+			if (type != eType::ENEMY_MOB_DIE)
 				vx = direction * ENEMY_KOOPAS_MOVE_SPEED_X;
+			else
+				vx = direction * ENEMY_KOOPAS_WHIP_SPEED;
 		}
+			
+		
 
 		pointX = this->x + width / 2;
 		pointY = this->y;
@@ -107,7 +114,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			else if (rolling == true)
 				CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY_MOB_DIE, eType::ENEMY_BULLET, eType::PLAYER_UNTOUCHABLE, eType::ITEM });
 		}
-				
+
 	}
 	else
 	{
@@ -124,35 +131,14 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 	else if (immobilize)
 	{
-		if (GetTickCount() - timeLeft > ENEMY_KOOPAS_TIME_LEFT)
-		{
-			state = ENEMY_STATE_MOVING;
-
-			immobilize = false;
-			comeBack = false;
-			shaking = false;
-			startShaking = false;
-			upSideDown = false;
-			
-			if (beingGrab)
-			{
-				beingGrab = false;
-				mario->SetState(MARIO_STATE_HIT);
-				SetState(ENEMY_STATE_MOVING);
-			}
-
-			offsetX = 0;
-			//Doi co index
-		}
-		else if (GetTickCount() - timeLeft > ENEMY_KOOPAS_TIME_COMEBACK)
-			comeBack = true;
-		else if (GetTickCount() - timeLeft > ENEMY_KOOPAS_TIME_SHAKE)
-			shaking = true;
-
+		vx = 0;
 	}
 	else if (rolling)
 	{
-		vx = direction * ENEMY_KOOPAS_ROLL_SPEED_X;
+		if (state == ENEMY_STATE_ROLL_SPECIAL)
+			vx = direction * ENEMY_KOOPAS_ROLL_SPEED_DEFLECT;
+		else
+			vx = direction * ENEMY_KOOPAS_ROLL_SPEED_X;
 	}
 	else if (beingGrab)
 	{
@@ -166,7 +152,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 
 	// No collision occured, proceed normally
-	
+
 	//DebugOut(L"Time left: %d \n", GetTickCount() - timeLeft);
 	//DebugOut(L"x: %f\n", offsetX + x);
 	//DebugOut(L"vx: %f - vy: %f\n", vx, vy);
@@ -196,54 +182,55 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			vy = 0;
 
-			if (hasWing)
-			{
-				if (ny < 0)
-					vy = -ENEMY_KOOPAS_JUMP_SPEED;
-			}
-			else
-			{
-				if (ny < 0)
-				{
-					if (state == ENEMY_STATE_HIT_TAIL)
-					{
-						vy = -ENEMY_KOOPAS_BOUNDING;
-						state = ENEMY_STATE_STOMP;
-					}
-				}
-				
-			}
-				
-
-		}
 			
+			if (state == ENEMY_STATE_ROLL_SPECIAL)
+				SetState(ENEMY_STATE_STOMP);
+		}
+
 
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
 			if (e->obj->GetType() == eType::PLAYER)
 			{
+				float x, y;
 				float vx, vy;
 				e->obj->GetSpeed(vx, vy);
 
 				if (e->ny > 0)
 				{
-					if (hasWing)
-					{
-						hasWing = false;
-					}
+					if (immobilize == false)
+						SetState(ENEMY_STATE_STOMP);
 					else
 					{
-						if (immobilize == false)
-							SetState(ENEMY_STATE_STOMP);
+						e->obj->GetPosition(x, y);
+						float marioPosMiddle = x + e->obj->GetWidth() / 2;
+						float enemyMiddle = this->x + width / 2;
+
+						if (marioPosMiddle < enemyMiddle)
+							direction = 1;
 						else
-							SetState(ENEMY_STATE_ROLLING);
+							direction = -1;
+						SetState(ENEMY_STATE_ROLLING);
 					}
-					
+						
 					e->obj->SetSpeed(vx, -MARIO_JUMP_DEFLECT_SPEED);
 				}
+				else if (e->ny < 0)
+				{
+					if (dynamic_cast<PlayerIntro*>(e->obj))
+					{
+						PlayerIntro* mario = static_cast<PlayerIntro*>(e->obj);
+						mario->SetState(MARIO_STATE_HIT_BY_SHELL);
+
+						this->vy = -ENEMY_KOOPAS_DEFLECT_Y;
+						direction = -1;
+
+						SetState(ENEMY_STATE_ROLL_SPECIAL);
+					}
+				}
 				else
-				{	
+				{
 					if (immobilize == false)
 						e->obj->SetState(MARIO_STATE_HIT);
 					else
@@ -258,7 +245,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						{
 							mario->SetState(MARIO_STATE_KICK);
 							mario->GetDirection(direction);
-							SetState(ENEMY_STATE_KICK);	
+							SetState(ENEMY_STATE_KICK);
 						}
 					}
 				}
@@ -274,16 +261,9 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					mario->SetState(MARIO_STATE_RELEASE_FULL);
 					SetState(ENEMY_STATE_HIT);
 				}
-					
+
 			}
-			else
-			{
-				if (nx > 0)
-					direction = 1;
-				else if (nx < 0)
-					direction = -1;
-				
-			}
+			
 		}
 
 	}
@@ -305,123 +285,67 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 }
 
-void Koopas::Render()
+void KoopasIntro::Render()
 {
 	int ani = -1;
 
-	if (hasWing)
+	
+	if (immobilize)
 	{
-		if (state == ENEMY_STATE_MOVING)
-		{
-			if (direction > 0) ani = mobType + ENEMY_ANI_RIGHT_WING;
-			else ani = mobType + ENEMY_ANI_LEFT_WING;
-		}
-		else if (state == ENEMY_STATE_HIT || upSideDown)
-		{
-			if (direction > 0) ani = mobType + ENEMY_ANI_DIE_HIT_RIGHT;
-			else ani = mobType + ENEMY_ANI_DIE_HIT_LEFT;
-		}
+		ani = mobType + ENEMY_ANI_IMMOBILIZE;
 	}
-	else 
+	else if (rolling)
 	{
-		if (comeBack)
-		{
-			ani = mobType + ENEMY_ANI_COMEBACK;
-		}
-		else if (immobilize)
-		{
-			ani = mobType + ENEMY_ANI_IMMOBILIZE;
-		}
-		else if (rolling)
-		{
-			ani = mobType + ENEMY_ANI_ROLLING;
-		}
-		else if (state == ENEMY_STATE_MOVING)
-		{
-			if (direction > 0) ani = mobType + ENEMY_ANI_RIGHT;
-			else ani = mobType + ENEMY_ANI_LEFT;
-		}
-		else if (state == ENEMY_STATE_HIT || upSideDown)
-		{
-			if (direction > 0) ani = mobType + ENEMY_ANI_DIE_HIT_RIGHT;
-			else ani = mobType + ENEMY_ANI_DIE_HIT_LEFT;
-		}
+		ani = mobType + ENEMY_ANI_ROLLING;
 	}
-
-	if (shaking)
+	else if (state == ENEMY_STATE_MOVING)
 	{
-		if (startShaking == false)
-		{
-			shakeTime = GetTickCount();
-			startShaking = true;
-			offsetX = shakeX;
-		}
-		else if (GetTickCount() - shakeTime > ENEMY_KOOPAS_ANI_SHAKE_TIME)
-		{
-			startShaking = false;
-			offsetX = 0.0f;
-		}
-
+		if (direction > 0) ani = mobType + ENEMY_ANI_RIGHT;
+		else ani = mobType + ENEMY_ANI_LEFT;
 	}
+	else if (state == ENEMY_STATE_HIT || upSideDown)
+	{
+		if (direction > 0) ani = mobType + ENEMY_ANI_DIE_HIT_RIGHT;
+		else ani = mobType + ENEMY_ANI_DIE_HIT_LEFT;
+	}
+	
 
 	if (upSideDown)
 		animation_set->Get(ani)->Render(x + offsetX, y + offsetY, 90.0f);
 	else
 		animation_set->Get(ani)->Render(x + offsetX, y + offsetY);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
-void Koopas::SetState(int state)
+void KoopasIntro::SetState(int state)
 {
 	GameObject::SetState(state);
 	DWORD now = GetTickCount();
 
 	switch (state)
 	{
-	case ENEMY_STATE_STOMP:
-	{
-		vx = 0;
+		case ENEMY_STATE_STOMP:
+			vx = 0;
 
-		timeLeft = now;
-		comeBack = false;
-		shaking = false;
-		startShaking = false;
+			if (immobilize == false)
+			{
+				immobilize = true;
+				rolling = false;
 
-		if (immobilize == false)
-		{
-			immobilize = true;
-			rolling = false;
+			}
 
-		}
-
-		LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
-		LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
-		current->FloatText(x, y);
-	}
-		
-		break;
-	case ENEMY_STATE_ROLLING:
-	{
-		float x, y;
-		mario->GetPosition(x, y);
-		float marioPosMiddle = x + mario->GetWidth() / 2;
-		float enemyMiddle = this->x + width / 2;
-
-		if (marioPosMiddle < enemyMiddle)
-			direction = 1;
-		else
-			direction = -1;
-
-		immobilize = false;
-		rolling = true;
-		comeBack = false;
-		shaking = false;
-		startShaking = false;
-		beingGrab = false;
-	}
-
-		break;
-	case ENEMY_STATE_KICK:
+			break;
+		case ENEMY_STATE_ROLLING:
+			immobilize = false;
+			rolling = true;
+			beingGrab = false;
+			break;
+		case ENEMY_STATE_ROLL_SPECIAL:
+			immobilize = false;
+			rolling = true;
+			beingGrab = false;
+			break;
+		case ENEMY_STATE_KICK:
 		{
 			SetState(ENEMY_STATE_ROLLING);
 			float x, y;
@@ -429,52 +353,31 @@ void Koopas::SetState(int state)
 			mario->GetPosition(x, y);
 			mario->GetChange(dx, dy);
 			dx = abs(dx);
-			
+
 			if (direction > 0)
 				this->x = x + mario->GetWidth() + dx + 1.0f;
 			else
 				this->x = x - width - dx - 1.0f;
 		}
 
-		break;
-	case ENEMY_STATE_RELEASE:
-		beingGrab = false;
-		break;
-	case ENEMY_STATE_HIT:
-	{
-		vy = -ENEMY_KOOPAS_DEFLECT_Y;
+			break;
+		case ENEMY_STATE_BEING_GRAB:
+			SetState(ENEMY_STATE_STOMP);
 
-		immobilize = false;
-		hasWing = false;
-		this->type = eType::ENEMY_MOB_DIE;
-		this->Remove();
+			mario->SetGrabObject(this);
+			mario->SetState(MARIO_STATE_HOLD_SOMETHING);
+			beingGrab = true;
+			break;
+		case ENEMY_STATE_RELEASE:
+			beingGrab = false;
+			break;
+		case ENEMY_STATE_HIT:
+			vy = -ENEMY_KOOPAS_DEFLECT;
 
-		LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
-		LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
-		current->FloatText(x, y);
-	}	
+			immobilize = false;
+			this->type = eType::ENEMY_MOB_DIE;
+			this->Remove();
 
-		break;
-	case ENEMY_STATE_HIT_TAIL:
-	{
-		vy = -ENEMY_KOOPAS_DEFLECT_TAIL;
-		vx = direction * ENEMY_KOOPAS_WHIP_SPEED;
-
-		timeLeft = now;
-		comeBack = false;
-		shaking = false;
-		startShaking = false;
-		hasWing = false;
-		upSideDown = true;
-
-		immobilize = true;
-		rolling = false;
-
-		LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
-		LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
-		current->FloatText(x, y);
-	}
-			
-		break;
+			break;
 	}
 }

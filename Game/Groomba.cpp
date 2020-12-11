@@ -112,7 +112,6 @@ void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (state == ENEMY_STATE_IDLE)
 	{
 		vx = 0;
-		vy = 0;
 	}
 	else if (state == ENEMY_STATE_STOMP)
 	{
@@ -241,7 +240,7 @@ void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		coEvents[i] = NULL;
 	}
 
-	if (x < camPosX - ENTITY_SAFE_DELETE_RANGE * 2 || x > camPosX + ENTITY_SAFE_DELETE_RANGE * 2 ||
+	if (x < camPosX - ENTITY_SAFE_DELETE_RANGE || x > camPosX + ENTITY_SAFE_DELETE_RANGE ||
 		y < camPosY - ENTITY_SAFE_DELETE_RANGE || y > camPosY + ENTITY_SAFE_DELETE_RANGE)
 	{
 		this->Destroy();
@@ -276,7 +275,11 @@ void Groomba::Render()
 	}
 	else
 	{
-		if (state == ENEMY_STATE_MOVING)
+		if (state == ENEMY_STATE_IDLE)
+		{
+			ani = mobType + ENEMY_ANI_IDLE;
+		}
+		else if (state == ENEMY_STATE_MOVING)
 		{
 			if (direction > 0) ani = mobType + ENEMY_ANI_RIGHT;
 			else ani = mobType + ENEMY_ANI_LEFT;
@@ -294,7 +297,7 @@ void Groomba::Render()
 
 	
 	animation_set->Get(ani)->Render(x + offsetX, y + offsetY);
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 void Groomba::SetState(int state)

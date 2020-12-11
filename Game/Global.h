@@ -52,9 +52,10 @@
 #define ITEM_STATE_SHOW					1
 #define ITEM_STATE_MOVING				2
 #define ITEM_STATE_HIT					3
+#define ITEM_STATE_DROP					4
 
 //Entity
-#define ENTITY_SAFE_DELETE_RANGE		300.0f
+#define ENTITY_SAFE_DELETE_RANGE		600.0f
 
 //Animation
 #define MARIO							1412
@@ -115,6 +116,9 @@ extern bool AUTO;
 #define	MARIO_LEVEL_FROG				1500
 #define	MARIO_LEVEL_TANU				1600
 #define	MARIO_LEVEL_HAM					1700
+
+//Level Luigi
+#define LUIGI_LEVEL_BIG					2200
 
 ////////////////
 //Mario Suffix//
@@ -233,6 +237,7 @@ extern bool AUTO;
 #define ENEMY_GROOMBA_BROWN				100000
 #define ENEMY_GROOMBA_RED				200000
 #define ENEMY_KOOPAS_GREEN				300000
+#define ENEMY_BEETLE					310000
 #define ENEMY_KOOPAS_RED				400000
 #define ENEMY_PIRANHA_GREEN				500000
 #define ENEMY_VENUS_GREEN				600000
@@ -255,6 +260,7 @@ extern bool AUTO;
 #define ENEMY_ANI_MOVE_RIGHT_UP			20
 #define ENEMY_ANI_MOVE_LEFT_DOWN		21
 #define ENEMY_ANI_MOVE_RIGHT_DOWN		22
+#define ENEMY_ANI_IDLE					23
 #define ENEMY_ANI_DIE_STOMP				80
 #define ENEMY_ANI_DIE_HIT_LEFT			81
 #define ENEMY_ANI_DIE_HIT_RIGHT			82
