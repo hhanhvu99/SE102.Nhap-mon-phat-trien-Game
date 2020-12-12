@@ -687,6 +687,20 @@ void PlayerIntro::SetState(int state)
 		direction = 1;
 
 		break;
+	case MARIO_STATE_RUNNING_RIGHT_CUS:
+		vx += MARIO_RUNNING_SPEED_CUSTOM * dt;
+
+		if (abs(vx) > MARIO_MAX_RUNNING_SPEED)
+		{
+			vx = MARIO_MAX_RUNNING_SPEED;
+			if (level != MARIO_LEVEL_FROG)
+				isMax = true;
+			else
+				isMax = false;
+		}
+
+		direction = 1;
+		break;
 	case MARIO_STATE_WALKING_LEFT:
 		if (!touchLeft)
 		{
@@ -735,6 +749,19 @@ void PlayerIntro::SetState(int state)
 		break;
 	case MARIO_STATE_RUNNING_LEFT_FAST:
 		vx += -MARIO_RUNNING_SPEED_FAST * dt;
+
+		if (abs(vx) > MARIO_MAX_RUNNING_SPEED)
+		{
+			vx = -MARIO_MAX_RUNNING_SPEED;
+			if (level != MARIO_LEVEL_FROG)
+				isMax = true;
+			else
+				isMax = false;
+		}
+		direction = -1;
+		break;
+	case MARIO_STATE_RUNNING_LEFT_CUS:
+		vx += -MARIO_RUNNING_SPEED_CUSTOM * dt;
 
 		if (abs(vx) > MARIO_MAX_RUNNING_SPEED)
 		{

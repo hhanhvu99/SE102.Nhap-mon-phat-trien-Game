@@ -197,9 +197,12 @@ void Keyboard::OnKeyDown(int KeyCode)
 		switch (KeyCode)
 		{
 		case DIK_W:
-		{
 			SceneManager::GetInstance()->GetCurrentScene()->SetState(MENU_STATE_SKIP);
-		}
+			break;
+		case DIK_UPARROW:
+		case DIK_DOWNARROW:
+		case DIK_Q:
+			SceneManager::GetInstance()->GetCurrentScene()->SetState(MENU_STATE_OPTION);
 			break;
 		}
 	}

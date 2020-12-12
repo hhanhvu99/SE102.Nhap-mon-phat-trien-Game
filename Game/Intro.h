@@ -59,16 +59,25 @@
 #define MENU_WAITING_TIME		30000
 #define MENU_SPAWN_TIME			2000
 
+#define MENU_ARROW_POS_1_X		96.0f
+#define MENU_ARROW_POS_1_Y		144.0f	
+
+#define MENU_ARROW_POS_2_X		96.0f
+#define MENU_ARROW_POS_2_Y		160.0f	
+
 class Intro : public TestScene
 {
 	PlayerIntro* mario;
 	PlayerIntro* luigi;
+
 	BackGround* ribbon;
 	BackGround* ribbon_top;
 	BackGround* title;
 	BackGround* tree1;
 	BackGround* tree2;
 	BackGround* number;
+	BackGround* arrow;
+	BackGround* text;
 
 	Groomba* groomba;
 	KoopasIntro* turtleShell;
@@ -124,6 +133,8 @@ class Intro : public TestScene
 
 	int numberOfSpawn = 0;
 	DWORD currentTime = 0;
+
+	bool firstOption = true;
 
 public:
 	Intro(int id, LPCWSTR filePath);

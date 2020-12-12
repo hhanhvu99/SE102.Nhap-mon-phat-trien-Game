@@ -340,6 +340,8 @@ extern bool AUTO;
 
 //Menu State
 #define MENU_STATE_SKIP					100
+#define MENU_STATE_OPTION				200
+#define MENU_STATE_CHOOSE				300
 
 enum eType
 {

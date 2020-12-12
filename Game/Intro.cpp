@@ -77,6 +77,8 @@ void Intro::Load()
 	numberOfSpawn = 0;
 	currentTime = 0;
 
+	firstOption = true;
+
 	Global::GetInstance()->background_color = D3DCOLOR_XRGB(0, 0, 0);
 	AUTO = true;
 
@@ -141,6 +143,20 @@ void Intro::Load()
 			number->SetPosition(x, y - STANDARD_SIZE * 10);
 			number->SetDrawOrder(MENU_DRAW_ORDER_TITLE);
 		}
+		else if (i == 6 && j == 9)
+		{
+			arrow = static_cast<BackGround*>(object);
+			arrow->SetType(eType::MENU_TITLE);
+			arrow->SetAnimationSet(AnimationManager::GetInstance()->Get(MENU));
+			arrow->SetDrawOrder(MENU_DRAW_ORDER_TITLE);
+		}
+		else if (i == 7 && j == 9)
+		{
+			text = static_cast<BackGround*>(object);
+			text->SetType(eType::MENU_TITLE);
+			text->SetAnimationSet(AnimationManager::GetInstance()->Get(MENU));
+			text->SetDrawOrder(MENU_DRAW_ORDER_TITLE);
+		}
 		else
 		{
 			if (dynamic_cast<GroupObject*>(object))
@@ -159,7 +175,8 @@ void Intro::Load()
 	tree1->SetDisableDraw();
 	tree2->SetDisableDraw();
 	number->SetDisableDraw();
-
+	arrow->SetDisableDraw();
+	text->SetDisableDraw();
 }
 
 void Intro::Update(DWORD dt)
@@ -503,12 +520,12 @@ void Intro::Update(DWORD dt)
 				}
 				else if (timePass > MENU_MARIO_SECOND_15)
 				{
-					mario->SetState(MARIO_STATE_RUNNING_RIGHT_FAST);
+					mario->SetState(MARIO_STATE_RUNNING_RIGHT_CUS);
+					mario->SetDrawOrder(MENU_DRAW_ORDER_RIBBON_BG);
 				}
 				else if (timePass > MENU_MARIO_SECOND_14)
 				{
 					mario->SetState(MARIO_STATE_IDLE);
-					mario->SetDrawOrder(MENU_DRAW_ORDER_RIBBON_BG);
 				}
 				else if (timePass > MENU_MARIO_SECOND_13)
 				{
@@ -734,6 +751,8 @@ void Intro::Update(DWORD dt)
 			tree2->SetAllowDraw();
 			tree2->SetDrawColor(color);
 	
+			arrow->SetAllowDraw();
+			text->SetAllowDraw();
 
 			//Delete all entity
 			for (auto object : gameObjects)
@@ -781,6 +800,11 @@ void Intro::Update(DWORD dt)
 			}
 		}
 
+		if (firstOption)
+			arrow->SetPosition(MENU_ARROW_POS_1_X, MENU_ARROW_POS_1_Y);
+		else
+			arrow->SetPosition(MENU_ARROW_POS_2_X, MENU_ARROW_POS_2_Y);
+
 		if (now - waitingTime > MENU_WAITING_TIME)
 		{
 			Unload();
@@ -823,6 +847,8 @@ void Intro::Unload()
 	tree1 = NULL;
 	tree2 = NULL;
 	number = NULL;
+	arrow = NULL;
+	text = NULL;
 
 	groomba = NULL;
 	turtleShell = NULL;
@@ -838,6 +864,9 @@ void Intro::SetState(int state)
 	{
 	case MENU_STATE_SKIP:
 		showMenu = true;
+		break;
+	case MENU_STATE_OPTION:
+		firstOption = !firstOption;
 		break;
 	default:
 		break;
