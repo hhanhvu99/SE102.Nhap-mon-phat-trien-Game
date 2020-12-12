@@ -451,8 +451,8 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			if (grabTurtlePress == false)
 			{
-				grabObject->SetState(ENEMY_STATE_KICK);
 				grabObject->SetDirection(direction);
+				grabObject->SetState(ENEMY_STATE_KICK);
 				grabObject = NULL;
 				grabbing = false;
 				directionGrab = 0;

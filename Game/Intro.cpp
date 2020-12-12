@@ -18,9 +18,65 @@ bool Intro::OutSideCam(LPGAMEOBJECT object)
 	return false;
 }
 
+void Intro::Reset()
+{
+
+
+}
+
 void Intro::Load()
 {
 	TestScene::Load();
+
+	isFirst = true;
+
+	moveRibbon = true;
+	setSpeed = true;
+
+	moveTitle = false;
+	shaking = false;
+	startShaking = true;
+	sign = 1;
+	shakingTime = 0;
+	waittingTime = 0;
+
+	allowTranform = false;
+	startTranform = true;
+	tranformTime = 0;
+
+	allowCreate = true;
+	allowEntity = false;
+	startEntity = true;
+	timeEntity = 0;
+
+	stageTwoFirst = true;
+	allowCreateTurtleShell = true;
+
+	allowPartOne = true;
+
+	hitByShell = true;
+	timeHitShell = 0;
+
+	inRaccoonFirst = true;
+	timeRaccoon = 0;
+
+	beginStageTwo = false;
+	allowPartTwo = false;
+	allowBreak = true;
+	turtleShellFirst = true;
+	turtleShellSecond = true;
+	luigiDisappear = false;
+	jumpFirst = true;
+	turtleRollFirst = true;
+	turnFirst = true;
+
+	showMenu = false;
+	menuFirst = true;
+	waitingTime = 0;
+
+	numberOfSpawn = 0;
+	currentTime = 0;
+
 	Global::GetInstance()->background_color = D3DCOLOR_XRGB(0, 0, 0);
 	AUTO = true;
 
@@ -204,7 +260,7 @@ void Intro::Update(DWORD dt)
 
 			if (allowCreateTurtleShell)
 			{
-				turtleShell = new KoopasIntro(9, -5, ENEMY_KOOPAS_GREEN, true);
+				turtleShell = new KoopasIntro(9, -5, ENEMY_KOOPAS_MENU, true);
 				turtleShell->SetDrawOrder(MENU_DRAW_ORDER_ENEMY);
 				turtleShell->SetAnimationSet(AnimationManager::GetInstance()->Get(ENEMY_MOB));
 
@@ -265,6 +321,7 @@ void Intro::Update(DWORD dt)
 			ribbon_top->SetDrawColor(color);
 
 			number->SetAllowDraw();
+			allowTranform = false;
 
 		}
 		else if (timePass > MENU_TIME_STAGE_THREE)
@@ -408,6 +465,191 @@ void Intro::Update(DWORD dt)
 				luigi->SetType(eType::ENEMY_MOB_DIE);
 			}
 		}
+		else if (beginStageTwo)
+		{
+			DWORD timePass = now - timeRaccoon;
+
+			if (inRaccoonFirst)
+			{
+				timeRaccoon = now;
+				inRaccoonFirst = false;
+			}
+
+			float vx, vy;
+			mario->GetSpeed(vx, vy);
+
+			if (allowBreak)
+			{
+				if (vx < 0)
+				{
+					turtleShell->SetGrapper(mario);
+					mario->SetState(MARIO_STATE_BREAK_RIGHT);
+				}
+				else
+				{
+					allowPartTwo = true;
+					allowBreak = false;
+				}
+			}
+
+
+			if (allowPartTwo)
+			{
+				if (timePass > MENU_MARIO_SECOND_16)
+				{
+					mario->SetState(MARIO_STATE_IDLE);
+					showMenu = true;
+					allowEntity = false;
+				}
+				else if (timePass > MENU_MARIO_SECOND_15)
+				{
+					mario->SetState(MARIO_STATE_RUNNING_RIGHT_FAST);
+				}
+				else if (timePass > MENU_MARIO_SECOND_14)
+				{
+					mario->SetState(MARIO_STATE_IDLE);
+					mario->SetDrawOrder(MENU_DRAW_ORDER_RIBBON_BG);
+				}
+				else if (timePass > MENU_MARIO_SECOND_13)
+				{
+					if (vx > 0)
+						mario->SetState(MARIO_STATE_BREAK_LEFT);
+					else
+						mario->SetState(MARIO_STATE_WALKING_LEFT);
+				}
+				else if (timePass > MENU_MARIO_SECOND_12)
+				{
+					mario->SetState(MARIO_STATE_RUNNING_RIGHT_FAST);
+				}
+				else if (timePass > MENU_MARIO_SECOND_11)
+				{
+					mario->SetState(MARIO_STATE_IDLE);
+				}
+				else if (timePass > MENU_MARIO_SECOND_10)
+				{
+					mario->SetState(MARIO_STATE_WALKING_LEFT);
+				}
+				else if (timePass > MENU_MARIO_SECOND_9)
+				{
+					if (turtleRollFirst)
+					{
+						turtleShell->SetDirection(1);
+						turtleShell->SetPosition(0.0f, 144.0f);
+						turtleShell->SetState(ENEMY_STATE_ROLLING);
+						turtleRollFirst = false;
+					}
+
+				}
+				else if (timePass > MENU_MARIO_SECOND_8)
+				{
+					mario->SetState(MARIO_STATE_RELEASE);
+					mario->SetState(MARIO_STATE_IDLE);
+					luigi->SetState(MARIO_STATE_RUNNING_RIGHT_FAST);
+				}
+				else if (timePass > MENU_MARIO_SECOND_7)
+				{
+					mario->SetState(MARIO_STATE_HOLD);
+					mario->SetState(MARIO_STATE_WALKING_RIGHT);
+					luigi->SetState(MARIO_STATE_IDLE);
+					luigiDisappear = true;
+				}
+				else if (timePass > MENU_MARIO_SECOND_6)
+				{
+					if (jumpFirst)
+					{
+						mario->SetState(MARIO_STATE_VERY_SHORT_JUMP);
+						jumpFirst = false;
+					}
+
+
+					if (mario->isTouchGround())
+					{
+						mario->SetState(MARIO_STATE_IDLE);
+					}
+					else if (turtleShell->GetState() == ENEMY_STATE_STOMP)
+					{
+						mario->SetState(MARIO_STATE_IDLE);
+						mario->SetDirection(1);
+						turtleShell->SetGrapper(mario);
+						turtleShell->SetRollSpeed(ENEMY_KOOPAS_ROLL_SPEED_SLOW);
+					}
+
+
+					luigi->SetState(MARIO_STATE_IDLE);
+				}
+				else if (timePass > MENU_MARIO_SECOND_5)
+				{
+					mario->SetState(MARIO_STATE_WALKING_LEFT);
+					luigi->SetState(MARIO_STATE_RELEASE);
+					luigi->SetState(MARIO_STATE_IDLE);
+				}
+				else if (timePass > MENU_MARIO_SECOND_4)
+				{
+					mario->SetState(MARIO_STATE_WALKING_LEFT);
+					luigi->SetState(MARIO_STATE_HOLD);
+					luigi->SetState(MARIO_STATE_IDLE);
+				}
+				else if (timePass > MENU_MARIO_SECOND_3)
+				{
+					mario->SetState(MARIO_STATE_IDLE);
+					luigi->SetState(MARIO_STATE_HOLD);
+					luigi->SetState(MARIO_STATE_IDLE);
+				}
+				else if (timePass > MENU_MARIO_SECOND_2)
+				{
+					mario->SetState(MARIO_STATE_IDLE);
+					luigi->SetState(MARIO_STATE_HOLD);
+					luigi->SetState(MARIO_STATE_WALKING_LEFT);
+				}
+				else if (timePass > MENU_MARIO_SECOND_1)
+				{
+					mario->SetState(MARIO_STATE_IDLE);
+					luigi->SetState(MARIO_STATE_HOLD);
+					luigi->SetPosition(MENU_LUIGI_POSITION_X, MENU_LUIGI_POSITION_Y);
+				}
+				else
+				{
+					mario->SetState(MARIO_STATE_WALKING_RIGHT);
+				}
+
+				if (OutSideCam(turtleShell))
+				{
+					if (turtleShellFirst)
+					{
+						if (turtleShell->GetState() != ENEMY_STATE_BEING_GRAB)
+						{
+							luigi->SetType(eType::PLAYER);
+							turtleShell->SetGrapper(luigi);
+							turtleShell->SetState(ENEMY_STATE_BEING_GRAB);
+							turtleShellFirst = false;
+
+						}
+
+						luigi->SetState(MARIO_STATE_HOLD);
+					}
+					else if (turtleShellSecond)
+					{
+						turtleShell->SetState(ENEMY_STATE_STOMP);
+						turtleShellSecond = false;
+					}
+
+				}
+
+				if (luigiDisappear)
+				{
+					if (OutSideCam(luigi))
+					{
+						luigi->SetState(MARIO_STATE_IDLE);
+						luigi->SetSpeed(0.0f, 0.0f);
+						luigi->SetDirection(-1);
+						luigi->SetType(eType::ENEMY_MOB_DIE);
+					}
+
+					luigiDisappear = false;
+				}
+			}
+
+		}
 		else if (mario->GetLevel() == MARIO_LEVEL_RACC)
 		{
 			if (groomba != NULL)
@@ -417,8 +659,8 @@ void Intro::Update(DWORD dt)
 					groomba->SetState(ENEMY_STATE_MOVING);
 					inRaccoonFirst = false;
 				}
-				
-				
+
+
 				float mX, mY;
 				float gX, gY;
 
@@ -442,75 +684,110 @@ void Intro::Update(DWORD dt)
 					inRaccoonFirst = true;
 				}
 			}
-			else if (mario->isTouchGround())
+
+			if (mario->isTouchGround())
 			{
-				DWORD timePass = now - timeRaccoon;
-
-				if (inRaccoonFirst)
-				{
-					timeRaccoon = now;
-					inRaccoonFirst = false;
-				}
-
-				float vx, vy;
-				mario->GetSpeed(vx, vy);
-
-				if (vx < 0)
-				{
-					turtleShell->SetGrapper(mario);
-					mario->SetState(MARIO_STATE_BREAK_RIGHT);
-				}
-				else
-				{
-					allowPartTwo = true;
-				}
-
-				if (allowPartTwo)
-				{
-					if (timePass > MENU_MARIO_SECOND_3)
-					{
-						mario->SetState(MARIO_STATE_IDLE);
-						luigi->SetState(MARIO_STATE_HOLD);
-						luigi->SetState(MARIO_STATE_IDLE);
-					}
-					else if (timePass > MENU_MARIO_SECOND_2)
-					{
-						mario->SetState(MARIO_STATE_IDLE);
-						luigi->SetState(MARIO_STATE_HOLD);
-						luigi->SetState(MARIO_STATE_WALKING_LEFT);
-					}
-					else if (timePass > MENU_MARIO_SECOND_1)
-					{
-						mario->SetState(MARIO_STATE_IDLE);
-						luigi->SetState(MARIO_STATE_HOLD);
-						luigi->SetPosition(MENU_LUIGI_POSITION_X, MENU_LUIGI_POSITION_Y);
-					}
-					else
-					{
-						mario->SetState(MARIO_STATE_WALKING_RIGHT);
-					}
-
-					if (OutSideCam(turtleShell) && turtleShellFirst)
-					{
-						if (turtleShell->GetState() != ENEMY_STATE_BEING_GRAB)
-						{
-							luigi->SetType(eType::PLAYER);
-							turtleShell->SetGrapper(luigi);
-							turtleShell->SetState(ENEMY_STATE_BEING_GRAB);
-							turtleShellFirst = false;
-						}
-		
-						luigi->SetState(MARIO_STATE_HOLD);
-					}
-
-				}
-					
+				beginStageTwo = true;
 			}
-			
+
 		}
 
 	}
 	
+	if (showMenu)
+	{
+		if (menuFirst)
+		{
+			float x, y;
+			float xNum, yNum;
+
+			title->GetPosition(x, y);
+			number->GetPosition(xNum, yNum);
+
+			moveRibbon = false;
+			moveTitle = false;
+			allowTranform = false;
+			allowEntity = false;
+
+			//Initiate final scene
+			D3DCOLOR color = D3DCOLOR_XRGB(255, 255, 255);
+			Global::GetInstance()->background_color = D3DCOLOR_XRGB(252, 216, 168);
+
+			ribbon->SetDisableDraw();
+
+			title->SetSprite(SpriteManager::GetInstance()->Get(MENU_TITLE_TEXT_BRIGHT));
+			title->SetSpeed(0, 0);
+			title->SetPosition(x, MENU_TITLE_Y);
+			title->SetDrawColor(color);
+
+			number->SetAllowDraw();
+			number->SetSpeed(0, 0);
+			number->SetPosition(xNum, MENU_NUMBER_Y);
+			number->SetDrawColor(color);
+
+			ribbon_top->SetAllowDraw();
+			ribbon_top->SetDrawColor(color);
+
+			tree1->SetAllowDraw();
+			tree1->SetDrawColor(color);
+
+			tree2->SetAllowDraw();
+			tree2->SetDrawColor(color);
+	
+
+			//Delete all entity
+			for (auto object : gameObjects)
+			{
+				if (object->GetType() != eType::MENU_TITLE && object->GetType() != eType::GROUP)
+					Destroy(object);
+			}
+
+			waitingTime = now;
+			currentTime = now;
+			menuFirst = false;
+		}
+
+		if (numberOfSpawn < 3)
+		{
+			if (now - currentTime > MENU_SPAWN_TIME)
+			{
+				KoopasIntro* koopas = new KoopasIntro(0, 9, ENEMY_KOOPAS_MENU, false);
+				koopas->SetDrawOrder(MENU_DRAW_ORDER_ENEMY);
+				koopas->SetAnimationSet(AnimationManager::GetInstance()->Get(ENEMY_MOB));
+				koopas->SetDirection(1);
+				++numberOfSpawn;
+				currentTime = now;
+
+				if (numberOfSpawn == 1)
+					firstTurtle = koopas;
+			}
+
+		}
+		else if (numberOfSpawn == 3)
+		{
+			float x, y;
+			float cx, cy;
+			firstTurtle->GetPosition(x, y);
+			GameEngine::GetInstance()->GetCamPos(cx, cy);
+
+			if (x + firstTurtle->GetWidth() > cy + SCREEN_WIDTH)
+			{
+				KoopasIntro* koopas = new KoopasIntro(0, 9, ENEMY_KOOPAS_MENU_SPECIAL, false);
+				koopas->SetDrawOrder(MENU_DRAW_ORDER_ENEMY);
+				koopas->SetAnimationSet(AnimationManager::GetInstance()->Get(ENEMY_MOB));
+				koopas->SetDirection(1);
+				koopas->IsSpecial();
+				++numberOfSpawn;
+			}
+		}
+
+		if (now - waitingTime > MENU_WAITING_TIME)
+		{
+			Unload();
+			Load();
+		}
+		
+	}
 }
 
 void Intro::Render()
@@ -534,4 +811,36 @@ void Intro::Render()
 
 void Intro::Unload()
 {
+	for (auto object : gameObjects)
+		Destroy(object);
+
+	mario = NULL;
+	luigi = NULL;
+
+	ribbon = NULL;
+	ribbon_top = NULL;
+	title = NULL;
+	tree1 = NULL;
+	tree2 = NULL;
+	number = NULL;
+
+	groomba = NULL;
+	turtleShell = NULL;
+	firstTurtle = NULL;
+
+}
+
+void Intro::SetState(int state)
+{
+	Scene::SetState(state);
+
+	switch (state)
+	{
+	case MENU_STATE_SKIP:
+		showMenu = true;
+		break;
+	default:
+		break;
+	}
+
 }

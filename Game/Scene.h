@@ -15,6 +15,7 @@ protected:
 
 	KeyEventHandler* key_handler;
 	int id;
+	int state;
 	LPCWSTR sceneFilePath;
 
 public:
@@ -33,6 +34,7 @@ public:
 	virtual void Unload() = 0;
 	virtual void Update(DWORD dt) = 0;
 	virtual void Render() = 0;
+	virtual void SetState(int state) { this->state = state; }
 
 	~Scene();
 };

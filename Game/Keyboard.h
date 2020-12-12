@@ -3,6 +3,7 @@
 
 #include "KeyEventHandler.h"
 #include "Mario.h"
+#include "SceneManager.h"
 
 class Mario;
 class Keyboard : public KeyEventHandler

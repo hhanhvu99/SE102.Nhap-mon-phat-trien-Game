@@ -17,6 +17,7 @@ KoopasIntro::KoopasIntro(int placeX, int placeY, int mobType, bool inShell)
 	this->rolling = false;
 	this->beingGrab = false;
 	this->upSideDown = false;
+	this->rollSpeed = ENEMY_KOOPAS_ROLL_SPEED_X;
 
 	this->width = ENEMY_KOOPAS_WIDTH;
 	this->height = ENEMY_KOOPAS_HEIGHT;
@@ -24,6 +25,7 @@ KoopasIntro::KoopasIntro(int placeX, int placeY, int mobType, bool inShell)
 
 	this->direction = 1;
 	this->mobType = mobType;
+	this->special = false;
 
 	if (mobType == ENEMY_BEETLE)
 	{
@@ -95,13 +97,20 @@ void KoopasIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		if (!immobilize)
 		{
 			if (type != eType::ENEMY_MOB_DIE)
-				vx = direction * ENEMY_KOOPAS_MOVE_SPEED_X;
+			{
+				if (special)
+					vx = direction * ENEMY_KOOPAS_MOVE_SPEED_FAST;
+				else
+					vx = direction * ENEMY_KOOPAS_MOVE_SPEED_X;
+			}
 			else
+			{
 				vx = direction * ENEMY_KOOPAS_WHIP_SPEED;
+			}
+				
 		}
 			
 		
-
 		pointX = this->x + width / 2;
 		pointY = this->y;
 		//DebugOut(L"Grab: %d \n", beingGrab);
@@ -138,7 +147,7 @@ void KoopasIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		if (state == ENEMY_STATE_ROLL_SPECIAL)
 			vx = direction * ENEMY_KOOPAS_ROLL_SPEED_DEFLECT;
 		else
-			vx = direction * ENEMY_KOOPAS_ROLL_SPEED_X;
+			vx = direction * rollSpeed;
 	}
 	else if (beingGrab)
 	{
@@ -277,12 +286,6 @@ void KoopasIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		coEvents[i] = NULL;
 	}
 
-	if (x < camPosX - ENTITY_SAFE_DELETE_RANGE || x > camPosX + ENTITY_SAFE_DELETE_RANGE ||
-		y < camPosY - ENTITY_SAFE_DELETE_RANGE || y > camPosY + ENTITY_SAFE_DELETE_RANGE)
-	{
-		this->Destroy();
-		return;
-	}
 }
 
 void KoopasIntro::Render()

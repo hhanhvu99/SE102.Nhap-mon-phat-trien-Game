@@ -79,7 +79,6 @@ void PlayerIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				inTransition = false;
 				PAUSE = false;
 				SetLevel(level);
-				type = eType::PLAYER;
 			}
 		}
 
@@ -323,8 +322,8 @@ void PlayerIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			if (grabTurtlePress == false)
 			{
-				grabObject->SetState(ENEMY_STATE_KICK);
 				grabObject->SetDirection(direction);
+				grabObject->SetState(ENEMY_STATE_KICK);
 				grabObject = NULL;
 				grabbing = false;
 				directionGrab = 0;
@@ -673,6 +672,21 @@ void PlayerIntro::SetState(int state)
 	case MARIO_STATE_WALK_RIGHT_NO_MOVE:
 		direction = 1;
 		break;
+	case MARIO_STATE_RUNNING_RIGHT_FAST:
+		vx += MARIO_RUNNING_SPEED_FAST * dt;
+
+		if (abs(vx) > MARIO_MAX_RUNNING_SPEED)
+		{
+			vx = MARIO_MAX_RUNNING_SPEED;
+			if (level != MARIO_LEVEL_FROG)
+				isMax = true;
+			else
+				isMax = false;
+		}
+
+		direction = 1;
+
+		break;
 	case MARIO_STATE_WALKING_LEFT:
 		if (!touchLeft)
 		{
@@ -719,6 +733,19 @@ void PlayerIntro::SetState(int state)
 	case MARIO_STATE_WALK_LEFT_NO_MOVE:
 		direction = -1;
 		break;
+	case MARIO_STATE_RUNNING_LEFT_FAST:
+		vx += -MARIO_RUNNING_SPEED_FAST * dt;
+
+		if (abs(vx) > MARIO_MAX_RUNNING_SPEED)
+		{
+			vx = -MARIO_MAX_RUNNING_SPEED;
+			if (level != MARIO_LEVEL_FROG)
+				isMax = true;
+			else
+				isMax = false;
+		}
+		direction = -1;
+		break;
 	case MARIO_STATE_BREAK_LEFT:
 		if (isRunning) vx -= Global::Sign(vx) * MARIO_RUNNING_BREAK_SPEED * dt;
 		else vx -= Global::Sign(vx) * MARIO_BREAK_SPEED * dt;
@@ -755,6 +782,15 @@ void PlayerIntro::SetState(int state)
 	case MARIO_STATE_STOP_JUMP:
 		jumpButtonPressed = false;
 		jump_allow = false;
+		break;
+	case MARIO_STATE_VERY_SHORT_JUMP:
+		if (touchGround)
+		{
+			vy = -MARIO_SHORT_JUMP_SPEED_Y;
+			touchGround = false;
+
+		}
+		//DebugOut(L"dt: %d\n", dt);
 		break;
 	case MARIO_STATE_SHORT_JUMP:
 		if (touchGround)
@@ -871,11 +907,11 @@ void PlayerIntro::SetState(int state)
 		PAUSE = true;
 		type = eType::PLAYER_UNTOUCHABLE;
 
-		oldLevel = MARIO_LEVEL_BIG;
-		level = MARIO_LEVEL_SMALL;
 		GameObject::SetState(MARIO_STATE_TRANSITION_2);
 		startTransitionTwo = now;
 		transition_frame = now;
+		oldLevel = MARIO_LEVEL_BIG;
+		level = MARIO_LEVEL_SMALL;
 
 
 		inTransition = true;

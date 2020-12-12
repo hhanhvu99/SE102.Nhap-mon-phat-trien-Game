@@ -42,6 +42,22 @@
 #define MENU_MARIO_SECOND_1		2200
 #define MENU_MARIO_SECOND_2		2500
 #define MENU_MARIO_SECOND_3		3500
+#define MENU_MARIO_SECOND_4		3550
+#define MENU_MARIO_SECOND_5		4600
+#define MENU_MARIO_SECOND_6		4800
+#define MENU_MARIO_SECOND_7		5800
+#define MENU_MARIO_SECOND_8		7200
+#define MENU_MARIO_SECOND_9		8500
+#define MENU_MARIO_SECOND_10	10500
+#define MENU_MARIO_SECOND_11	10700
+#define MENU_MARIO_SECOND_12	10900
+#define MENU_MARIO_SECOND_13	11650
+#define MENU_MARIO_SECOND_14	13000
+#define MENU_MARIO_SECOND_15	13700
+#define MENU_MARIO_SECOND_16	14500
+
+#define MENU_WAITING_TIME		30000
+#define MENU_SPAWN_TIME			2000
 
 class Intro : public TestScene
 {
@@ -56,6 +72,7 @@ class Intro : public TestScene
 
 	Groomba* groomba;
 	KoopasIntro* turtleShell;
+	KoopasIntro* firstTurtle;
 
 	bool isFirst = true;
 
@@ -91,18 +108,34 @@ class Intro : public TestScene
 	bool inRaccoonFirst = true;
 	DWORD timeRaccoon = 0;
 
+	bool beginStageTwo = false;
 	bool allowPartTwo = false;
+	bool allowBreak = true;
 	bool turtleShellFirst = true;
+	bool turtleShellSecond = true;
+	bool luigiDisappear = false;
+	bool jumpFirst = true;
+	bool turtleRollFirst = true;
+	bool turnFirst = true;
+
+	bool showMenu = false;
+	bool menuFirst = true;
+	DWORD waitingTime = 0;
+
+	int numberOfSpawn = 0;
+	DWORD currentTime = 0;
 
 public:
 	Intro(int id, LPCWSTR filePath);
 
 	bool OutSideCam(LPGAMEOBJECT object);
+	void Reset();
 
 	virtual void Load();
 	virtual void Update(DWORD dt);
 	virtual void Render();
 	virtual void Unload();
+	virtual void SetState(int state);
 
 	//CMario* GetPlayer() { return player; }
 };
