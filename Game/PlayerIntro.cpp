@@ -21,10 +21,8 @@ PlayerIntro::PlayerIntro(float x, float y) : GameObject()
 
 	touchGround = false;
 	ani_walk_time = MARIO_ANI_WALKING_TIME_DEFAULT;
-	lengthPalette = sizeof(InvicibilityPalette) / sizeof(InvicibilityPalette[0]);
-	indexPalette = 0;
 
-	SetState(MARIO_STATE_IDLE);
+	SetState(MARIO_MENU_STATE_IDLE);
 	SetLevel(level);
 	this->Reset();
 }
@@ -35,10 +33,10 @@ void PlayerIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	GameObject::Update(dt);
 
 	// Simple fall down
-	vy += MARIO_GRAVITY * dt;
+	vy += MARIO_MENU_GRAVITY * dt;
 
-	if (vy > MARIO_MAX_FALLING_SPEED)
-		vy = MARIO_MAX_FALLING_SPEED;
+	if (vy > MARIO_MENU_MAX_FALLING_SPEED)
+		vy = MARIO_MENU_MAX_FALLING_SPEED;
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -46,15 +44,7 @@ void PlayerIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	coEvents.clear();
 
 	// turn off collision when die 
-	if (state != MARIO_STATE_DIE)
-	{
-		CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY, eType::MARIO_BULLET, eType::ENEMY_MOB_DIE });
-	}
-
-	else
-	{
-		vx = 0;
-	}
+	CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY, eType::MARIO_BULLET, eType::ENEMY_MOB_DIE });
 
 	if (inTransition)
 	{
@@ -86,38 +76,11 @@ void PlayerIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	if (hitByLuigi)
 	{
-		SetState(MARIO_STATE_CROUCH);
+		SetState(MARIO_MENU_STATE_CROUCH);
 	}
 
 	// No collision occured, proceed normally
 	//DebugOut(L"Size: %d \n", coEvents.size());
-
-	if (direction < 0)
-	{
-		pointX = this->x + direction * (MARIO_POINT_COLLIDE_OFFSET_X);
-		pointX2 = pointX;
-		pointTail_X = pointX - MARIO_POINT_TAIL_OFFSET_X;
-	}
-	else if (direction > 0)
-	{
-		pointX = this->x + width + direction * (MARIO_POINT_COLLIDE_OFFSET_X);
-		pointX2 = pointX;
-		pointTail_X = pointX + MARIO_POINT_TAIL_OFFSET_X;
-	}
-
-	pointY = this->y + MARIO_POINT_COLLIDE_OFFSET_Y;
-	pointY2 = this->y + this->height - MARIO_POINT_COLLIDE_OFFSET_Y;
-	pointTail_Y = this->y + MARIO_POINT_TAIL_OFFSET_Y;
-
-	bool result = PointCollision(*coObjects, pointX, pointY);
-	bool result2 = PointCollision(*coObjects, pointX2, pointY2);
-
-	if (result + result2 == 0)
-	{
-		touchLeft = false;
-		touchRight = false;
-	}
-
 	//DebugOut(L"Result: %d\n", result);
 
 	if (coEvents.size() == 0)
@@ -159,16 +122,14 @@ void PlayerIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			{
 				if (nx > 0)
 				{
-					touchLeft = true;
-					if (isCrouch) state = MARIO_STATE_CROUCH;
-					else state = MARIO_STATE_IDLE;
+					if (isCrouch) state = MARIO_MENU_STATE_CROUCH;
+					else state = MARIO_MENU_STATE_IDLE;
 					vx = 0;
 				}
 				else
 				{
-					touchRight = true;
-					if (isCrouch) state = MARIO_STATE_CROUCH;
-					else state = MARIO_STATE_IDLE;
+					if (isCrouch) state = MARIO_MENU_STATE_CROUCH;
+					else state = MARIO_MENU_STATE_IDLE;
 					vx = 0;
 				}
 
@@ -237,7 +198,7 @@ void PlayerIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					level = MARIO_LEVEL_RACC;
 
 					if (oldLevel == MARIO_LEVEL_BIG)
-						SetState(MARIO_STATE_UP);
+						SetState(MARIO_MENU_STATE_UP);
 					else
 						level = oldLevel;
 
@@ -252,10 +213,10 @@ void PlayerIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 			if (obj->GetType() == eType::PLAYER)
 			{
-				SetState(MARIO_STATE_HIT_BY_PLAYER);
+				SetState(MARIO_MENU_STATE_HIT_BY_PLAYER);
 				float vx, vy;
 				obj->GetSpeed(vx, vy);
-				obj->SetSpeed(vx, -LUIGI_JUMP_SPEED_Y);
+				obj->SetSpeed(vx, -LUIGI_MENU_JUMP_SPEED_Y);
 			}
 
 		}
@@ -273,7 +234,7 @@ void PlayerIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 
 	//Is running or not?
-	if (abs(vx) > MARIO_MAX_WALKING_SPEED)
+	if (abs(vx) > MARIO_MENU_MAX_WALKING_SPEED)
 		isRunning = true;
 	else
 		isRunning = false;
@@ -282,25 +243,25 @@ void PlayerIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	float speed = abs(vx);
 	if (level != MARIO_LEVEL_FROG)
 	{
-		if (speed < MARIO_MAX_WALKING_SPEED)
+		if (speed < MARIO_MENU_MAX_WALKING_SPEED)
 		{
 			ani_walk_time = MARIO_ANI_WALKING_TIME_DEFAULT;
 			if (touchGround)
 				isMax = false;
 		}
-		else if (speed == MARIO_MAX_WALKING_SPEED)
+		else if (speed == MARIO_MENU_MAX_WALKING_SPEED)
 		{
 			ani_walk_time = MARIO_ANI_WALKING_TIME_WARMUP;
 			if (touchGround)
 				isMax = false;
 		}
-		else if (speed < MARIO_HALF_MAX_RUNNING_SPEED)
+		else if (speed < MARIO_MENU_HALF_MAX_RUNNING_SPEED)
 		{
 			ani_walk_time = MARIO_ANI_WALKING_TIME_WARMUP;
 			if (touchGround)
 				isMax = false;
 		}
-		else if (speed < MARIO_MAX_RUNNING_SPEED)
+		else if (speed < MARIO_MENU_MAX_RUNNING_SPEED)
 		{
 			ani_walk_time = MARIO_ANI_WALKING_TIME_RUN;
 			if (touchGround)
@@ -328,7 +289,7 @@ void PlayerIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				grabbing = false;
 				directionGrab = 0;
 
-				SetState(MARIO_STATE_KICK);
+				SetState(MARIO_MENU_STATE_KICK);
 			}
 			else
 			{
@@ -336,61 +297,20 @@ void PlayerIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				int widthObject;
 				grabObject->GetWidth(widthObject);
 
-				if (switching == false)
+				if (direction > 0)
 				{
-					if (direction > 0)
-					{
-						if (level != MARIO_LEVEL_FROG)
-							x = this->x + widthObject + MARIO_GRAB_OFFSET_X;
-						else
-							x = this->x + width + MARIO_GRAB_OFFSET_X - 5.0f;
-					}
+					if (level != MARIO_LEVEL_FROG)
+						x = this->x + widthObject + MARIO_GRAB_OFFSET_X;
 					else
-						x = this->x - widthObject - MARIO_GRAB_OFFSET_X;
-
-					if (level != 1100)
-						y = this->y + MARIO_GRAB_OFFSET_Y;
-					else
-						y = this->y - 1.0f;
-
+						x = this->x + width + MARIO_GRAB_OFFSET_X - 5.0f;
 				}
-				else //Switching
-				{
-					if (GetTickCount() - startSwitching >= MARIO_SWITCHING_DURATION * 2 / 3)
-					{
-						if (direction > 0)
-						{
-							if (level != MARIO_LEVEL_FROG)
-								x = this->x + widthObject + MARIO_GRAB_OFFSET_X;
-							else
-								x = this->x + width + MARIO_GRAB_OFFSET_X - 5.0f;
-						}
-						else
-							x = this->x - widthObject - MARIO_GRAB_OFFSET_X;
-						switching = false;
-					}
-					else if (GetTickCount() - startSwitching >= MARIO_SWITCHING_DURATION * 1 / 3)
-						x = this->x + (widthObject - width) / 2;
-					else
-					{
-						if (direction < 0)
-						{
-							if (level != MARIO_LEVEL_FROG)
-								x = this->x + widthObject + MARIO_GRAB_OFFSET_X;
-							else
-								x = this->x + width + MARIO_GRAB_OFFSET_X - 5.0f;
-						}
-						else
-							x = this->x - widthObject - MARIO_GRAB_OFFSET_X;
-					}
+				else
+					x = this->x - widthObject - MARIO_GRAB_OFFSET_X;
 
-					if (level != 1100)
-						y = this->y + MARIO_GRAB_OFFSET_Y;
-					else
-						y = this->y - 1.0f;
-
-					ani_walk_time = MARIO_SWITCHING_TIME;
-				}
+				if (level != 1100)
+					y = this->y + MARIO_GRAB_OFFSET_Y;
+				else
+					y = this->y - 1.0f;
 
 				grabObject->SetPosition(x, y);
 				grabObject->SetSpeed(0, 0);
@@ -404,7 +324,7 @@ void PlayerIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (jump_allow)
 	{
 		if (GetTickCount() - jump_start < MARIO_MAX_JUMPING)
-			vy -= (MARIO_JUMPING_SPEED + MARIO_GRAVITY) * dt;
+			vy -= (MARIO_MENU_JUMPING_SPEED + MARIO_MENU_GRAVITY) * dt;
 		else
 			jump_allow = false;
 	}
@@ -412,7 +332,7 @@ void PlayerIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	//Flapping
 	if (jumpButtonPressed)
 	{
-		SetState(MARIO_STATE_JUMP_FLAP_HOLD);
+		SetState(MARIO_MENU_STATE_JUMP_FLAP_HOLD);
 	}
 
 	if (flapping == true)
@@ -434,7 +354,7 @@ void PlayerIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		if (GetTickCount() - startFlap > MARIO_FLAP_TIME)
 			flapping = false;
 		else
-			vy = MARIO_MAX_GRAVITY;
+			vy = MARIO_MENU_MAX_GRAVITY;
 
 	}
 
@@ -445,12 +365,6 @@ void PlayerIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			kicking = false;
 	}
 
-	//Jump Crouch
-	if (isCrouch && !touchGround)
-		jumpCrouch = true;
-	else if (touchGround)
-		jumpCrouch = false;
-
 }
 
 void PlayerIntro::Render()
@@ -459,15 +373,13 @@ void PlayerIntro::Render()
 	//DebugOut(L"Running: %d\n", isRunning);
 	ani = -1;
 
-	if (state == MARIO_STATE_DIE)
-		ani = MARIO_ANI_DIE;
-	else if (inTransition == false)
+	if (inTransition == false)
 	{
-		if (state == MARIO_STATE_TITLE_1)
+		if (state == MARIO_MENU_STATE_TITLE_1)
 		{
 			ani = level + MARIO_ANI_TITLE_1;
 		}
-		else if (state == MARIO_STATE_TITLE_2)
+		else if (state == MARIO_MENU_STATE_TITLE_2)
 		{
 			ani = level + MARIO_ANI_TITLE_2;
 		}
@@ -483,11 +395,6 @@ void PlayerIntro::Render()
 				if (direction > 0) ani = level + MARIO_ANI_HOLD_JUMP_RIGHT;
 				else ani = level + MARIO_ANI_HOLD_JUMP_LEFT;
 			}
-			else if (switching)
-			{
-				if (direction > 0) ani = level + MARIO_ANI_HOLD_L_TO_R;
-				else ani = level + MARIO_ANI_HOLD_R_TO_L;
-			}
 			else if (vx != 0)
 			{
 				if (direction > 0) ani = level + MARIO_ANI_HOLD_RIGHT;
@@ -500,7 +407,7 @@ void PlayerIntro::Render()
 			}
 
 		}
-		else if (!touchGround && !jumpCrouch)
+		else if (!touchGround)
 		{
 			if (flapAni)
 			{
@@ -549,26 +456,26 @@ void PlayerIntro::Render()
 			}
 
 		}
-		else if ((state == MARIO_STATE_CROUCH || jumpCrouch) && level != MARIO_LEVEL_SMALL && level != MARIO_LEVEL_FROG)
+		else if (state == MARIO_MENU_STATE_CROUCH && level != MARIO_LEVEL_SMALL && level != MARIO_LEVEL_FROG)
 		{
 			if (direction > 0) ani = level + MARIO_ANI_DUCK_RIGHT;
 			else ani = level + MARIO_ANI_DUCK_LEFT;
 		}
-		else if (vx == 0 && state != MARIO_STATE_WALK_LEFT_NO_MOVE && state != MARIO_STATE_WALK_RIGHT_NO_MOVE)
+		else if (vx == 0 && state != MARIO_MENU_STATE_WALK_LEFT_NO_MOVE && state != MARIO_MENU_STATE_WALK_RIGHT_NO_MOVE)
 		{
 			if (direction > 0) ani = level + MARIO_ANI_IDLE_RIGHT;
 			else ani = level + MARIO_ANI_IDLE_LEFT;
 		}
-		else if (state == MARIO_STATE_BREAK_LEFT && level != MARIO_LEVEL_FROG)
+		else if (state == MARIO_MENU_STATE_BREAK_LEFT && level != MARIO_LEVEL_FROG)
 			ani = level + MARIO_ANI_BREAK_LEFT;
-		else if (state == MARIO_STATE_BREAK_RIGHT && level != MARIO_LEVEL_FROG)
+		else if (state == MARIO_MENU_STATE_BREAK_RIGHT && level != MARIO_LEVEL_FROG)
 			ani = level + MARIO_ANI_BREAK_RIGHT;
-		else if (vx > 0 || state == MARIO_STATE_WALK_RIGHT_NO_MOVE)
+		else if (vx > 0 || state == MARIO_MENU_STATE_WALK_RIGHT_NO_MOVE)
 		{
 			if (isMax) ani = level + MARIO_ANI_RUNNING_RIGHT;
 			else ani = level + MARIO_ANI_WALKING_RIGHT;
 		}
-		else if (vx < 0 || state == MARIO_STATE_WALK_LEFT_NO_MOVE)
+		else if (vx < 0 || state == MARIO_MENU_STATE_WALK_LEFT_NO_MOVE)
 		{
 			if (isMax) ani = level + MARIO_ANI_RUNNING_LEFT;
 			else ani = level + MARIO_ANI_WALKING_LEFT;
@@ -627,57 +534,51 @@ void PlayerIntro::SetState(int state)
 
 	switch (state)
 	{
-	case MARIO_STATE_WALKING_RIGHT:
-		if (!touchRight)
+	case MARIO_MENU_STATE_WALKING_RIGHT:
+		if (grabbing)
 		{
-			if (grabbing)
-			{
-				SetState(MARIO_STATE_RUNNING_RIGHT);
-				break;
-			}
-
-			if (level != MARIO_LEVEL_FROG)
-			{
-				tempVx = abs(vx);
-
-				if (tempVx < MARIO_MAX_WALKING_SPEED)
-					vx += MARIO_WALKING_SPEED * dt;
-				else if (tempVx >= MARIO_MAX_WALKING_SPEED && tempVx < MARIO_MAX_WALKING_SPEED + 0.01f)
-					vx = MARIO_MAX_WALKING_SPEED;
-				else
-					vx -= Global::Sign(vx) * MARIO_SLIDE_SPEED * dt;
-			}
-			direction = 1;
+			SetState(MARIO_MENU_STATE_RUNNING_RIGHT);
+			break;
 		}
 
-		break;
-	case MARIO_STATE_RUNNING_RIGHT:
-		if (!touchRight)
+		if (level != MARIO_LEVEL_FROG)
 		{
-			vx += MARIO_RUNNING_SPEED * dt;
+			tempVx = abs(vx);
 
-			if (abs(vx) > MARIO_MAX_RUNNING_SPEED)
-			{
-				vx = MARIO_MAX_RUNNING_SPEED;
-				if (level != MARIO_LEVEL_FROG)
-					isMax = true;
-				else
-					isMax = false;
-			}
-
-			direction = 1;
+			if (tempVx < MARIO_MENU_MAX_WALKING_SPEED)
+				vx += MARIO_MENU_WALKING_SPEED * dt;
+			else if (tempVx >= MARIO_MENU_MAX_WALKING_SPEED && tempVx < MARIO_MENU_MAX_WALKING_SPEED + 0.01f)
+				vx = MARIO_MENU_MAX_WALKING_SPEED;
+			else
+				vx -= Global::Sign(vx) * MARIO_MENU_SLIDE_SPEED * dt;
 		}
+		direction = 1;
+		
 
 		break;
-	case MARIO_STATE_WALK_RIGHT_NO_MOVE:
+	case MARIO_MENU_STATE_WALK_RIGHT_NO_MOVE:
 		direction = 1;
 		break;
-	case MARIO_STATE_RUNNING_RIGHT_FAST:
-		vx += MARIO_RUNNING_SPEED_FAST * dt;
+	case MARIO_MENU_STATE_RUNNING_RIGHT:
+		vx += MARIO_MENU_RUNNING_SPEED * dt;
 
-		if (abs(vx) > MARIO_MAX_RUNNING_SPEED)
+		if (abs(vx) > MARIO_MENU_MAX_RUNNING_SPEED)
 		{
-			vx = MARIO_MAX_RUNNING_SPEED;
+			vx = MARIO_MENU_MAX_RUNNING_SPEED;
+			if (level != MARIO_LEVEL_FROG)
+				isMax = true;
+			else
+				isMax = false;
+		}
+
+		direction = 1;
+		break;
+	case MARIO_MENU_STATE_RUNNING_RIGHT_FAST:
+		vx += MARIO_MENU_RUNNING_SPEED_FAST * dt;
+
+		if (abs(vx) > MARIO_MENU_MAX_RUNNING_SPEED)
+		{
+			vx = MARIO_MENU_MAX_RUNNING_SPEED;
 			if (level != MARIO_LEVEL_FROG)
 				isMax = true;
 			else
@@ -687,12 +588,12 @@ void PlayerIntro::SetState(int state)
 		direction = 1;
 
 		break;
-	case MARIO_STATE_RUNNING_RIGHT_CUS:
-		vx += MARIO_RUNNING_SPEED_CUSTOM * dt;
+	case MARIO_MENU_STATE_RUNNING_RIGHT_CUS:
+		vx += MARIO_MENU_RUNNING_SPEED_CUSTOM * dt;
 
-		if (abs(vx) > MARIO_MAX_RUNNING_SPEED)
+		if (abs(vx) > MARIO_MENU_MAX_RUNNING_SPEED)
 		{
-			vx = MARIO_MAX_RUNNING_SPEED;
+			vx = MARIO_MENU_MAX_RUNNING_SPEED;
 			if (level != MARIO_LEVEL_FROG)
 				isMax = true;
 			else
@@ -701,58 +602,38 @@ void PlayerIntro::SetState(int state)
 
 		direction = 1;
 		break;
-	case MARIO_STATE_WALKING_LEFT:
-		if (!touchLeft)
+	case MARIO_MENU_STATE_WALKING_LEFT:
+		if (grabbing)
 		{
-			if (grabbing)
-			{
-				SetState(MARIO_STATE_RUNNING_LEFT);
-				break;
-			}
-
-			if (level != MARIO_LEVEL_FROG)
-			{
-				tempVx = abs(vx);
-
-				if (tempVx < MARIO_MAX_WALKING_SPEED)
-					vx += -MARIO_WALKING_SPEED * dt;
-				else if (tempVx >= MARIO_MAX_WALKING_SPEED && tempVx < MARIO_MAX_WALKING_SPEED + 0.01f)
-					vx = -MARIO_MAX_WALKING_SPEED;
-				else
-					vx -= Global::Sign(vx) * MARIO_SLIDE_SPEED * dt;
-
-			}
-
-			direction = -1;
+			SetState(MARIO_MENU_STATE_RUNNING_LEFT);
+			break;
 		}
 
-		break;
-	case MARIO_STATE_RUNNING_LEFT:
-		if (!touchLeft)
+		if (level != MARIO_LEVEL_FROG)
 		{
-			vx += -MARIO_RUNNING_SPEED * dt;
+			tempVx = abs(vx);
 
-			if (abs(vx) > MARIO_MAX_RUNNING_SPEED)
-			{
-				vx = -MARIO_MAX_RUNNING_SPEED;
-				if (level != MARIO_LEVEL_FROG)
-					isMax = true;
-				else
-					isMax = false;
-			}
-			direction = -1;
+			if (tempVx < MARIO_MENU_MAX_WALKING_SPEED)
+				vx += -MARIO_MENU_WALKING_SPEED * dt;
+			else if (tempVx >= MARIO_MENU_MAX_WALKING_SPEED && tempVx < MARIO_MENU_MAX_WALKING_SPEED + 0.01f)
+				vx = -MARIO_MENU_MAX_WALKING_SPEED;
+			else
+				vx -= Global::Sign(vx) * MARIO_MENU_SLIDE_SPEED * dt;
+
 		}
 
+		direction = -1;
+
 		break;
-	case MARIO_STATE_WALK_LEFT_NO_MOVE:
+	case MARIO_MENU_STATE_WALK_LEFT_NO_MOVE:
 		direction = -1;
 		break;
-	case MARIO_STATE_RUNNING_LEFT_FAST:
-		vx += -MARIO_RUNNING_SPEED_FAST * dt;
+	case MARIO_MENU_STATE_RUNNING_LEFT:
+		vx += -MARIO_MENU_RUNNING_SPEED * dt;
 
-		if (abs(vx) > MARIO_MAX_RUNNING_SPEED)
+		if (abs(vx) > MARIO_MENU_MAX_RUNNING_SPEED)
 		{
-			vx = -MARIO_MAX_RUNNING_SPEED;
+			vx = -MARIO_MENU_MAX_RUNNING_SPEED;
 			if (level != MARIO_LEVEL_FROG)
 				isMax = true;
 			else
@@ -760,12 +641,12 @@ void PlayerIntro::SetState(int state)
 		}
 		direction = -1;
 		break;
-	case MARIO_STATE_RUNNING_LEFT_CUS:
-		vx += -MARIO_RUNNING_SPEED_CUSTOM * dt;
+	case MARIO_MENU_STATE_RUNNING_LEFT_FAST:
+		vx += -MARIO_MENU_RUNNING_SPEED_FAST * dt;
 
-		if (abs(vx) > MARIO_MAX_RUNNING_SPEED)
+		if (abs(vx) > MARIO_MENU_MAX_RUNNING_SPEED)
 		{
-			vx = -MARIO_MAX_RUNNING_SPEED;
+			vx = -MARIO_MENU_MAX_RUNNING_SPEED;
 			if (level != MARIO_LEVEL_FROG)
 				isMax = true;
 			else
@@ -773,70 +654,62 @@ void PlayerIntro::SetState(int state)
 		}
 		direction = -1;
 		break;
-	case MARIO_STATE_BREAK_LEFT:
-		if (isRunning) vx -= Global::Sign(vx) * MARIO_RUNNING_BREAK_SPEED * dt;
-		else vx -= Global::Sign(vx) * MARIO_BREAK_SPEED * dt;
+	case MARIO_MENU_STATE_RUNNING_LEFT_CUS:
+		vx += -MARIO_MENU_RUNNING_SPEED_CUSTOM * dt;
+
+		if (abs(vx) > MARIO_MENU_MAX_RUNNING_SPEED)
+		{
+			vx = -MARIO_MENU_MAX_RUNNING_SPEED;
+			if (level != MARIO_LEVEL_FROG)
+				isMax = true;
+			else
+				isMax = false;
+		}
+		direction = -1;
+		break;
+	case MARIO_MENU_STATE_BREAK_LEFT:
+		if (isRunning) vx -= Global::Sign(vx) * MARIO_MENU_RUNNING_BREAK_SPEED * dt;
+		else vx -= Global::Sign(vx) * MARIO_MENU_BREAK_SPEED * dt;
 		if (vx < 0)	vx = 0;
 		direction = -1;
 		break;
-	case MARIO_STATE_BREAK_RIGHT:
-		if (isRunning) vx -= Global::Sign(vx) * MARIO_RUNNING_BREAK_SPEED * dt;
-		else vx -= Global::Sign(vx) * MARIO_BREAK_SPEED * dt;
+	case MARIO_MENU_STATE_BREAK_RIGHT:
+		if (isRunning) vx -= Global::Sign(vx) * MARIO_MENU_RUNNING_BREAK_SPEED * dt;
+		else vx -= Global::Sign(vx) * MARIO_MENU_BREAK_SPEED * dt;
 		if (vx > 0)	vx = 0;
 		direction = 1;
 		break;
-	case MARIO_STATE_HOLD_SWITCH:
-		if (direction != directionGrab)
-		{
-			directionGrab = direction;
-			switching = true;
-			startSwitching = now;
-		}
-
-		break;
-	case MARIO_STATE_JUMP:
-		jumpButtonPressed = true;
-		if (startJumping == false)
-		{
-			jump_start = now;
-			startJumping = true;
-			jump_allow = true;
-			touchGround = false;
-		}
-
-		//DebugOut(L"State: %d\n", state);
-		break;
-	case MARIO_STATE_STOP_JUMP:
+	case MARIO_MENU_STATE_STOP_JUMP:
 		jumpButtonPressed = false;
 		jump_allow = false;
 		break;
-	case MARIO_STATE_VERY_SHORT_JUMP:
+	case MARIO_MENU_STATE_VERY_SHORT_JUMP:
 		if (touchGround)
 		{
-			vy = -MARIO_SHORT_JUMP_SPEED_Y;
+			vy = -MARIO_MENU_SHORT_JUMP_SPEED_Y;
 			touchGround = false;
 
 		}
 		//DebugOut(L"dt: %d\n", dt);
 		break;
-	case MARIO_STATE_SHORT_JUMP:
+	case MARIO_MENU_STATE_SHORT_JUMP:
 		if (touchGround)
 		{
-			vy = -MARIO_JUMP_SPEED_Y;
+			vy = -MARIO_MENU_JUMP_SPEED_Y;
 			touchGround = false;
 
 		}
 		//DebugOut(L"dt: %d\n", dt);
 		break;
-	case MARIO_STATE_LONG_JUMP:
+	case MARIO_MENU_STATE_LONG_JUMP:
 		if (touchGround)
 		{
-			vy = -MARIO_LONG_JUMP_SPEED_Y;
+			vy = -MARIO_MENU_LONG_JUMP_SPEED_Y;
 			touchGround = false;
 
 		}
 		break;
-	case MARIO_STATE_JUMP_FLAP_HOLD:
+	case MARIO_MENU_STATE_JUMP_FLAP_HOLD:
 		jumpButtonPressed = true;
 		if (jump_allow == true)
 			break;
@@ -851,17 +724,7 @@ void PlayerIntro::SetState(int state)
 
 		}
 		break;
-	case MARIO_STATE_JUMP_FLAP:
-		if (level == MARIO_LEVEL_RACC || level == MARIO_LEVEL_TANU)
-		{
-			startFlap = now;
-			startFlapAni = now;
-			flapping = true;
-			flapAni = true;
-
-		}
-		break;
-	case MARIO_STATE_CROUCH:
+	case MARIO_MENU_STATE_CROUCH:
 		if (level != MARIO_LEVEL_SMALL && level != MARIO_LEVEL_FROG && touchGround)
 		{
 			this->width = MARIO_BIG_CROUCH_BBOX_WIDTH;
@@ -873,33 +736,31 @@ void PlayerIntro::SetState(int state)
 			}
 		}
 		break;
-	case MARIO_STATE_NOT_CROUCH:
-		if (!jumpCrouch)
-		{
-			this->width = MARIO_BIG_BBOX_WIDTH;
-			this->height = MARIO_BIG_BBOX_HEIGHT;
-			this->y = this->y - (MARIO_BIG_BBOX_HEIGHT - MARIO_BIG_CROUCH_BBOX_HEIGHT);
-			isCrouch = false;
-		}
+	case MARIO_MENU_STATE_NOT_CROUCH:
+		this->width = MARIO_BIG_BBOX_WIDTH;
+		this->height = MARIO_BIG_BBOX_HEIGHT;
+		this->y = this->y - (MARIO_BIG_BBOX_HEIGHT - MARIO_BIG_CROUCH_BBOX_HEIGHT);
+		isCrouch = false;
+		
 		break;
-	case MARIO_STATE_IDLE:
+	case MARIO_MENU_STATE_IDLE:
 		if (vx != 0)
 		{
-			vx -= Global::Sign(vx) * MARIO_SLIDE_SPEED * dt;
-			if (abs(vx) < MARIO_BREAK_THRESHOLD) vx = 0;
+			vx -= Global::Sign(vx) * MARIO_MENU_SLIDE_SPEED * dt;
+			if (abs(vx) < MARIO_MENU_BREAK_THRESHOLD) vx = 0;
 		}
 		break;
-	case MARIO_STATE_HOLD:
+	case MARIO_MENU_STATE_HOLD:
 		grabTurtlePress = true;
 		break;
-	case MARIO_STATE_HOLD_SOMETHING:
+	case MARIO_MENU_STATE_HOLD_SOMETHING:
 		grabbing = true;
 		directionGrab = direction;
 		break;
-	case MARIO_STATE_RELEASE:
+	case MARIO_MENU_STATE_RELEASE:
 		grabTurtlePress = false;
 		break;
-	case MARIO_STATE_RELEASE_FULL:
+	case MARIO_MENU_STATE_RELEASE_FULL:
 		if (grabbing)
 		{
 			grabbing = false;
@@ -916,21 +777,21 @@ void PlayerIntro::SetState(int state)
 			SlowDown();
 		}
 		break;
-	case MARIO_STATE_HIT_BY_PLAYER:
+	case MARIO_MENU_STATE_HIT_BY_PLAYER:
 		vx = 0;
 		hitByLuigi = true;
 		break;
-	case MARIO_STATE_HIT_RELEASE:
+	case MARIO_MENU_STATE_HIT_RELEASE:
 		hitByLuigi = false;
-		SetState(MARIO_STATE_NOT_CROUCH);
+		SetState(MARIO_MENU_STATE_NOT_CROUCH);
 		break;
-	case MARIO_STATE_HIT_RELEASE_2:
+	case MARIO_MENU_STATE_HIT_RELEASE_2:
 		hitByShell = false;
 		break;
-	case MARIO_STATE_HIT_BY_SHELL:
+	case MARIO_MENU_STATE_HIT_BY_SHELL:
 		hitByShell = true;
 		break;
-	case MARIO_STATE_HIT:
+	case MARIO_MENU_STATE_HIT:
 		PAUSE = true;
 		type = eType::PLAYER_UNTOUCHABLE;
 
@@ -954,7 +815,7 @@ void PlayerIntro::SetState(int state)
 		}
 
 		break;
-	case MARIO_STATE_UP:
+	case MARIO_MENU_STATE_UP:
 		type = eType::PLAYER_UNTOUCHABLE;
 		PAUSE = true;
 
@@ -1122,7 +983,7 @@ bool PlayerIntro::PointCollision(vector<LPGAMEOBJECT>& coObjects, float pointX, 
 */
 void PlayerIntro::Reset()
 {
-	SetState(MARIO_STATE_IDLE);
+	SetState(MARIO_MENU_STATE_IDLE);
 	SetPosition(start_x, start_y);
 	SetSpeed(0, 0);
 

@@ -17,7 +17,7 @@ KoopasIntro::KoopasIntro(int placeX, int placeY, int mobType, bool inShell)
 	this->rolling = false;
 	this->beingGrab = false;
 	this->upSideDown = false;
-	this->rollSpeed = ENEMY_KOOPAS_ROLL_SPEED_X;
+	this->rollSpeed = ENEMY_MENU_KOOPAS_ROLL_SPEED_X;
 
 	this->width = ENEMY_KOOPAS_WIDTH;
 	this->height = ENEMY_KOOPAS_HEIGHT;
@@ -92,16 +92,16 @@ void KoopasIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// Simple fall down
 	if (PAUSE == false)
 	{
-		vy += ENEMY_KOOPAS_GRAVITY * dt;
+		vy += ENEMY_MENU_KOOPAS_GRAVITY * dt;
 
 		if (!immobilize)
 		{
 			if (type != eType::ENEMY_MOB_DIE)
 			{
 				if (special)
-					vx = direction * ENEMY_KOOPAS_MOVE_SPEED_FAST;
+					vx = direction * ENEMY_MENU_KOOPAS_MOVE_SPEED_FAST;
 				else
-					vx = direction * ENEMY_KOOPAS_MOVE_SPEED_X;
+					vx = direction * ENEMY_MENU_KOOPAS_MOVE_SPEED_X;
 			}
 			else
 			{
@@ -145,7 +145,7 @@ void KoopasIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	else if (rolling)
 	{
 		if (state == ENEMY_STATE_ROLL_SPECIAL)
-			vx = direction * ENEMY_KOOPAS_ROLL_SPEED_DEFLECT;
+			vx = direction * ENEMY_MENU_KOOPAS_ROLL_SPEED_DEFLECT;
 		else
 			vx = direction * rollSpeed;
 	}
@@ -230,9 +230,9 @@ void KoopasIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					if (dynamic_cast<PlayerIntro*>(e->obj))
 					{
 						PlayerIntro* mario = static_cast<PlayerIntro*>(e->obj);
-						mario->SetState(MARIO_STATE_HIT_BY_SHELL);
+						mario->SetState(MARIO_MENU_STATE_HIT_BY_SHELL);
 
-						this->vy = -ENEMY_KOOPAS_DEFLECT_Y;
+						this->vy = -ENEMY_MENU_KOOPAS_DEFLECT_Y;
 						direction = -1;
 
 						SetState(ENEMY_STATE_ROLL_SPECIAL);
@@ -241,7 +241,7 @@ void KoopasIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				else
 				{
 					if (immobilize == false)
-						e->obj->SetState(MARIO_STATE_HIT);
+						e->obj->SetState(MARIO_MENU_STATE_HIT);
 					else
 					{
 						if (mario->isGrappingPress())
@@ -252,7 +252,7 @@ void KoopasIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						}
 						else
 						{
-							mario->SetState(MARIO_STATE_KICK);
+							mario->SetState(MARIO_MENU_STATE_KICK);
 							mario->GetDirection(direction);
 							SetState(ENEMY_STATE_KICK);
 						}
@@ -375,7 +375,7 @@ void KoopasIntro::SetState(int state)
 			beingGrab = false;
 			break;
 		case ENEMY_STATE_HIT:
-			vy = -ENEMY_KOOPAS_DEFLECT;
+			vy = -ENEMY_MENU_KOOPAS_DEFLECT;
 
 			immobilize = false;
 			this->type = eType::ENEMY_MOB_DIE;

@@ -399,7 +399,7 @@ void Intro::Update(DWORD dt)
 			if (timePass > MENU_TIME_ENTITY_THREE)
 			{
 				if (!mario->IsStop())
-					mario->SetState(MARIO_STATE_IDLE);
+					mario->SetState(MARIO_MENU_STATE_IDLE);
 				else
 					allowPartOne = false;
 			}
@@ -407,25 +407,25 @@ void Intro::Update(DWORD dt)
 			{
 				if (stageTwoFirst)
 				{
-					luigi->SetState(MARIO_STATE_SHORT_JUMP);
+					luigi->SetState(MARIO_MENU_STATE_SHORT_JUMP);
 					stageTwoFirst = false;
 				}
 
 			}
 			else if (timePass > MENU_TIME_ENTITY_ONE)
 			{
-				mario->SetState(MARIO_STATE_WALKING_LEFT);
-				luigi->SetState(MARIO_STATE_WALKING_RIGHT);
+				mario->SetState(MARIO_MENU_STATE_WALKING_LEFT);
+				luigi->SetState(MARIO_MENU_STATE_WALKING_RIGHT);
 			}
 			else
 			{
-				mario->SetState(MARIO_STATE_WALK_LEFT_NO_MOVE);
-				luigi->SetState(MARIO_STATE_WALK_RIGHT_NO_MOVE);
+				mario->SetState(MARIO_MENU_STATE_WALK_LEFT_NO_MOVE);
+				luigi->SetState(MARIO_MENU_STATE_WALK_RIGHT_NO_MOVE);
 			}
 		}
 
 
-		if (mario->GetState() == MARIO_STATE_CROUCH)
+		if (mario->GetState() == MARIO_MENU_STATE_CROUCH)
 		{
 			float x, y;
 			float cx, cy;
@@ -437,8 +437,8 @@ void Intro::Update(DWORD dt)
 			if (y < cy)
 			{
 				luigi->SetSpeed(vx, 0.2f);
-				mario->SetState(MARIO_STATE_HIT_RELEASE);
-				mario->SetState(MARIO_STATE_IDLE);
+				mario->SetState(MARIO_MENU_STATE_HIT_RELEASE);
+				mario->SetState(MARIO_MENU_STATE_IDLE);
 
 				
 				moveTitle = true;
@@ -458,25 +458,25 @@ void Intro::Update(DWORD dt)
 			}
 			else if (timePass > MENU_MARIO_TITLE_4)
 			{
-				mario->SetState(MARIO_STATE_LONG_JUMP);
-				mario->SetState(MARIO_STATE_HIT_RELEASE_2);
+				mario->SetState(MARIO_MENU_STATE_LONG_JUMP);
+				mario->SetState(MARIO_MENU_STATE_HIT_RELEASE_2);
 			}
 			else if (timePass > MENU_MARIO_TITLE_3)
 			{
-				mario->SetState(MARIO_STATE_TITLE_2);
+				mario->SetState(MARIO_MENU_STATE_TITLE_2);
 			}
 			else if (timePass > MENU_MARIO_TITLE_2)
 			{
-				mario->SetState(MARIO_STATE_IDLE);
+				mario->SetState(MARIO_MENU_STATE_IDLE);
 			}
 			else
 			{
-				mario->SetState(MARIO_STATE_TITLE_1);
+				mario->SetState(MARIO_MENU_STATE_TITLE_1);
 			}
 
 			if (OutSideCam(luigi))
 			{
-				luigi->SetState(MARIO_STATE_IDLE);
+				luigi->SetState(MARIO_MENU_STATE_IDLE);
 				luigi->SetSpeed(0.0f, 0.0f);
 				luigi->SetDirection(-1);
 				luigi->SetType(eType::ENEMY_MOB_DIE);
@@ -500,7 +500,7 @@ void Intro::Update(DWORD dt)
 				if (vx < 0)
 				{
 					turtleShell->SetGrapper(mario);
-					mario->SetState(MARIO_STATE_BREAK_RIGHT);
+					mario->SetState(MARIO_MENU_STATE_BREAK_RIGHT);
 				}
 				else
 				{
@@ -514,37 +514,37 @@ void Intro::Update(DWORD dt)
 			{
 				if (timePass > MENU_MARIO_SECOND_16)
 				{
-					mario->SetState(MARIO_STATE_IDLE);
+					mario->SetState(MARIO_MENU_STATE_IDLE);
 					showMenu = true;
 					allowEntity = false;
 				}
 				else if (timePass > MENU_MARIO_SECOND_15)
 				{
-					mario->SetState(MARIO_STATE_RUNNING_RIGHT_CUS);
+					mario->SetState(MARIO_MENU_STATE_RUNNING_RIGHT_CUS);
 					mario->SetDrawOrder(MENU_DRAW_ORDER_RIBBON_BG);
 				}
 				else if (timePass > MENU_MARIO_SECOND_14)
 				{
-					mario->SetState(MARIO_STATE_IDLE);
+					mario->SetState(MARIO_MENU_STATE_IDLE);
 				}
 				else if (timePass > MENU_MARIO_SECOND_13)
 				{
 					if (vx > 0)
-						mario->SetState(MARIO_STATE_BREAK_LEFT);
+						mario->SetState(MARIO_MENU_STATE_BREAK_LEFT);
 					else
-						mario->SetState(MARIO_STATE_WALKING_LEFT);
+						mario->SetState(MARIO_MENU_STATE_WALKING_LEFT);
 				}
 				else if (timePass > MENU_MARIO_SECOND_12)
 				{
-					mario->SetState(MARIO_STATE_RUNNING_RIGHT_FAST);
+					mario->SetState(MARIO_MENU_STATE_RUNNING_RIGHT_FAST);
 				}
 				else if (timePass > MENU_MARIO_SECOND_11)
 				{
-					mario->SetState(MARIO_STATE_IDLE);
+					mario->SetState(MARIO_MENU_STATE_IDLE);
 				}
 				else if (timePass > MENU_MARIO_SECOND_10)
 				{
-					mario->SetState(MARIO_STATE_WALKING_LEFT);
+					mario->SetState(MARIO_MENU_STATE_WALKING_LEFT);
 				}
 				else if (timePass > MENU_MARIO_SECOND_9)
 				{
@@ -559,74 +559,74 @@ void Intro::Update(DWORD dt)
 				}
 				else if (timePass > MENU_MARIO_SECOND_8)
 				{
-					mario->SetState(MARIO_STATE_RELEASE);
-					mario->SetState(MARIO_STATE_IDLE);
-					luigi->SetState(MARIO_STATE_RUNNING_RIGHT_FAST);
+					mario->SetState(MARIO_MENU_STATE_RELEASE);
+					mario->SetState(MARIO_MENU_STATE_IDLE);
+					luigi->SetState(MARIO_MENU_STATE_RUNNING_RIGHT_FAST);
 				}
 				else if (timePass > MENU_MARIO_SECOND_7)
 				{
-					mario->SetState(MARIO_STATE_HOLD);
-					mario->SetState(MARIO_STATE_WALKING_RIGHT);
-					luigi->SetState(MARIO_STATE_IDLE);
+					mario->SetState(MARIO_MENU_STATE_HOLD);
+					mario->SetState(MARIO_MENU_STATE_WALKING_RIGHT);
+					luigi->SetState(MARIO_MENU_STATE_IDLE);
 					luigiDisappear = true;
 				}
 				else if (timePass > MENU_MARIO_SECOND_6)
 				{
 					if (jumpFirst)
 					{
-						mario->SetState(MARIO_STATE_VERY_SHORT_JUMP);
+						mario->SetState(MARIO_MENU_STATE_VERY_SHORT_JUMP);
 						jumpFirst = false;
 					}
 
 
 					if (mario->isTouchGround())
 					{
-						mario->SetState(MARIO_STATE_IDLE);
+						mario->SetState(MARIO_MENU_STATE_IDLE);
 					}
 					else if (turtleShell->GetState() == ENEMY_STATE_STOMP)
 					{
-						mario->SetState(MARIO_STATE_IDLE);
+						mario->SetState(MARIO_MENU_STATE_IDLE);
 						mario->SetDirection(1);
 						turtleShell->SetGrapper(mario);
-						turtleShell->SetRollSpeed(ENEMY_KOOPAS_ROLL_SPEED_SLOW);
+						turtleShell->SetRollSpeed(ENEMY_MENU_KOOPAS_ROLL_SPEED_SLOW);
 					}
 
 
-					luigi->SetState(MARIO_STATE_IDLE);
+					luigi->SetState(MARIO_MENU_STATE_IDLE);
 				}
 				else if (timePass > MENU_MARIO_SECOND_5)
 				{
-					mario->SetState(MARIO_STATE_WALKING_LEFT);
-					luigi->SetState(MARIO_STATE_RELEASE);
-					luigi->SetState(MARIO_STATE_IDLE);
+					mario->SetState(MARIO_MENU_STATE_WALKING_LEFT);
+					luigi->SetState(MARIO_MENU_STATE_RELEASE);
+					luigi->SetState(MARIO_MENU_STATE_IDLE);
 				}
 				else if (timePass > MENU_MARIO_SECOND_4)
 				{
-					mario->SetState(MARIO_STATE_WALKING_LEFT);
-					luigi->SetState(MARIO_STATE_HOLD);
-					luigi->SetState(MARIO_STATE_IDLE);
+					mario->SetState(MARIO_MENU_STATE_WALKING_LEFT);
+					luigi->SetState(MARIO_MENU_STATE_HOLD);
+					luigi->SetState(MARIO_MENU_STATE_IDLE);
 				}
 				else if (timePass > MENU_MARIO_SECOND_3)
 				{
-					mario->SetState(MARIO_STATE_IDLE);
-					luigi->SetState(MARIO_STATE_HOLD);
-					luigi->SetState(MARIO_STATE_IDLE);
+					mario->SetState(MARIO_MENU_STATE_IDLE);
+					luigi->SetState(MARIO_MENU_STATE_HOLD);
+					luigi->SetState(MARIO_MENU_STATE_IDLE);
 				}
 				else if (timePass > MENU_MARIO_SECOND_2)
 				{
-					mario->SetState(MARIO_STATE_IDLE);
-					luigi->SetState(MARIO_STATE_HOLD);
-					luigi->SetState(MARIO_STATE_WALKING_LEFT);
+					mario->SetState(MARIO_MENU_STATE_IDLE);
+					luigi->SetState(MARIO_MENU_STATE_HOLD);
+					luigi->SetState(MARIO_MENU_STATE_WALKING_LEFT);
 				}
 				else if (timePass > MENU_MARIO_SECOND_1)
 				{
-					mario->SetState(MARIO_STATE_IDLE);
-					luigi->SetState(MARIO_STATE_HOLD);
+					mario->SetState(MARIO_MENU_STATE_IDLE);
+					luigi->SetState(MARIO_MENU_STATE_HOLD);
 					luigi->SetPosition(MENU_LUIGI_POSITION_X, MENU_LUIGI_POSITION_Y);
 				}
 				else
 				{
-					mario->SetState(MARIO_STATE_WALKING_RIGHT);
+					mario->SetState(MARIO_MENU_STATE_WALKING_RIGHT);
 				}
 
 				if (OutSideCam(turtleShell))
@@ -642,7 +642,7 @@ void Intro::Update(DWORD dt)
 
 						}
 
-						luigi->SetState(MARIO_STATE_HOLD);
+						luigi->SetState(MARIO_MENU_STATE_HOLD);
 					}
 					else if (turtleShellSecond)
 					{
@@ -656,7 +656,7 @@ void Intro::Update(DWORD dt)
 				{
 					if (OutSideCam(luigi))
 					{
-						luigi->SetState(MARIO_STATE_IDLE);
+						luigi->SetState(MARIO_MENU_STATE_IDLE);
 						luigi->SetSpeed(0.0f, 0.0f);
 						luigi->SetDirection(-1);
 						luigi->SetType(eType::ENEMY_MOB_DIE);
@@ -686,12 +686,12 @@ void Intro::Update(DWORD dt)
 
 				if (mX <= gX + 2 * groomba->GetWidth())
 				{
-					mario->SetState(MARIO_STATE_STOP_JUMP);
+					mario->SetState(MARIO_MENU_STATE_STOP_JUMP);
 				}
 				else
 				{
-					mario->SetState(MARIO_STATE_JUMP_FLAP_HOLD);
-					mario->SetState(MARIO_STATE_WALKING_LEFT);
+					mario->SetState(MARIO_MENU_STATE_JUMP_FLAP_HOLD);
+					mario->SetState(MARIO_MENU_STATE_WALKING_LEFT);
 				}
 
 				if (groomba->GetState() == ENEMY_STATE_STOMP)
