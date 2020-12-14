@@ -16,6 +16,7 @@
 #include "SuperStar.h"
 #include "Mushroom.h"
 #include "Coin.h"
+#include "EnemyTroop.h"
 
 #include "HUD.h"
 

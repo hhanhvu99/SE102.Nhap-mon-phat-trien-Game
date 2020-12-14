@@ -136,77 +136,112 @@ void TestScene::Load()
 	//gameObjects.push_back(mario);
 	//collideObjects.push_back(mario);
 
-	for (int j = 0; j < height; ++j)
+	if (type == 3)
 	{
-		for (int i = 0; i < width; ++i)
+		for (int j = 0; j < height; ++j)
 		{
-			id = map[i][j];
-			if (id == -1)
-				continue;
-			if (find(begin(BLOCKS), end(BLOCKS), id) != end(BLOCKS))
+			for (int i = 0; i < width; ++i)
 			{
-				gameObject = new Block(STANDARD_SIZE * i, STANDARD_SIZE * j, sprites->Get(id));
-				gameObject->SetIndex(i, j);
-				gameObject->SetDrawOrder(BLOCK_DRAW_ORDER);
-				this->gameObjects.push_back(gameObject);
-				this->collideObjects.push_back(gameObject);
-				
-			}
-			else if (find(begin(ACTIVE_BLOCKS), end(ACTIVE_BLOCKS), id) != end(ACTIVE_BLOCKS))
-			{
-				switch (id)
-				{
-				case BRICK_SHINY_ANI:
-					gameObject = new BrickShiny(STANDARD_SIZE * i, STANDARD_SIZE * j);
-					gameObject->SetIndex(i, j);
-					gameObject->SetDrawOrder(ACTIVE_BLOCK_DRAW_ORDER);
-					gameObject->SetAnimationSet(AnimationManager::GetInstance()->Get(ACTIVE_BLOCK));
+				id = map[i][j];
+				if (id == -1)
+					continue;
 
-					this->gameObjects.push_back(gameObject);
-					this->collideObjects.push_back(gameObject);
-					break;
-					
-				case QUESTION_BLOCK_ANI:
-				{
-					gameObject = new QuestionBlock(STANDARD_SIZE * i, STANDARD_SIZE * j, sprites->Get(QUESTION_BLOCK_ANI_HIT));
-					gameObject->SetIndex(i, j);
-					gameObject->SetDrawOrder(ACTIVE_BLOCK_DRAW_ORDER);
-					gameObject->SetAnimationSet(AnimationManager::GetInstance()->Get(ACTIVE_BLOCK));
-					LPGAMEOBJECT coin = new Coin(STANDARD_SIZE * i, STANDARD_SIZE * j, ITEM_COIN, false);
-					coin->SetDrawOrder(BLOCK_DRAW_ORDER);
-					coin->SetAnimationSet(AnimationManager::GetInstance()->Get(ITEM_ID));
-					static_cast<QuestionBlock*>(gameObject)->SetItem(coin);
+				id += MAP_ID;
 
-					this->gameObjects.push_back(gameObject);
-					this->collideObjects.push_back(gameObject);
-				}
-					
-					break;
-
-				default:
-					DebugOut(L"[ERROR] Cannot find the active block at loading scene. \n");
-					break;
-				}
-				
-			}
-			else if (id == ITEM_COIN_ID)
-			{
-				gameObject = new Coin(STANDARD_SIZE * i, STANDARD_SIZE * j, ITEM_COIN, true);
-				gameObject->SetDrawOrder(BLOCK_DRAW_ORDER);
-				gameObject->SetAnimationSet(AnimationManager::GetInstance()->Get(ITEM_ID));
-
-				this->gameObjects.push_back(gameObject);
-				this->collideObjects.push_back(gameObject);
-			}
-			else
-			{
 				gameObject = new BackGround(STANDARD_SIZE * i, STANDARD_SIZE * j, sprites->Get(id));
 				gameObject->SetIndex(i, j);
-				gameObject->SetDrawOrder(BACKGROUND_DRAW_ORDER);
+				gameObject->SetDrawOrder(MAP_DRAW_ORDER_BACKGROUND);
 				this->gameObjects.push_back(gameObject);
+
+				if (id == MAP_TREE_ID)
+				{
+					gameObject->SetAnimationSet(AnimationManager::GetInstance()->Get(MAP_ANI_ID));
+					gameObject->SetType(eType::MAP_TREE);
+				}
+				else if (id == MAP_POPUP_ID)
+				{
+					gameObject->SetDrawOrder(MAP_DRAW_ORDER_POPUP);
+					gameObject->SetType(eType::MAP_POPUP);
+				}
+				
 			}
 		}
 	}
+	else
+	{
+		for (int j = 0; j < height; ++j)
+		{
+			for (int i = 0; i < width; ++i)
+			{
+				id = map[i][j];
+				if (id == -1)
+					continue;
+				if (find(begin(BLOCKS), end(BLOCKS), id) != end(BLOCKS))
+				{
+					gameObject = new Block(STANDARD_SIZE * i, STANDARD_SIZE * j, sprites->Get(id));
+					gameObject->SetIndex(i, j);
+					gameObject->SetDrawOrder(BLOCK_DRAW_ORDER);
+					this->gameObjects.push_back(gameObject);
+					this->collideObjects.push_back(gameObject);
+
+				}
+				else if (find(begin(ACTIVE_BLOCKS), end(ACTIVE_BLOCKS), id) != end(ACTIVE_BLOCKS))
+				{
+					switch (id)
+					{
+					case BRICK_SHINY_ANI:
+						gameObject = new BrickShiny(STANDARD_SIZE * i, STANDARD_SIZE * j);
+						gameObject->SetIndex(i, j);
+						gameObject->SetDrawOrder(ACTIVE_BLOCK_DRAW_ORDER);
+						gameObject->SetAnimationSet(AnimationManager::GetInstance()->Get(ACTIVE_BLOCK));
+
+						this->gameObjects.push_back(gameObject);
+						this->collideObjects.push_back(gameObject);
+						break;
+
+					case QUESTION_BLOCK_ANI:
+					{
+						gameObject = new QuestionBlock(STANDARD_SIZE * i, STANDARD_SIZE * j, sprites->Get(QUESTION_BLOCK_ANI_HIT));
+						gameObject->SetIndex(i, j);
+						gameObject->SetDrawOrder(ACTIVE_BLOCK_DRAW_ORDER);
+						gameObject->SetAnimationSet(AnimationManager::GetInstance()->Get(ACTIVE_BLOCK));
+						LPGAMEOBJECT coin = new Coin(STANDARD_SIZE * i, STANDARD_SIZE * j, ITEM_COIN, false);
+						coin->SetDrawOrder(BLOCK_DRAW_ORDER);
+						coin->SetAnimationSet(AnimationManager::GetInstance()->Get(ITEM_ID));
+						static_cast<QuestionBlock*>(gameObject)->SetItem(coin);
+
+						this->gameObjects.push_back(gameObject);
+						this->collideObjects.push_back(gameObject);
+					}
+
+					break;
+
+					default:
+						DebugOut(L"[ERROR] Cannot find the active block at loading scene. \n");
+						break;
+					}
+
+				}
+				else if (id == ITEM_COIN_ID)
+				{
+					gameObject = new Coin(STANDARD_SIZE * i, STANDARD_SIZE * j, ITEM_COIN, true);
+					gameObject->SetDrawOrder(BLOCK_DRAW_ORDER);
+					gameObject->SetAnimationSet(AnimationManager::GetInstance()->Get(ITEM_ID));
+
+					this->gameObjects.push_back(gameObject);
+					this->collideObjects.push_back(gameObject);
+				}
+				else
+				{
+					gameObject = new BackGround(STANDARD_SIZE * i, STANDARD_SIZE * j, sprites->Get(id));
+					gameObject->SetIndex(i, j);
+					gameObject->SetDrawOrder(BACKGROUND_DRAW_ORDER);
+					this->gameObjects.push_back(gameObject);
+				}
+			}
+		}
+	}
+	
 
 	int left, top, right, bottom;
 	int indexX, indexY;
@@ -329,6 +364,9 @@ void TestScene::Load()
 		case ENEMY_VENUS_RED:
 			enemy = new Plant(placeX, placeY, mobType);
 			break;
+		case ENEMY_TROOP:
+			enemy = new EnemyTroop(placeX, placeY, mobType);
+			break;
 		default:
 			DebugOut(L"[ERROR] Unknown mob type: %d\n", mobType);
 		}
@@ -338,7 +376,13 @@ void TestScene::Load()
 		else
 			enemy->SetDrawOrder(ENEMY_ENTITY_DRAW_ORDER);
 
-		enemy->SetAnimationSet(AnimationManager::GetInstance()->Get(ENEMY_MOB));
+		if (CHOOSE == 3)
+		{
+			enemy->SetAnimationSet(AnimationManager::GetInstance()->Get(MAP_ANI_ID));
+			enemy->SetDrawOrder(MAP_DRAW_ORDER_ENEMY);
+		}	
+		else
+			enemy->SetAnimationSet(AnimationManager::GetInstance()->Get(ENEMY_MOB));
 
 	}
 
@@ -391,7 +435,7 @@ void TestScene::Load()
 	}
 
 	//Setup HUD
-	/*
+	
 	Global::GetInstance()->Setup(3, HUD_ICON_MARIO, 1, 7, 0, 300, 0, HUD_ITEM_MUSHROOM, HUD_ITEM_FLOWER, HUD_ITEM_STAR);
 	HUD* mainFrame = new HUD(eType::HUD_MAIN_FRAME);
 	HUD* playerIcon = new HUD(eType::HUD_PLAYER_ICON);
@@ -403,7 +447,7 @@ void TestScene::Load()
 	HUD* time = new HUD(eType::HUD_TIME);
 	HUD* cardOne = new HUD(eType::HUD_CARD_ONE);
 	HUD* cardTwo = new HUD(eType::HUD_CARD_TWO);
-	HUD* cardThree = new HUD(eType::HUD_CARD_THREE);*/
+	HUD* cardThree = new HUD(eType::HUD_CARD_THREE);
 
 	//Keyboard::GetInstance()->SetKeyHandler(mario);
 	//mario->SetAnimationSet(AnimationManager::GetInstance()->Get(MARIO));

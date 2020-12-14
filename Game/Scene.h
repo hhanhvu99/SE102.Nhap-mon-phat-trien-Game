@@ -12,10 +12,12 @@ protected:
 	std::vector<int> GROUP;
 	std::vector<int> ENEMY;
 	std::vector<int> ITEM;
+	std::vector<int> PATH;
 
 	KeyEventHandler* key_handler;
 	int id;
 	int state;
+	int type;
 	LPCWSTR sceneFilePath;
 
 public:
@@ -39,16 +41,3 @@ public:
 	~Scene();
 };
 typedef Scene* LPSCENE;
-
-
-class ScenceKeyHandler : public KeyEventHandler
-{
-protected:
-	Scene* scence;
-
-public:
-	virtual void KeyState(BYTE* states) = 0;
-	virtual void OnKeyDown(int KeyCode) = 0;
-	virtual void OnKeyUp(int KeyCode) = 0;
-	ScenceKeyHandler(Scene* s) :KeyEventHandler() { scence = s; }
-};

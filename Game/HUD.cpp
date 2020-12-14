@@ -167,7 +167,6 @@ void HUD::Setup()
 			draw_order = HUD_TEXT_DRAW_ORDER;
 			object = new HUD_Object(SpriteManager::GetInstance()->Get(HUD_ID + global->cardThree));
 			spriteHolder.push_back(object);
-
 			break;
 		default:
 			break;

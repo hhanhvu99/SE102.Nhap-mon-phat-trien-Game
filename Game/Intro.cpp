@@ -3,6 +3,7 @@
 
 Intro::Intro(int id, LPCWSTR filePath) : TestScene(id, filePath)
 {
+	this->type = 2;
 }
 
 bool Intro::OutSideCam(LPGAMEOBJECT object)
@@ -26,7 +27,9 @@ void Intro::Reset()
 
 void Intro::Load()
 {
+	CHOOSE = 2;
 	TestScene::Load();
+	Global::GetInstance()->background_color = D3DCOLOR_XRGB(0, 0, 0);
 
 	isFirst = true;
 
@@ -78,9 +81,6 @@ void Intro::Load()
 	currentTime = 0;
 
 	firstOption = true;
-
-	Global::GetInstance()->background_color = D3DCOLOR_XRGB(0, 0, 0);
-	AUTO = true;
 
 	int i, j;
 	float x, y;

@@ -124,8 +124,8 @@ class Mario : public GameObject
 {
 protected:
 	LPGAMEOBJECT grabObject;
+	GLOBAL global;
 
-	int level;
 	int oldLevel;
 	int prevLevel;
 	int ani;
@@ -223,7 +223,7 @@ public:
 	void SetLevel(int l);
 	void SetPositionBack(float min_tx, int nx) {x += min_tx * dx + nx * 3.0f;}
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
-	int GetLevel() { return this->level; }
+	int GetLevel() { return global->level; }
 
 	bool PointCollision(vector<LPGAMEOBJECT>& collideObjects, float pointX, float pointY);
 	bool PointCollision(vector<LPGAMEOBJECT>& collideObjects, float pointX, float pointY, LPGAMEOBJECT& target);

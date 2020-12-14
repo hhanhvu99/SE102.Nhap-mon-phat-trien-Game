@@ -1,7 +1,7 @@
 #include "Global.h"
 
+int CHOOSE = 3;
 bool PAUSE = false;
-bool AUTO = false;
 Global* Global::__instance = NULL;
 
 Global* Global::GetInstance()

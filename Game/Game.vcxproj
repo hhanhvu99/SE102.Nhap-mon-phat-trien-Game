@@ -152,6 +152,7 @@
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Coin.cpp" />
     <ClCompile Include="debug.cpp" />
+    <ClCompile Include="EnemyTroop.cpp" />
     <ClCompile Include="Fireball.cpp" />
     <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -167,6 +168,7 @@
     <ClCompile Include="KoopasIntro.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mario.cpp" />
+    <ClCompile Include="MarioMap.cpp" />
     <ClCompile Include="Plant.cpp" />
     <ClCompile Include="PlayerIntro.cpp" />
     <ClCompile Include="QuestionBlock.cpp" />
@@ -181,6 +183,7 @@
     <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Koopas.cpp" />
+    <ClCompile Include="WorldMap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ActiveBlock.h" />
@@ -192,6 +195,7 @@
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Coin.h" />
     <ClInclude Include="debug.h" />
+    <ClInclude Include="EnemyTroop.h" />
     <ClInclude Include="Fireball.h" />
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="GameObject.h" />
@@ -207,6 +211,7 @@
     <ClInclude Include="KeyEventHandler.h" />
     <ClInclude Include="KoopasIntro.h" />
     <ClInclude Include="Mario.h" />
+    <ClInclude Include="MarioMap.h" />
     <ClInclude Include="Plant.h" />
     <ClInclude Include="PlayerIntro.h" />
     <ClInclude Include="QuestionBlock.h" />
@@ -221,6 +226,7 @@
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Koopas.h" />
+    <ClInclude Include="WorldMap.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

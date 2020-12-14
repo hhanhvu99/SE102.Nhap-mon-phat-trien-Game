@@ -95,6 +95,12 @@
     <Filter Include="GameObject\Intro">
       <UniqueIdentifier>{8fa03c70-a5f4-4b64-a2b9-2bdb4c5da334}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameEngine\Scene\WorldMap">
+      <UniqueIdentifier>{57e94420-5996-4c75-9994-67864363f66f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Mob\Map">
+      <UniqueIdentifier>{0f1c4539-62a0-42f0-951a-ea6eeba9b75d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -211,6 +217,15 @@
     <ClCompile Include="PlayerIntro.cpp">
       <Filter>GameObject\Intro</Filter>
     </ClCompile>
+    <ClCompile Include="WorldMap.cpp">
+      <Filter>GameEngine\Scene\WorldMap</Filter>
+    </ClCompile>
+    <ClCompile Include="MarioMap.cpp">
+      <Filter>GameObject\Mario</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyTroop.cpp">
+      <Filter>GameObject\Mob\Map</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine.h">
@@ -326,6 +341,15 @@
     </ClInclude>
     <ClInclude Include="PlayerIntro.h">
       <Filter>GameObject\Intro</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldMap.h">
+      <Filter>GameEngine\Scene\WorldMap</Filter>
+    </ClInclude>
+    <ClInclude Include="MarioMap.h">
+      <Filter>GameObject\Mario</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyTroop.h">
+      <Filter>GameObject\Mob\Map</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

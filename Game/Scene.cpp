@@ -48,6 +48,7 @@ void Scene::LoadBlock(LPCWSTR gameFile)
 		if (line == "[ENEMY]") { option = 4; continue; }
 		if (line == "[PLATFORM]") { option = 5; continue; }
 		if (line == "[ITEM]") { option = 6; continue; }
+		if (line == "[PATH]") { option = 7; continue; }
 		if (option == 1)
 		{
 			vector<string> tokens = split(line, ",");
@@ -84,6 +85,12 @@ void Scene::LoadBlock(LPCWSTR gameFile)
 			for (int i = 0; i < tokens.size(); ++i)
 				ITEM.push_back(atoi(tokens[i].c_str()));
 		}
+		else if (option == 7)
+		{
+			vector<string> tokens = split(line, ",");
+			for (int i = 0; i < tokens.size(); ++i)
+				PATH.push_back(atoi(tokens[i].c_str()));
+		}
 		else
 		{
 			DebugOut(L"[ERROR] Loading script: %s \n", gameFile);
@@ -105,4 +112,5 @@ Scene::~Scene()
 	GROUP.clear();
 	ENEMY.clear();
 	ITEM.clear();
+	PATH.clear();
 }

@@ -89,7 +89,7 @@ static const D3DCOLOR InvicibilityPalette[] = {
 extern bool PAUSE;
 
 //Auto move
-extern bool AUTO;
+extern int CHOOSE;
 
 //Animation Time
 #define MARIO_ANI_WALKING_TIME_DEFAULT	150
@@ -120,9 +120,14 @@ extern bool AUTO;
 //Level Luigi
 #define LUIGI_LEVEL_BIG					2200
 
+//Level Mario Map
+#define MARIO_MAP_LEVEL					2000
+
 ////////////////
 //Mario Suffix//
 ////////////////
+//Rolling Map
+#define MARIO_ANI_ROLLING			5
 //Idle
 #define MARIO_ANI_IDLE_LEFT			1
 #define MARIO_ANI_IDLE_RIGHT		2
@@ -192,6 +197,8 @@ extern bool AUTO;
 #define MARIO_ANI_HOLD_R_TO_L		90
 //Die
 #define MARIO_ANI_DIE				1800
+//Icon Map
+#define MARIO_SPRITE_ICON_MAP		3001
 
 //////////
 //Bullet//
@@ -244,6 +251,9 @@ extern bool AUTO;
 #define ENEMY_PIRANHA_GREEN				500000
 #define ENEMY_VENUS_GREEN				600000
 #define ENEMY_VENUS_RED					700000
+
+//Map
+#define ENEMY_TROOP						515
 
 //////////////
 //Mob Suffix//
@@ -319,6 +329,11 @@ extern bool AUTO;
 #define HUD_ITEM_FLOWER					30003
 #define HUD_ITEM_STAR					30004
 
+//Game Over
+#define HUD_GAMEOVER					40001
+//Start Screen
+#define HUD_START						40002
+
 ////////
 //Menu//
 ////////
@@ -326,6 +341,7 @@ extern bool AUTO;
 
 #define MENU_TITLE_TEXT					323
 #define MENU_TITLE_TEXT_BRIGHT			324
+#define MENU_ARROW						332
 
 #define MENU_ANI_NUMBER					328
 
@@ -342,6 +358,52 @@ extern bool AUTO;
 #define MENU_STATE_SKIP					100
 #define MENU_STATE_OPTION				200
 #define MENU_STATE_CHOOSE				300
+
+/////////////
+//World Map//
+/////////////
+#define MAP_ANI_ID						2124
+#define MAP_ID							500
+
+#define MAP_TREE_ID						506
+#define MAP_POPUP_ID					508
+
+//Map Animation
+#define MAP_TREE_ANIMATION_ID			505
+#define MAP_ENEMY_TROOP_ANI_LEFT		515
+#define MAP_ENEMY_TROOP_ANI_RIGHT		615
+#define MAP_ENEMY_TROOP_ANI_DIE			517
+
+//Info
+#define MAP_PATH_START					0
+#define MAP_PATH_STAGE_ONE				1
+#define MAP_PATH_STAGE_TWO				2
+#define MAP_PATH_STAGE_THREE			3
+#define MAP_PATH_STAGE_FOUR				4
+#define MAP_PATH_STAGE_FIVE				5
+#define MAP_PATH_STAGE_SIX				6
+#define MAP_PATH_GAMBLE_ONE				7
+#define MAP_PATH_GAMBLE_TWO				8
+#define MAP_PATH_CASTLE_MID				9
+#define MAP_PATH_CASTLE_TOAST			10
+#define MAP_PATH_ROAD					11
+#define MAP_PATH_CASTLE					12
+
+//Draw Order
+#define MAP_DRAW_ORDER_BACKGROUND		1
+#define MAP_DRAW_ORDER_POPUP			2
+#define MAP_DRAW_ORDER_ENEMY			3
+#define MAP_DRAW_ORDER_PLAYER			4
+
+//State
+#define MAP_STATE_MOVE_UP				100
+#define MAP_STATE_MOVE_DOWN				200
+#define MAP_STATE_MOVE_LEFT				300
+#define MAP_STATE_MOVE_RIGHT			400
+#define MAP_STATE_RESET					500
+#define MAP_STATE_RESTART				600
+#define MAP_STATE_SELECT				700
+#define MAP_STATE_CHOOSE				800
 
 enum eType
 {
@@ -388,9 +450,14 @@ enum eType
 	HUD_BUBBLE = 111,
 
 	//Menu
-	MENU_TITLE = 200
+	MENU_TITLE = 200,
 
-	
+	//Map
+	MAP_TREE = 300,
+	MAP_POPUP = 301,
+	MAP_START = 302,
+	MAP_GAMEOVER = 303
+
 };
 
 class Global
@@ -398,6 +465,9 @@ class Global
 	static Global* __instance;
 
 public:
+	//Mario Level
+	int level;
+
 	//HUD
 	int live, player, world, point, time, money;
 	int cardOne, cardTwo, cardThree;
@@ -419,7 +489,12 @@ public:
 		this->cardTwo = cardTwo;
 		this->cardThree = cardThree;
 	}
+
+	//Map
+	int currentX, currentY;
+
 	static int Sign(float x) { return (x > 0) - (x < 0); }
+	static int TwoDimension_To_OneDimension(int i, int j, int rowLength) { return (i * rowLength) + j; }
 	static Global* GetInstance();
 
 };

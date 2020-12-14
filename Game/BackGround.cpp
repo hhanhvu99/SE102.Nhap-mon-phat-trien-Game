@@ -24,6 +24,13 @@ void BackGround::Render()
 {
 	if (type == eType::BACKGROUND)
 		this->sprite->Draw(x, y);
+	else if (type == eType::MAP_TREE)
+		animation_set->Get(MAP_TREE_ANIMATION_ID)->Render(x, y);
+	else if (type == eType::MAP_POPUP)
+	{
+		if (allowDraw)
+			this->sprite->Draw(x, y);
+	}
 	else
 	{
 		if (indexX == 9 && indexY == 6)

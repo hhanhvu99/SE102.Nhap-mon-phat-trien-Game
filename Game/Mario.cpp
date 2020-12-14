@@ -9,7 +9,8 @@
 
 Mario::Mario(float x, float y) : GameObject()
 {
-	level = MARIO_LEVEL_SMALL;
+	global = Global::GetInstance();
+	global->level = MARIO_LEVEL_SMALL;
 	untouchable = 0;
 
 	start_x = x;
@@ -26,7 +27,7 @@ Mario::Mario(float x, float y) : GameObject()
 	indexPalette = 0;
 
 	SetState(MARIO_STATE_IDLE);
-	SetLevel(level);
+	SetLevel(global->level);
 	this->Reset();
 }
 
@@ -100,7 +101,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				inTransition = false;
 				SetAnimationSet(AnimationManager::GetInstance()->Get(MARIO));
 				PAUSE = false;
-				SetLevel(level);
+				SetLevel(global->level);
 				type = eType::PLAYER;
 			}
 		}
@@ -110,7 +111,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			{
 				inTransition = false;
 				PAUSE = false;
-				SetLevel(level);
+				SetLevel(global->level);
 				type = eType::PLAYER;
 			}
 		}
@@ -124,7 +125,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			invincible_start = 0;
 			startInvincible = false;
 
-			if (level != MARIO_LEVEL_SMALL && level != MARIO_LEVEL_FROG)
+			if (global->level != MARIO_LEVEL_SMALL && global->level != MARIO_LEVEL_FROG)
 			{
 				if (isCrouch)
 				{
@@ -285,17 +286,17 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			{
 				
 				Item* item = static_cast<Item*>(obj);
-
+				
 				switch (item->getItemType())
 				{
 				case ITEM_MUSHROOM_RED:
-					oldLevel = level;
-					level = MARIO_LEVEL_BIG;
+					oldLevel = global->level;
+					global->level = MARIO_LEVEL_BIG;
 
 					if (oldLevel == MARIO_LEVEL_SMALL)
 						SetState(MARIO_STATE_UP);
 					else
-						level = oldLevel;
+						global->level = oldLevel;
 
 					item->Destroy();
 					break;
@@ -306,13 +307,13 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					break;
 
 				case ITEM_SUPER_LEAF:
-					oldLevel = level;
-					level = MARIO_LEVEL_RACC;
+					oldLevel = global->level;
+					global->level = MARIO_LEVEL_RACC;
 
 					if (oldLevel == MARIO_LEVEL_BIG)
 						SetState(MARIO_STATE_UP);
 					else
-						level = oldLevel;
+						global->level = oldLevel;
 
 					item->Destroy();
 					break;
@@ -371,7 +372,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	//Update animation time
 	float speed = abs(vx);
-	if (level != MARIO_LEVEL_FROG)
+	if (global->level != MARIO_LEVEL_FROG)
 	{
 		if (speed < MARIO_MAX_WALKING_SPEED)
 		{
@@ -407,7 +408,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	//DebugOut(L"Ani time: %d \n", ani_walk_time);
 
 	//Invincibility BBox
-	if (level != MARIO_LEVEL_SMALL && level != MARIO_LEVEL_FROG)
+	if (global->level != MARIO_LEVEL_SMALL && global->level != MARIO_LEVEL_FROG)
 		if (startInvincible)
 		{
 			if (isCrouch)
@@ -469,7 +470,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				{
 					if (direction > 0)
 					{
-						if (level != MARIO_LEVEL_FROG)
+						if (global->level != MARIO_LEVEL_FROG)
 							x = this->x + widthObject + MARIO_GRAB_OFFSET_X;
 						else
 							x = this->x + width + MARIO_GRAB_OFFSET_X - 5.0f;
@@ -477,7 +478,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					else
 						x = this->x - widthObject - MARIO_GRAB_OFFSET_X;
 
-					if (level != 1100)
+					if (global->level != 1100)
 						y = this->y + MARIO_GRAB_OFFSET_Y;
 					else
 						y = this->y - 1.0f;
@@ -489,7 +490,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					{
 						if (direction > 0)
 						{
-							if (level != MARIO_LEVEL_FROG)
+							if (global->level != MARIO_LEVEL_FROG)
 								x = this->x + widthObject + MARIO_GRAB_OFFSET_X;
 							else
 								x = this->x + width + MARIO_GRAB_OFFSET_X - 5.0f;
@@ -504,7 +505,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					{
 						if (direction < 0)
 						{
-							if (level != MARIO_LEVEL_FROG)
+							if (global->level != MARIO_LEVEL_FROG)
 								x = this->x + widthObject + MARIO_GRAB_OFFSET_X;
 							else
 								x = this->x + width + MARIO_GRAB_OFFSET_X - 5.0f;
@@ -513,7 +514,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 							x = this->x - widthObject - MARIO_GRAB_OFFSET_X;
 					}
 
-					if (level != 1100)
+					if (global->level != 1100)
 						y = this->y + MARIO_GRAB_OFFSET_Y;
 					else
 						y = this->y - 1.0f;
@@ -541,8 +542,8 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	//Attack
 	if (ani != -1)
 	{
-		int attackLeft = level + MARIO_ANI_ATTACK_SET_LEFT;
-		int attackRight = level + MARIO_ANI_ATTACK_SET_RIGHT;
+		int attackLeft = global->level + MARIO_ANI_ATTACK_SET_LEFT;
+		int attackRight = global->level + MARIO_ANI_ATTACK_SET_RIGHT;
 
 		if (ani == attackLeft || ani == attackRight)
 		{
@@ -668,120 +669,120 @@ void Mario::Render()
 	{
 		if (tail_whip)
 		{
-			if (direction > 0) ani = level + MARIO_ANI_ATTACK_SET_RIGHT;
-			else ani = level + MARIO_ANI_ATTACK_SET_LEFT;
+			if (direction > 0) ani = global->level + MARIO_ANI_ATTACK_SET_RIGHT;
+			else ani = global->level + MARIO_ANI_ATTACK_SET_LEFT;
 		}
 		else if (shoot)
 		{
-			if (direction > 0) ani = level + MARIO_ANI_ATTACK_SET_RIGHT;
-			else ani = level + MARIO_ANI_ATTACK_SET_LEFT;
+			if (direction > 0) ani = global->level + MARIO_ANI_ATTACK_SET_RIGHT;
+			else ani = global->level + MARIO_ANI_ATTACK_SET_LEFT;
 		}
 		else if (kicking)
 		{
-			if (direction > 0) ani = level + MARIO_ANI_KICK_RIGHT;
-			else ani = level + MARIO_ANI_KICK_LEFT;
+			if (direction > 0) ani = global->level + MARIO_ANI_KICK_RIGHT;
+			else ani = global->level + MARIO_ANI_KICK_LEFT;
 		}
 		else if (grabbing)
 		{
 			if (!touchGround)
 			{
-				if (direction > 0) ani = level + MARIO_ANI_HOLD_JUMP_RIGHT;
-				else ani = level + MARIO_ANI_HOLD_JUMP_LEFT;
+				if (direction > 0) ani = global->level + MARIO_ANI_HOLD_JUMP_RIGHT;
+				else ani = global->level + MARIO_ANI_HOLD_JUMP_LEFT;
 			}
 			else if (switching)
 			{
-				if (direction > 0) ani = level + MARIO_ANI_HOLD_L_TO_R;
-				else ani = level + MARIO_ANI_HOLD_R_TO_L;
+				if (direction > 0) ani = global->level + MARIO_ANI_HOLD_L_TO_R;
+				else ani = global->level + MARIO_ANI_HOLD_R_TO_L;
 			}
 			else if (vx != 0)
 			{
-				if (direction > 0) ani = level + MARIO_ANI_HOLD_RIGHT;
-				else ani = level + MARIO_ANI_HOLD_LEFT;
+				if (direction > 0) ani = global->level + MARIO_ANI_HOLD_RIGHT;
+				else ani = global->level + MARIO_ANI_HOLD_LEFT;
 			}
 			else
 			{
-				if (direction > 0) ani = level + MARIO_ANI_HOLD_IDLE_RIGHT;
-				else ani = level + MARIO_ANI_HOLD_IDLE_LEFT;
+				if (direction > 0) ani = global->level + MARIO_ANI_HOLD_IDLE_RIGHT;
+				else ani = global->level + MARIO_ANI_HOLD_IDLE_LEFT;
 			}
 			
 		}
 		else if (!touchGround && !jumpCrouch)
 		{
-			if (startInvincible && level != MARIO_LEVEL_SMALL && level != MARIO_LEVEL_FROG)
+			if (startInvincible && global->level != MARIO_LEVEL_SMALL && global->level != MARIO_LEVEL_FROG)
 			{
-				if (direction > 0) ani = level + MARIO_ANI_ROLL_RIGHT;
-				else ani = level + MARIO_ANI_ROLL_LEFT;
+				if (direction > 0) ani = global->level + MARIO_ANI_ROLL_RIGHT;
+				else ani = global->level + MARIO_ANI_ROLL_LEFT;
 			}
 			else if (flapAni)
 			{
 				if (direction > 0)
 				{
-					if (isMax) ani = level + MARIO_ANI_FLAP_RUN_RIGHT;
-					else ani = level + MARIO_ANI_FLAP_RIGHT;
+					if (isMax) ani = global->level + MARIO_ANI_FLAP_RUN_RIGHT;
+					else ani = global->level + MARIO_ANI_FLAP_RIGHT;
 				}
 				else
 				{
-					if (isMax) ani = level + MARIO_ANI_FLAP_RUN_LEFT;
-					else ani = level + MARIO_ANI_FLAP_LEFT;
+					if (isMax) ani = global->level + MARIO_ANI_FLAP_RUN_LEFT;
+					else ani = global->level + MARIO_ANI_FLAP_LEFT;
 				}
 			}
 			else
 			{
 				if (direction > 0)
 				{
-					if (isMax) ani = level + MARIO_ANI_RUN_JUMP_RIGHT;
+					if (isMax) ani = global->level + MARIO_ANI_RUN_JUMP_RIGHT;
 					else
 					{
-						if (level != MARIO_LEVEL_FROG)
+						if (global->level != MARIO_LEVEL_FROG)
 						{
-							if (vy < 0) ani = level + MARIO_ANI_JUMP_RIGHT;
-							else ani = level + MARIO_ANI_JUMP_RIGHT_DOWN;
+							if (vy < 0) ani = global->level + MARIO_ANI_JUMP_RIGHT;
+							else ani = global->level + MARIO_ANI_JUMP_RIGHT_DOWN;
 						}
 						else
-							ani = level + MARIO_ANI_JUMP_RIGHT;
+							ani = global->level + MARIO_ANI_JUMP_RIGHT;
 					}
 				}
 				else
 				{
-					if (isMax) ani = level + MARIO_ANI_RUN_JUMP_LEFT;
+					if (isMax) ani = global->level + MARIO_ANI_RUN_JUMP_LEFT;
 					else
 					{
-						if (level != MARIO_LEVEL_FROG)
+						if (global->level != MARIO_LEVEL_FROG)
 						{
-							if (vy < 0) ani = level + MARIO_ANI_JUMP_LEFT;
-							else ani = level + MARIO_ANI_JUMP_LEFT_DOWN;
+							if (vy < 0) ani = global->level + MARIO_ANI_JUMP_LEFT;
+							else ani = global->level + MARIO_ANI_JUMP_LEFT_DOWN;
 						}
 						else
-							ani = level + MARIO_ANI_JUMP_LEFT;
+							ani = global->level + MARIO_ANI_JUMP_LEFT;
 					}
 				}
 	
 			}
 
 		}
-		else if ((state == MARIO_STATE_CROUCH || jumpCrouch) && level != MARIO_LEVEL_SMALL && level != MARIO_LEVEL_FROG)
+		else if ((state == MARIO_STATE_CROUCH || jumpCrouch) && global->level != MARIO_LEVEL_SMALL && global->level != MARIO_LEVEL_FROG)
 		{
-			if (direction > 0) ani = level + MARIO_ANI_DUCK_RIGHT;
-			else ani = level + MARIO_ANI_DUCK_LEFT;
+			if (direction > 0) ani = global->level + MARIO_ANI_DUCK_RIGHT;
+			else ani = global->level + MARIO_ANI_DUCK_LEFT;
 		}
 		else if (vx == 0)
 		{
-			if (direction > 0) ani = level + MARIO_ANI_IDLE_RIGHT;
-			else ani = level + MARIO_ANI_IDLE_LEFT;
+			if (direction > 0) ani = global->level + MARIO_ANI_IDLE_RIGHT;
+			else ani = global->level + MARIO_ANI_IDLE_LEFT;
 		}
-		else if (state == MARIO_STATE_BREAK_LEFT && level != MARIO_LEVEL_FROG)
-			ani = level + MARIO_ANI_BREAK_LEFT;
-		else if (state == MARIO_STATE_BREAK_RIGHT && level != MARIO_LEVEL_FROG)
-			ani = level + MARIO_ANI_BREAK_RIGHT;
+		else if (state == MARIO_STATE_BREAK_LEFT && global->level != MARIO_LEVEL_FROG)
+			ani = global->level + MARIO_ANI_BREAK_LEFT;
+		else if (state == MARIO_STATE_BREAK_RIGHT && global->level != MARIO_LEVEL_FROG)
+			ani = global->level + MARIO_ANI_BREAK_RIGHT;
 		else if (vx > 0)
 		{
-			if (isMax) ani = level + MARIO_ANI_RUNNING_RIGHT;
-			else ani = level + MARIO_ANI_WALKING_RIGHT;
+			if (isMax) ani = global->level + MARIO_ANI_RUNNING_RIGHT;
+			else ani = global->level + MARIO_ANI_WALKING_RIGHT;
 		}
 		else if (vx < 0)
 		{
-			if (isMax) ani = level + MARIO_ANI_RUNNING_LEFT;
-			else ani = level + MARIO_ANI_WALKING_LEFT;
+			if (isMax) ani = global->level + MARIO_ANI_RUNNING_LEFT;
+			else ani = global->level + MARIO_ANI_WALKING_LEFT;
 		}
 	}
 
@@ -869,7 +870,7 @@ void Mario::SetState(int state)
 				break;
 			}
 
-			if (level != MARIO_LEVEL_FROG)
+			if (global->level != MARIO_LEVEL_FROG)
 			{
 				tempVx = abs(vx);
 				
@@ -916,7 +917,7 @@ void Mario::SetState(int state)
 			if (abs(vx) > MARIO_MAX_RUNNING_SPEED)
 			{
 				vx = MARIO_MAX_RUNNING_SPEED;
-				if (level != MARIO_LEVEL_FROG)
+				if (global->level != MARIO_LEVEL_FROG)
 					isMax = true;
 				else
 					isMax = false;
@@ -935,7 +936,7 @@ void Mario::SetState(int state)
 				break;
 			}
 
-			if (level != MARIO_LEVEL_FROG)
+			if (global->level != MARIO_LEVEL_FROG)
 			{
 				tempVx = abs(vx);
 
@@ -983,7 +984,7 @@ void Mario::SetState(int state)
 			if (abs(vx) > MARIO_MAX_RUNNING_SPEED)
 			{
 				vx = -MARIO_MAX_RUNNING_SPEED;
-				if (level != MARIO_LEVEL_FROG)
+				if (global->level != MARIO_LEVEL_FROG)
 					isMax = true;
 				else
 					isMax = false;
@@ -1044,7 +1045,7 @@ void Mario::SetState(int state)
 			break;
 		if (vy < 0)
 			break;
-		if (level == MARIO_LEVEL_RACC || level == MARIO_LEVEL_TANU)
+		if (global->level == MARIO_LEVEL_RACC || global->level == MARIO_LEVEL_TANU)
 		{
 			startFlap = now;
 			startFlapAni = now;
@@ -1054,7 +1055,7 @@ void Mario::SetState(int state)
 		}
 		break;
 	case MARIO_STATE_JUMP_FLAP:
-		if (level == MARIO_LEVEL_RACC || level == MARIO_LEVEL_TANU)
+		if (global->level == MARIO_LEVEL_RACC || global->level == MARIO_LEVEL_TANU)
 		{
 			startFlap = now;
 			startFlapAni = now;
@@ -1064,7 +1065,7 @@ void Mario::SetState(int state)
 		}
 		break;
 	case MARIO_STATE_CROUCH:
-		if (level != MARIO_LEVEL_SMALL && level != MARIO_LEVEL_FROG && touchGround)
+		if (global->level != MARIO_LEVEL_SMALL && global->level != MARIO_LEVEL_FROG && touchGround)
 		{
 			this->width = MARIO_BIG_CROUCH_BBOX_WIDTH;
 			this->height = MARIO_BIG_CROUCH_BBOX_HEIGHT;
@@ -1094,7 +1095,7 @@ void Mario::SetState(int state)
 		}
 		break;
 	case MARIO_STATE_ATTACK:
-		if (level == MARIO_LEVEL_FIRE || level == MARIO_LEVEL_HAM)
+		if (global->level == MARIO_LEVEL_FIRE || global->level == MARIO_LEVEL_HAM)
 		{
 			if (allowShoot == true)
 			{
@@ -1102,14 +1103,14 @@ void Mario::SetState(int state)
 				allowShoot = false;
 				startShoot = now;
 
-				if (level == MARIO_LEVEL_FIRE)
+				if (global->level == MARIO_LEVEL_FIRE)
 					Fireball* bullet = new Fireball(pointX + direction * MARIO_BULLET_OFFSET_X, pointY + MARIO_BULLET_OFFSET_Y, direction);
 				else
 					Hammer* hammer = new Hammer(pointX + direction * MARIO_BULLET_OFFSET_X, pointY + MARIO_BULLET_OFFSET_Y, direction);
 			}
 			
 		}
-		else if (level == MARIO_LEVEL_RACC || level == MARIO_LEVEL_TANU)
+		else if (global->level == MARIO_LEVEL_RACC || global->level == MARIO_LEVEL_TANU)
 		{
 			if (tail_whip == false)
 				tail_whip = true;
@@ -1151,7 +1152,7 @@ void Mario::SetState(int state)
 	case MARIO_STATE_HIT:
 		if (startInvincible == false)
 		{
-			if (level != MARIO_LEVEL_SMALL)
+			if (global->level != MARIO_LEVEL_SMALL)
 			{
 				untouchable_start = now;
 				untouchable_frame = now;
@@ -1159,9 +1160,9 @@ void Mario::SetState(int state)
 				type = eType::PLAYER_UNTOUCHABLE;
 				PAUSE = true;
 
-				if (level > MARIO_LEVEL_BIG)
+				if (global->level > MARIO_LEVEL_BIG)
 				{
-					level = MARIO_LEVEL_BIG;
+					global->level = MARIO_LEVEL_BIG;
 					GameObject::SetState(MARIO_STATE_TRANSITION_1);
 					startTransitionOne = now;
 					SetAnimationSet(AnimationManager::GetInstance()->Get(BULLET));
@@ -1169,7 +1170,7 @@ void Mario::SetState(int state)
 				else
 				{
 					oldLevel = MARIO_LEVEL_BIG;
-					level = MARIO_LEVEL_SMALL;
+					global->level = MARIO_LEVEL_SMALL;
 					GameObject::SetState(MARIO_STATE_TRANSITION_2);
 					startTransitionTwo = now;
 					transition_frame = now;
@@ -1248,7 +1249,7 @@ void Mario::SetState(int state)
 
 void Mario::SetLevel(int l)
 {
-	this->level = l;
+	this->global->level = l;
 
 	switch (l)
 	{
@@ -1299,7 +1300,7 @@ void Mario::SetLevel(int l)
 
 		break;
 	default:
-		DebugOut(L"[ERROR] Unknown Mario level\n");
+		DebugOut(L"[ERROR] Unknown Mario global->level\n");
 		break;
 	}
 

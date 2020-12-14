@@ -16,6 +16,7 @@
 
 #include "TestScene.h"
 #include "Intro.h"
+#include "WorldMap.h"
 
 #include "Mario.h"
 #include "Keyboard.h"
@@ -59,6 +60,7 @@ void LoadResources()
 	texture->Add(4, L"Asset\\Item\\ItemSheet.png", NULL);
 	texture->Add(5, L"Asset\\HUD\\HUD_Sheet.png", NULL);
 	texture->Add(6, L"Asset\\Menu\\MenuSheet.png", NULL);
+	texture->Add(7, L"Asset\\Map\\SpriteSheetMap.png", NULL);
 	texture->Add(ID_TEX_BBOX, L"Asset\\Debug\\BoundingBox.png", NULL);
 
 	SpriteManager* spriteData = SpriteManager::GetInstance();
@@ -83,6 +85,25 @@ void LoadResources()
 			endY = beginY + size;
 
 			spriteData->Add(id, beginX, beginY, endX, endY, sheet);
+			++id;
+		}
+	}
+
+	sheet = texture->Get(7);
+	height = 5;
+	width = 10;
+	id = 0;
+	//Load sprite của World Map
+	for (int j = 0; j < height; ++j)
+	{
+		for (int i = 0; i < width; ++i)
+		{
+			beginX = size * i + i;
+			beginY = size * j + j;
+			endX = beginX + size;
+			endY = beginY + size;
+
+			spriteData->Add(id + MAP_ID, beginX, beginY, endX, endY, sheet);
 			++id;
 		}
 	}
@@ -120,6 +141,10 @@ void LoadResources()
 	sheet = texture->Get(6);
 	spriteData->Load(L"Script\\Assets\\Sprites\\MenuSprites.txt", sheet);
 
+	//--World Map--//
+	sheet = texture->Get(7);
+	spriteData->Load(L"Script\\Assets\\Sprites\\MapSprites.txt", sheet);
+
 	////////////////////////
 	//---Load animation---//
 	////////////////////////
@@ -138,17 +163,25 @@ void LoadResources()
 
 	//--Menu--//
 	aniData->Load(L"Script\\Assets\\Animations\\MenuAnimation.txt");
+
+	//--World Map--//
+	aniData->Load(L"Script\\Assets\\Animations\\MapAnimation.txt");
 	
 	////////////////////
 	//---Load Array---//
 	////////////////////
-	//LPSCENE testMap = new TestScene(1, L"Script\\Map\\TestMap.txt");
-	LPSCENE intro = new Intro(2, L"Script\\Map\\Intro.txt");
 
-	intro->LoadBlock(L"Script\\Assets\\Block\\Intro.txt");
+	//LPSCENE testMap = new TestScene(1, L"Script\\Map\\TestMap.txt");
+	//testMap->LoadBlock(L"Script\\Assets\\Block\\Block.txt");
+
+	//LPSCENE intro = new Intro(2, L"Script\\Map\\Intro.txt");
+	//intro->LoadBlock(L"Script\\Assets\\Block\\Intro.txt");
+
+	LPSCENE worldMap = new WorldMap(2, L"Script\\Map\\WorldMap1.txt");
+	worldMap->LoadBlock(L"Script\\Assets\\Block\\WorldMap1.txt");
 
 	LPSCENEMANAGER sceneManager = SceneManager::GetInstance();
-	sceneManager->Load(intro);
+	sceneManager->Load(worldMap);
 
 	DebugOut(L"[INFO] Loading map successfully\n");
 }
