@@ -37,8 +37,6 @@ void Koopas::Add()
 	LPTESTSCENE current = dynamic_cast<LPTESTSCENE>(scene);
 	current->Add(this);
 
-	mario = current->GetMario();
-
 }
 
 void Koopas::Destroy()
@@ -73,6 +71,13 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 	coEvents.clear();
+
+	if (mario == NULL)
+	{
+		LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
+		LPTESTSCENE current = dynamic_cast<LPTESTSCENE>(scene);
+		mario = static_cast<Mario*>(current->GetMario());
+	}
 
 	// Simple fall down
 	if (PAUSE == false)

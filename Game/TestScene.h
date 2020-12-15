@@ -5,7 +5,6 @@
 
 #include "Block.h"
 #include "BackGround.h"
-#include "Mario.h"
 #include "GroupObject.h"
 #include "BrickShiny.h"
 #include "QuestionBlock.h"
@@ -17,6 +16,7 @@
 #include "Mushroom.h"
 #include "Coin.h"
 #include "EnemyTroop.h"
+#include "Teleport.h"
 
 #include "HUD.h"
 
@@ -26,17 +26,21 @@
 
 using namespace std;
 
-class Mario;
 class TestScene: public Scene
 {
 protected:
-	Mario* mario;
+	GLOBAL global;
+	LPGAMEOBJECT mario;
 	vector<LPGAMEOBJECT> gameObjects;
 	vector<LPGAMEOBJECT> collideObjects;
 	vector<LPGAMEOBJECT> deleteList;
 
+	vector<LPGAMEOBJECT> teleport;
+	LPGAMEOBJECT currentGate;
+
 	int combo = 0;
 	int soLanUpdate = 0;
+	int currentWorld;
 
 public:
 
@@ -48,7 +52,7 @@ public:
 	void Add_Visual(LPGAMEOBJECT gameObject);
 	void Destroy_Visual(LPGAMEOBJECT gameObject);
 
-	Mario* GetMario() { return this->mario; }
+	LPGAMEOBJECT GetMario() { return this->mario; }
 	void GetMarioPos(float& x, float& y);
 	void FloatText(float x, float y);
 	void FloatTextCoin(float x, float y);

@@ -141,6 +141,18 @@ void Keyboard::OnKeyDown(int KeyCode)
 	{
 		switch (KeyCode)
 		{
+		case DIK_I:
+			//Transport Up
+			mario->SetState(MARIO_STATE_TRANSPORT_UP);
+			break;
+		case DIK_K:
+			//Transport Down
+			mario->SetState(MARIO_STATE_TRANSPORT_DOWN);
+			break;
+		case DIK_B:
+			if (PAUSE == false && Global::GetInstance()->allowSwitch == true)
+				SceneManager::GetInstance()->GetCurrentScene()->SetState(SCENE_STATE_SWITCH);
+			break;
 		case DIK_X:
 			//Short Jump
 			if (PAUSE == false)
@@ -217,6 +229,9 @@ void Keyboard::OnKeyDown(int KeyCode)
 		case DIK_Q:
 			SceneManager::GetInstance()->GetCurrentScene()->SetState(MENU_STATE_OPTION);
 			break;
+		case DIK_S:
+			SceneManager::GetInstance()->GetCurrentScene()->SetState(SCENE_STATE_STAGE_TO_MAP);
+			break;
 		}
 	}
 		break;
@@ -246,7 +261,13 @@ void Keyboard::OnKeyDown(int KeyCode)
 			SceneManager::GetInstance()->GetCurrentScene()->SetState(MAP_STATE_SELECT);
 			break;
 		case DIK_C:
-			SceneManager::GetInstance()->GetCurrentScene()->SetState(MAP_STATE_CHOOSE);
+			if (Global::GetInstance()->allowSwitch)
+			{
+
+			}
+			else
+				SceneManager::GetInstance()->GetCurrentScene()->SetState(MAP_STATE_CHOOSE);
+			SceneManager::GetInstance()->GetCurrentScene()->SetState(SCENE_STATE_MAP_TO_STAGE);
 			break;
 		}
 	}

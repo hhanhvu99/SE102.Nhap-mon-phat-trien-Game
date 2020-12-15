@@ -19,6 +19,9 @@ PlayerIntro::PlayerIntro(float x, float y) : GameObject()
 	this->grabObject = NULL;
 	this->directionGrab = 0;
 
+	this->width = STANDARD_SIZE;
+	this->height = STANDARD_SIZE;
+
 	touchGround = false;
 	ani_walk_time = MARIO_ANI_WALKING_TIME_DEFAULT;
 

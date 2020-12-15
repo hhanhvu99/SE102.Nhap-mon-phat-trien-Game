@@ -101,6 +101,12 @@
     <Filter Include="GameObject\Mob\Map">
       <UniqueIdentifier>{0f1c4539-62a0-42f0-951a-ea6eeba9b75d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Teleport">
+      <UniqueIdentifier>{511d4b9a-866d-4734-a102-f29926ca565f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\Scene\World1Scene">
+      <UniqueIdentifier>{6daa85b7-8ccb-4a16-821c-73ef38bc2f68}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -226,6 +232,12 @@
     <ClCompile Include="EnemyTroop.cpp">
       <Filter>GameObject\Mob\Map</Filter>
     </ClCompile>
+    <ClCompile Include="Teleport.cpp">
+      <Filter>GameObject\Teleport</Filter>
+    </ClCompile>
+    <ClCompile Include="World1_1.cpp">
+      <Filter>GameEngine\Scene\World1Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine.h">
@@ -350,6 +362,12 @@
     </ClInclude>
     <ClInclude Include="EnemyTroop.h">
       <Filter>GameObject\Mob\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Teleport.h">
+      <Filter>GameObject\Teleport</Filter>
+    </ClInclude>
+    <ClInclude Include="World1_1.h">
+      <Filter>GameEngine\Scene\World1Scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

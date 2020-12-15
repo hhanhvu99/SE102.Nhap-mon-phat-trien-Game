@@ -180,9 +180,11 @@
     <ClCompile Include="SpriteManager.cpp" />
     <ClCompile Include="SuperLeaf.cpp" />
     <ClCompile Include="SuperStar.cpp" />
+    <ClCompile Include="Teleport.cpp" />
     <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Koopas.cpp" />
+    <ClCompile Include="World1_1.cpp" />
     <ClCompile Include="WorldMap.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -223,9 +225,11 @@
     <ClInclude Include="SpriteManager.h" />
     <ClInclude Include="SuperLeaf.h" />
     <ClInclude Include="SuperStar.h" />
+    <ClInclude Include="Teleport.h" />
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Koopas.h" />
+    <ClInclude Include="World1_1.h" />
     <ClInclude Include="WorldMap.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

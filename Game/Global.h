@@ -20,6 +20,12 @@
 #define HUD_FRAME_DRAW_ORDER			7
 #define HUD_TEXT_DRAW_ORDER				8
 
+//Scene ID
+#define SCENE_INTRO						1
+#define SCENE_WORLD_1					2
+#define SCENE_WORLD_1_1					3
+#define SCENE_WORLD_1_1_BONUS			4
+
 /*Define Active Block*/
 //Animation
 #define ACTIVE_BLOCK 1134
@@ -404,6 +410,12 @@ extern int CHOOSE;
 #define MAP_STATE_RESTART				600
 #define MAP_STATE_SELECT				700
 #define MAP_STATE_CHOOSE				800
+#define SCENE_STATE_SWITCH				900
+#define SCENE_STATE_SWITCH_NEXT			901
+#define SCENE_STATE_MAP_TO_STAGE		902
+#define SCENE_STATE_STAGE_TO_MAP		903
+#define SCENE_STATE_STILL_SWITCH        1000
+	
 
 enum eType
 {
@@ -430,6 +442,11 @@ enum eType
 
 	//Item
 	ITEM = 13,
+
+	//Teleport Type
+	TELEPORT_SCENE = 20,
+	TELEPORT_MAP = 21,
+	TELEPORT_SCENE_TO_MAP = 22,
 
 	//Bullet
 	MARIO_BULLET = 50,
@@ -473,6 +490,10 @@ public:
 	int cardOne, cardTwo, cardThree;
 	int frameHUD_x, frameHUD_y;
 	int speed;
+
+	//Switch Scene
+	bool allowSwitch;
+	float camY;
 
 	D3DCOLOR background_color = D3DCOLOR_XRGB(255, 255, 255);
 

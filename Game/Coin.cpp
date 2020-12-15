@@ -19,7 +19,10 @@ void Coin::Add()
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
 	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
 
-	current->Add_Visual(this);
+	if (outSide)
+		current->Add(this);
+	else
+		current->Add_Visual(this);
 
 }
 

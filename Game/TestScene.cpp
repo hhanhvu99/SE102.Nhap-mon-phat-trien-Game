@@ -7,7 +7,7 @@
 
 TestScene::TestScene(int id, LPCWSTR filePath) : Scene(id, filePath)
 {
-
+	global = Global::GetInstance();
 }
 
 void TestScene::Add(LPGAMEOBJECT gameObject)
@@ -127,8 +127,6 @@ void TestScene::Load()
 	int id;
 	LPGAMEOBJECT gameObject;
 	LPSPRITEMANAGER sprites = SpriteManager::GetInstance();
-	//mario = new Mario(45.0f, 350.0f);
-	//mario->SetDrawOrder(PLAYER_DRAW_ORDER);
 
 	gameObjects.clear();
 	collideObjects.clear();
@@ -228,8 +226,6 @@ void TestScene::Load()
 					gameObject->SetDrawOrder(BLOCK_DRAW_ORDER);
 					gameObject->SetAnimationSet(AnimationManager::GetInstance()->Get(ITEM_ID));
 
-					this->gameObjects.push_back(gameObject);
-					this->collideObjects.push_back(gameObject);
 				}
 				else
 				{
@@ -434,24 +430,56 @@ void TestScene::Load()
 
 	}
 
-	//Setup HUD
-	
-	Global::GetInstance()->Setup(3, HUD_ICON_MARIO, 1, 7, 0, 300, 0, HUD_ITEM_MUSHROOM, HUD_ITEM_FLOWER, HUD_ITEM_STAR);
-	HUD* mainFrame = new HUD(eType::HUD_MAIN_FRAME);
-	HUD* playerIcon = new HUD(eType::HUD_PLAYER_ICON);
-	HUD* playerLive = new HUD(eType::HUD_PLAYER_LIVE);
-	HUD* world = new HUD(eType::HUD_WORLD);
-	HUD* speed = new HUD(eType::HUD_SPEEDOMETER);
-	HUD* point = new HUD(eType::HUD_POINT);
-	HUD* money = new HUD(eType::HUD_MONEY);
-	HUD* time = new HUD(eType::HUD_TIME);
-	HUD* cardOne = new HUD(eType::HUD_CARD_ONE);
-	HUD* cardTwo = new HUD(eType::HUD_CARD_TWO);
-	HUD* cardThree = new HUD(eType::HUD_CARD_THREE);
+	//Add Gate
+	int currentScene, targetScene;
+	LPGAMEOBJECT gate = NULL;
+	float currentX, currentY;
+	float targetX, targetY;
+	int direction;
+	length = GATE.size();
+	for (int x = 0; x < length; x += 7)
+	{
+		currentScene = GATE[x];
+		currentX = GATE[x + 1] * STANDARD_SIZE;
+		currentY = GATE[x + 2] * STANDARD_SIZE;
+		targetScene = GATE[x + 3];
+		targetX = GATE[x + 4] * STANDARD_SIZE;
+		targetY = GATE[x + 5] * STANDARD_SIZE;
+		direction = GATE[x + 6];
 
-	//Keyboard::GetInstance()->SetKeyHandler(mario);
-	//mario->SetAnimationSet(AnimationManager::GetInstance()->Get(MARIO));
-	//mario->SetLevel(MARIO_LEVEL_SMALL);
+		if (currentX + currentY < 0)
+			currentWorld = currentScene;
+		else if (targetX + targetY < 0)
+			gate = new Teleport(currentScene, currentX, currentY, targetScene);
+		else
+			gate = new Teleport(currentScene, currentX, currentY, targetScene, targetX, targetY, direction);
+
+		teleport.push_back(gate);
+	}
+
+	//Set Start Position
+	startPosX = float(START[0]) * STANDARD_SIZE;
+	startPosY = float(START[1]) * STANDARD_SIZE;
+
+	//Set Background color
+	backgroundColor = D3DCOLOR_XRGB(COLOR[0], COLOR[1], COLOR[2]);
+
+	//Setup HUD
+	if (type != 2)
+	{
+		Global::GetInstance()->Setup(3, HUD_ICON_MARIO, 1, 7, 0, 300, 0, HUD_ITEM_MUSHROOM, HUD_ITEM_FLOWER, HUD_ITEM_STAR);
+		HUD* mainFrame = new HUD(eType::HUD_MAIN_FRAME);
+		HUD* playerIcon = new HUD(eType::HUD_PLAYER_ICON);
+		HUD* playerLive = new HUD(eType::HUD_PLAYER_LIVE);
+		HUD* world = new HUD(eType::HUD_WORLD);
+		HUD* speed = new HUD(eType::HUD_SPEEDOMETER);
+		HUD* point = new HUD(eType::HUD_POINT);
+		HUD* money = new HUD(eType::HUD_MONEY);
+		HUD* time = new HUD(eType::HUD_TIME);
+		HUD* cardOne = new HUD(eType::HUD_CARD_ONE);
+		HUD* cardTwo = new HUD(eType::HUD_CARD_TWO);
+		HUD* cardThree = new HUD(eType::HUD_CARD_THREE);
+	}
 
 	sort(gameObjects.begin(), gameObjects.end(), 
 		[](const LPGAMEOBJECT& lhs, const LPGAMEOBJECT& rhs)
@@ -467,15 +495,8 @@ void TestScene::Load()
 		}
 	);
 
-	//float cx, cy;
-	//mario->GetPosition(cx, cy);
-
-	//GameEngine* game = GameEngine::GetInstance();
-	//cx -= game->GetScreenWidth() / 2;
-	//cy -= game->GetScreenHeight() / 2;
-
-	//GameEngine::GetInstance()->SetCamPos(cx, 250.0f);
-
+	PAUSE = false;
+	Global::GetInstance()->background_color = backgroundColor;
 	DebugOut(L"[INFO] Done loading scene resources %s\n", sceneFilePath);
 }
 
@@ -487,7 +508,8 @@ void TestScene::Update(DWORD dt)
 
 	for (auto x : gameObjects)
 	{
-		x->Update(dt, &collideObjects);
+		if (x != nullptr)
+			x->Update(dt, &collideObjects);
 	}
 	
 	//Delete object
@@ -495,26 +517,32 @@ void TestScene::Update(DWORD dt)
 	{
 		gameObjects.erase(std::remove(gameObjects.begin(), gameObjects.end(), deleteObject), gameObjects.end());
 		delete deleteObject;
+
 	}
 	deleteList.clear();
+
+	//Check teleport
+	for (auto teleportObject : teleport)
+	{
+		if (static_cast<Teleport*>(teleportObject)->IsAllowSwitch())
+		{
+			global->allowSwitch = true;
+			currentGate = teleportObject;
+			break;
+		}
+		global->allowSwitch = false;
+	}
 
 	//Sort Game objects by draw order
 	SortGameObject();
 
-	//Check if touch ground
-	/*
-	if (mario->isTouchGround())
-		combo = 0;*/
-
-	//soLanUpdate += 1;
-	//DebugOut(L"Update lan thu: %d\n", soLanUpdate);
 }
 
 void TestScene::Render()
 {
 	for (auto x : gameObjects)
 	{
-		if (x != NULL)
+		if (x != nullptr)
 			x->Render();
 	}
 }
@@ -524,7 +552,19 @@ void TestScene::Render()
 */
 void TestScene::Unload()
 {
-	
+	collideObjects.clear();
+	teleport.clear();
+
+	for (auto object : gameObjects)
+		Destroy(object);
+
+	for (auto deleteObject : deleteList)
+	{
+		gameObjects.erase(std::remove(gameObjects.begin(), gameObjects.end(), deleteObject), gameObjects.end());
+		delete deleteObject;	
+	}
+	deleteList.clear();
 }
+
 
 

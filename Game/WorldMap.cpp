@@ -6,21 +6,20 @@
 WorldMap::WorldMap(int id, LPCWSTR filePath) : TestScene(id, filePath)
 {
 	this->type = 3;
-	global = Global::GetInstance();
 	global->level = MARIO_LEVEL_SMALL;
 }
 
 void WorldMap::Reset()
 {
-	mario->MoveTo(startX, startY);
+	castMario->MoveTo(startX, startY);
 	current = listOfPath[Global::TwoDimension_To_OneDimension(int(startX / 16), int(startY / 16), height)];
 
 }
 
 void WorldMap::Restart()
 {
-	mario->MoveTo(startX, startY);
-	mario->SetState(MARIO_MAP_STATE_ROLLING);
+	castMario->MoveTo(startX, startY);
+	castMario->SetState(MARIO_MAP_STATE_ROLLING);
 	current = listOfPath[Global::TwoDimension_To_OneDimension(int(startX / 16), int(startY / 16), height)];
 }
 
@@ -29,6 +28,14 @@ void WorldMap::Load()
 	CHOOSE = 3;
 	TestScene::Load();
 	Global::GetInstance()->background_color = D3DCOLOR_XRGB(248, 236, 160);
+
+	showPopup = false;
+	startTime = true;
+	timePass = 0;
+
+	gameOver = false;
+	firstOver = true;
+	firstOption = true;
 
 	//Setup Path
 	int pathType;
@@ -49,6 +56,8 @@ void WorldMap::Load()
 		case MAP_PATH_START:
 			startX = indexX * STANDARD_SIZE;
 			startY = indexY * STANDARD_SIZE;
+			startPosX = startX;
+			startPosY = startY;
 			global->currentX = indexX;
 			global->currentY = indexY;
 			current = path;
@@ -90,11 +99,12 @@ void WorldMap::Load()
 
 
 	//Setup Mario
-	mario = new MarioMap(startX, startY);
-	mario->SetAnimationSet(AnimationManager::GetInstance()->Get(MARIO));
-	mario->SetDrawOrder(MAP_DRAW_ORDER_PLAYER);
-	gameObjects.push_back(mario);
-	collideObjects.push_back(mario);
+	mario = new MarioMap(startPosX, startPosY);
+	castMario = static_cast<MarioMap*>(mario);
+	castMario->SetAnimationSet(AnimationManager::GetInstance()->Get(MARIO));
+	castMario->SetDrawOrder(MAP_DRAW_ORDER_PLAYER);
+	gameObjects.push_back(castMario);
+	collideObjects.push_back(castMario);
 
 	GameEngine::GetInstance()->SetCamPos(0.0f, 0.0f);
 
@@ -105,6 +115,8 @@ void WorldMap::Update(DWORD dt)
 {
 	TestScene::Update(dt);
 	DWORD now = GetTickCount();
+
+	mario->GetPosition(startPosX, startPosY);
 	
 	if (startTime)
 	{
@@ -182,10 +194,7 @@ void WorldMap::Render()
 
 void WorldMap::Unload()
 {
-	for (auto object : gameObjects)
-		Destroy(object);
-
-	
+	TestScene::Unload();
 
 }
 
@@ -195,52 +204,60 @@ void WorldMap::SetState(int state)
 
 	switch (state)
 	{
+	case SCENE_STATE_SWITCH:
+		if (global->allowSwitch)
+		{
+			PAUSE = true;
+			Teleport* gate = static_cast<Teleport*>(currentGate);
+			SceneManager::GetInstance()->SwitchScene(gate->GetTargetID());
+		}
+		break;
 	case MAP_STATE_MOVE_UP:
-		if (!mario->IsMoving())
+		if (!castMario->IsMoving())
 		{
 			if (current->adjacent[0] != 0 && current->adjacent[1] != 0)
 			{
-				mario->MoveTo(current->adjacent[0] * STANDARD_SIZE, current->adjacent[1] * STANDARD_SIZE);
+				castMario->MoveTo(current->adjacent[0] * STANDARD_SIZE, current->adjacent[1] * STANDARD_SIZE);
 				current = listOfPath[Global::TwoDimension_To_OneDimension(current->adjacent[0], current->adjacent[1], height)];
 			}
 		}
 		break;
 	case MAP_STATE_MOVE_DOWN:
-		if (!mario->IsMoving())
+		if (!castMario->IsMoving())
 		{
 			if (current->adjacent[2] != 0 && current->adjacent[3] != 0)
 			{
-				mario->MoveTo(current->adjacent[2] * STANDARD_SIZE, current->adjacent[3] * STANDARD_SIZE);
+				castMario->MoveTo(current->adjacent[2] * STANDARD_SIZE, current->adjacent[3] * STANDARD_SIZE);
 				current = listOfPath[Global::TwoDimension_To_OneDimension(current->adjacent[2], current->adjacent[3], height)];
 			}
 		}
 		break;
 	case MAP_STATE_MOVE_LEFT:
-		if (!mario->IsMoving())
+		if (!castMario->IsMoving())
 		{
 			if (current->adjacent[4] != 0 && current->adjacent[5] != 0)
 			{
-				mario->MoveTo(current->adjacent[4] * STANDARD_SIZE, current->adjacent[5] * STANDARD_SIZE);
+				castMario->MoveTo(current->adjacent[4] * STANDARD_SIZE, current->adjacent[5] * STANDARD_SIZE);
 				current = listOfPath[Global::TwoDimension_To_OneDimension(current->adjacent[4], current->adjacent[5], height)];
 			}
 		}
 		break;
 	case MAP_STATE_MOVE_RIGHT:
-		if (!mario->IsMoving())
+		if (!castMario->IsMoving())
 		{
 			if (current->adjacent[6] != 0 && current->adjacent[7] != 0)
 			{
-				mario->MoveTo(current->adjacent[6] * STANDARD_SIZE, current->adjacent[7] * STANDARD_SIZE);
+				castMario->MoveTo(current->adjacent[6] * STANDARD_SIZE, current->adjacent[7] * STANDARD_SIZE);
 				current = listOfPath[Global::TwoDimension_To_OneDimension(current->adjacent[6], current->adjacent[7], height)];
 			}
 		}
 		break;
 	case MAP_STATE_RESET:
-		if (!mario->IsMoving())
+		if (!castMario->IsMoving())
 			Reset();
 		break;
 	case MAP_STATE_RESTART:
-		if (!mario->IsMoving())
+		if (!castMario->IsMoving())
 			gameOver = true;	
 		break;
 	case MAP_STATE_SELECT:
@@ -260,6 +277,14 @@ void WorldMap::SetState(int state)
 			Destroy(text);
 			Destroy(arrow);
 		}
+		break;
+	case SCENE_STATE_MAP_TO_STAGE:
+	{
+		Teleport* gate = static_cast<Teleport*>(currentGate);
+		//SceneManager::GetInstance()->SwitchScene(gate->GetTargetID());
+		SceneManager::GetInstance()->SwitchScene(SCENE_WORLD_1_1);
+	}
+		
 		break;
 	default:
 		break;

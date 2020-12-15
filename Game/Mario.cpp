@@ -36,6 +36,42 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// Calculate dx, dy 
 	GameObject::Update(dt);
 
+	// Update camera to follow mario
+	float cx, cy;
+	this->GetPosition(cx, cy);
+
+	GameEngine* game = GameEngine::GetInstance();
+	cx -= game->GetScreenWidth() / 2;
+	cy -= game->GetScreenHeight() / 2;
+
+	GameEngine::GetInstance()->SetCamPos(cx, global->camY);
+
+	if (transporting)
+	{
+		if (GetTickCount() - startTransport > MARIO_TRANSPORT_TIME)
+		{
+			PAUSE = false;
+			transporting = false;
+
+			vx = 0;
+			vy = 0;
+
+			readyToSwitch = true;
+		}
+		else
+		{
+			x += dx;
+			y += dy;
+			return;
+		}
+
+	}
+	else if (readyToSwitch)
+	{
+		return;
+	}
+		
+
 	// Simple fall down
 	vy += MARIO_GRAVITY * dt;
 
@@ -68,9 +104,11 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			{
 				vy = -MARIO_DIE_DEFLECT_SPEED;
 				dying = false;
-			}	
+			}
+				
 		}
-		
+		else if (GetTickCount() - die_time > MARIO_DIE_TIME_SECOND)
+			readyToSwitch = true;
 	}
 
 			
@@ -144,7 +182,6 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		}
 	}
-	
 
 	// No collision occured, proceed normally
 	//DebugOut(L"Size: %d \n", coEvents.size());
@@ -645,16 +682,6 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	else if (touchGround)
 		jumpCrouch = false;
 
-	// Update camera to follow mario
-	/*
-	float cx, cy;
-	this->GetPosition(cx, cy);
-
-	GameEngine* game = GameEngine::GetInstance();
-	cx -= game->GetScreenWidth() / 2;
-	cy -= game->GetScreenHeight() / 2;
-
-	GameEngine::GetInstance()->SetCamPos(cx, 280.0f);*/
 }
 
 void Mario::Render()
@@ -665,6 +692,13 @@ void Mario::Render()
 
 	if (state == MARIO_STATE_DIE)
 		ani = MARIO_ANI_DIE;
+	else if (transporting)
+	{
+		if (state == MARIO_STATE_TRANSPORT_UP || state == MARIO_STATE_TRANSPORT_DOWN)
+		{
+			ani = global->level + MARIO_ANI_TRANSPORT;
+		}
+	}
 	else if (inTransition == false)
 	{
 		if (tail_whip)
@@ -1238,9 +1272,40 @@ void Mario::SetState(int state)
 		}
 
 		break;
+	case MARIO_STATE_TRANSPORT_UP:
+		if (inTransition == false)
+		{
+			vx = 0;
+			vy = -MARIO_TRANSPORT_SPEED;
+			this->draw_order = ENEMY_ENTITY_PLANT_DRAW_ORDER;
+
+			transporting = true;
+			PAUSE = true;
+			startTransport = now;
+		}
+		
+		break;
+	case MARIO_STATE_TRANSPORT_DOWN:
+		if (inTransition == false)
+		{
+			vx = 0;
+			vy = MARIO_TRANSPORT_SPEED;
+			this->draw_order = ENEMY_ENTITY_PLANT_DRAW_ORDER;
+
+			transporting = true;
+			PAUSE = true;
+			startTransport = now;
+		}
+
+		break;
+	case MARIO_STATE_TRANSPORT_RESET:
+		readyToSwitch = false;
+		this->draw_order = PLAYER_DRAW_ORDER;
+		break;
 	case MARIO_STATE_DIE:
 		PAUSE = true;
 		dying = true;
+		die = true;
 		die_time = now;
 
 		break;

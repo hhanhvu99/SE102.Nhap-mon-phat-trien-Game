@@ -4,6 +4,7 @@
 #include "KeyEventHandler.h"
 #include "Mario.h"
 #include "SceneManager.h"
+#include "Global.h"
 
 class Mario;
 class Keyboard : public KeyEventHandler

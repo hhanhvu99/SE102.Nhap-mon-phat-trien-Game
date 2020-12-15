@@ -725,6 +725,7 @@ void Intro::Update(DWORD dt)
 			moveTitle = false;
 			allowTranform = false;
 			allowEntity = false;
+			shaking = false;
 
 			//Initiate final scene
 			D3DCOLOR color = D3DCOLOR_XRGB(255, 255, 255);
@@ -835,9 +836,6 @@ void Intro::Render()
 
 void Intro::Unload()
 {
-	for (auto object : gameObjects)
-		Destroy(object);
-
 	mario = NULL;
 	luigi = NULL;
 
@@ -854,6 +852,7 @@ void Intro::Unload()
 	turtleShell = NULL;
 	firstTurtle = NULL;
 
+	TestScene::Unload();
 }
 
 void Intro::SetState(int state)
@@ -862,6 +861,11 @@ void Intro::SetState(int state)
 
 	switch (state)
 	{
+	case SCENE_STATE_STAGE_TO_MAP:
+		if (firstOption)
+			SceneManager::GetInstance()->SwitchScene(SCENE_WORLD_1);
+
+		break;
 	case MENU_STATE_SKIP:
 		showMenu = true;
 		break;

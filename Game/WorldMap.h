@@ -29,8 +29,7 @@ class WorldMap : public TestScene
 	float startX, startY;
 	LPPATH current;
 
-	GLOBAL global;
-	MarioMap* mario;
+	MarioMap* castMario;
 
 	bool showPopup = false;
 	bool startTime = true;
@@ -39,6 +38,7 @@ class WorldMap : public TestScene
 	bool gameOver = false;
 	bool firstOver = true;
 	bool firstOption = true;
+
 
 	//Temp
 	BackGround* startScene;

@@ -11,6 +11,7 @@ using namespace std;
 
 class SceneManager
 {
+protected:
 	static SceneManager* __instance;
 
 	unordered_map<int, LPSCENE> scenes;

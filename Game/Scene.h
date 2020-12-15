@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <d3d9.h>
 #include "KeyEventHandler.h"
 
 class Scene
@@ -13,16 +14,23 @@ protected:
 	std::vector<int> ENEMY;
 	std::vector<int> ITEM;
 	std::vector<int> PATH;
+	std::vector<int> START;
+	std::vector<int> GATE;
+	std::vector<int> COLOR;
 
 	KeyEventHandler* key_handler;
+
 	int id;
 	int state;
 	int type;
+	D3DCOLOR backgroundColor;
+
 	LPCWSTR sceneFilePath;
 
 public:
 	int width, height;
 	int map[500][500];
+	float startPosX, startPosY;
 
 	Scene(int id, LPCWSTR filePath);
 
@@ -31,6 +39,7 @@ public:
 	int GetID();
 
 	void LoadBlock(LPCWSTR gameFile);
+	void SetStartPos(float x, float y) { startPosX = x; startPosY = y; }
 
 	virtual void Load() = 0;
 	virtual void Unload() = 0;

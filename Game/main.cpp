@@ -17,6 +17,7 @@
 #include "TestScene.h"
 #include "Intro.h"
 #include "WorldMap.h"
+#include "World1_1.h"
 
 #include "Mario.h"
 #include "Keyboard.h"
@@ -170,18 +171,25 @@ void LoadResources()
 	////////////////////
 	//---Load Array---//
 	////////////////////
+	LPSCENE scene = new World1_1(SCENE_WORLD_1_1, L"Script\\Map\\TestMap.txt");
+	scene->LoadBlock(L"Script\\Assets\\Block\\Block.txt");
 
-	//LPSCENE testMap = new TestScene(1, L"Script\\Map\\TestMap.txt");
-	//testMap->LoadBlock(L"Script\\Assets\\Block\\Block.txt");
+	LPSCENE sceneBonus = new World1_1(SCENE_WORLD_1_1_BONUS, L"Script\\Map\\World1_1_Bonus.txt");
+	sceneBonus->LoadBlock(L"Script\\Assets\\Block\\World1_1_Bonus.txt");
 
-	//LPSCENE intro = new Intro(2, L"Script\\Map\\Intro.txt");
-	//intro->LoadBlock(L"Script\\Assets\\Block\\Intro.txt");
+	LPSCENE intro = new Intro(SCENE_INTRO, L"Script\\Map\\Intro.txt");
+	intro->LoadBlock(L"Script\\Assets\\Block\\Intro.txt");
 
-	LPSCENE worldMap = new WorldMap(2, L"Script\\Map\\WorldMap1.txt");
-	worldMap->LoadBlock(L"Script\\Assets\\Block\\WorldMap1.txt");
+	LPSCENE world = new WorldMap(SCENE_WORLD_1, L"Script\\Map\\WorldMap1.txt");
+	world->LoadBlock(L"Script\\Assets\\Block\\WorldMap1.txt");
 
 	LPSCENEMANAGER sceneManager = SceneManager::GetInstance();
-	sceneManager->Load(worldMap);
+	
+	sceneManager->Load(scene);
+	sceneManager->Load(sceneBonus);
+	sceneManager->Load(intro);
+	sceneManager->Load(world);
+	sceneManager->SwitchScene(SCENE_INTRO);
 
 	DebugOut(L"[INFO] Loading map successfully\n");
 }
@@ -335,12 +343,15 @@ int Run()
 			Sleep((DWORD)tickPerFrame - dt);
 		}
 		
-		timePass += dt;
-
-		if (timePass >= 1000)
+		if (Global::GetInstance()->time > 0)
 		{
-			Global::GetInstance()->time -= 1;
-			timePass -= 1000;
+			timePass += dt;
+
+			if (timePass >= 1000)
+			{
+				Global::GetInstance()->time -= 1;
+				timePass -= 1000;
+			}
 		}
 
 	}

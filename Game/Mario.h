@@ -16,6 +16,7 @@
 #define MARIO_SLIDE_SPEED				0.0002f
 #define MARIO_BREAK_SPEED				0.0005f
 #define MARIO_RUNNING_BREAK_SPEED		0.001f
+#define MARIO_TRANSPORT_SPEED			0.05f
 
 #define MARIO_JUMP_SPEED_Y				0.3f
 #define MARIO_JUMP_DEFLECT_SPEED		0.15f
@@ -34,6 +35,11 @@
 #define MARIO_STATE_RUNNING_LEFT		202
 #define MARIO_STATE_BREAK_LEFT			300
 #define MARIO_STATE_BREAK_RIGHT			400
+#define MARIO_STATE_TRANSPORT_UP		401
+#define MARIO_STATE_TRANSPORT_DOWN		402
+#define MARIO_STATE_TRANSPORT_LEFT		403
+#define MARIO_STATE_TRANSPORT_RIGHT		404
+#define MARIO_STATE_TRANSPORT_RESET		405
 #define MARIO_STATE_JUMP				500
 #define MARIO_STATE_SHORT_JUMP			501
 #define MARIO_STATE_CROUCH_JUMP			502
@@ -72,7 +78,9 @@
 #define MARIO_ANI_KICK_DURATION			200
 #define MARIO_SWITCHING_TIME			80
 #define MARIO_SWITCHING_DURATION		240
+#define MARIO_TRANSPORT_TIME			1000
 #define MARIO_DIE_TIME					500
+#define MARIO_DIE_TIME_SECOND			2000
 
 //Point collide
 #define MARIO_POINT_COLLIDE_OFFSET_X	8.0f
@@ -120,6 +128,7 @@
 #define MARIO_FROG_BBOX_HEIGHT			24
 			
 
+
 class Mario : public GameObject
 {
 protected:
@@ -139,12 +148,6 @@ protected:
 	float start_y;
 	float tempVx;
 
-	float anchor1_X;
-	float anchor1_Y;
-	float anchor2_X;
-	float anchor2_Y;
-	float anchor3_X;
-	float anchor3_Y;
 
 	float pointX;
 	float pointY;
@@ -185,6 +188,7 @@ protected:
 	bool shoot = false;
 	DWORD startShoot = 0;
 
+	bool die = false;
 	bool dying = false;
 	DWORD die_time = 0;
 
@@ -198,6 +202,10 @@ protected:
 
 	bool switching = false;
 	DWORD startSwitching = 0;
+
+	bool transporting = false;
+	bool readyToSwitch = false;
+	DWORD startTransport = 0;
 
 	bool touchLeft = false, touchRight = false;
 	bool isRunning = false;
@@ -228,11 +236,13 @@ public:
 	bool PointCollision(vector<LPGAMEOBJECT>& collideObjects, float pointX, float pointY);
 	bool PointCollision(vector<LPGAMEOBJECT>& collideObjects, float pointX, float pointY, LPGAMEOBJECT& target);
 
+	bool isReady() { return readyToSwitch; }
 	bool isCrouching() { return isCrouch; }
 	bool isTouchGround() { return touchGround; }
 	bool isAllowJump() { return jump_allow; }
 	bool isGrappingPress() { return grabTurtlePress; }
 	bool isGrapping() { return grabbing; }
+	bool isDying() { return die; }
 
 	void Reset();
 

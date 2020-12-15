@@ -93,15 +93,13 @@ void SceneManager::Load(LPSCENE scene)
 	f.close();
 
 	DebugOut(L"[INFO] Loading game file : %s has been loaded successfully\n", gameFile);
-
-	SwitchScene(current_scene);
 }
 
 void SceneManager::SwitchScene(int scene_id)
 {
 	DebugOut(L"[INFO] Switching to scene %d\n", scene_id);
 
-	scenes[current_scene]->Unload();;
+	scenes[current_scene]->Unload();
 
 	//Texture::GetInstance()->Clear();
 	//SpriteManager::GetInstance()->Clear();

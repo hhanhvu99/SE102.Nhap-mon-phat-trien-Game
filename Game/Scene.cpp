@@ -49,6 +49,9 @@ void Scene::LoadBlock(LPCWSTR gameFile)
 		if (line == "[PLATFORM]") { option = 5; continue; }
 		if (line == "[ITEM]") { option = 6; continue; }
 		if (line == "[PATH]") { option = 7; continue; }
+		if (line == "[START]") { option = 8; continue; }
+		if (line == "[GATE]") { option = 9; continue; }
+		if (line == "[COLOR]") { option = 10; continue; }
 		if (option == 1)
 		{
 			vector<string> tokens = split(line, ",");
@@ -90,6 +93,24 @@ void Scene::LoadBlock(LPCWSTR gameFile)
 			vector<string> tokens = split(line, ",");
 			for (int i = 0; i < tokens.size(); ++i)
 				PATH.push_back(atoi(tokens[i].c_str()));
+		}
+		else if (option == 8)
+		{
+			vector<string> tokens = split(line, ",");
+			for (int i = 0; i < tokens.size(); ++i)
+				START.push_back(atoi(tokens[i].c_str()));
+		}
+		else if (option == 9)
+		{
+			vector<string> tokens = split(line, ",");
+			for (int i = 0; i < tokens.size(); ++i)
+				GATE.push_back(atoi(tokens[i].c_str()));
+		}
+		else if (option == 10)
+		{
+			vector<string> tokens = split(line, ",");
+			for (int i = 0; i < tokens.size(); ++i)
+				COLOR.push_back(atoi(tokens[i].c_str()));
 		}
 		else
 		{
