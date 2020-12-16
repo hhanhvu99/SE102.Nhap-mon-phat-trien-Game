@@ -28,12 +28,15 @@
 
 /*Define Active Block*/
 //Animation
-#define ACTIVE_BLOCK 1134
-#define BLOCK_ANI_TIME 150
+#define ACTIVE_BLOCK					1134
+#define BLOCK_ANI_TIME					150
 
-#define BRICK_SHINY_ANI			91
-#define QUESTION_BLOCK_ANI		251
-#define QUESTION_BLOCK_ANI_HIT	255
+#define BRICK_SHINY_ANI					91
+#define QUESTION_BLOCK_ANI				251
+#define QUESTION_BLOCK_ANI_HIT			255
+
+#define P_BLOCK_ANI						110
+#define P_BLOCK_ANI_STOMP				113
 
 //State
 //Object
@@ -50,6 +53,10 @@
 #define GOAL_STATE_IDLE					0
 #define GOAL_STATE_NORMAL				1
 #define GOAL_STATE_HIT					2
+
+#define P_BLOCK_STATE_NORMAL			1
+#define P_BLOCK_STATE_HIT				2
+#define P_BLOCK_STATE_STOMP				3
 
 #define MOVING_SPEED					0.3f
 #define DEFLECT_SPEED					0.05f
@@ -460,12 +467,13 @@ enum eType
 	//Active Block
 	BRICK = 10,
 	QUESTION = 11,
+	P_BLOCK = 13,
 
 	//Item
-	ITEM = 13,
+	ITEM = 14,
 
 	//End Goal
-	GOAL = 14,
+	GOAL = 15,
 
 	//Teleport Type
 	TELEPORT_SCENE = 20,

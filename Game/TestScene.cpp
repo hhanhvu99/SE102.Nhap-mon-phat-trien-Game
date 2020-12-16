@@ -213,6 +213,18 @@ void TestScene::Load()
 					}
 
 					break;
+					
+					case P_BLOCK_ANI:
+					{
+						gameObject = new P_Block(STANDARD_SIZE * i, STANDARD_SIZE * j);
+						gameObject->SetIndex(i, j);
+						gameObject->SetDrawOrder(ACTIVE_BLOCK_DRAW_ORDER);
+						gameObject->SetAnimationSet(AnimationManager::GetInstance()->Get(ACTIVE_BLOCK));
+
+						this->gameObjects.push_back(gameObject);
+						this->collideObjects.push_back(gameObject);
+					}
+					break;
 
 					default:
 						DebugOut(L"[ERROR] Cannot find the active block at loading scene. \n");

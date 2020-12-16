@@ -380,7 +380,17 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				obj->SetState(GOAL_STATE_HIT);
 				SetState(MARIO_STATE_FINISH);
 			}
-
+			else if (obj->GetType() == eType::P_BLOCK)
+			{
+				if (obj->GetState() == P_BLOCK_STATE_HIT)
+				{
+					if (ny < 0)
+					{
+						obj->SetState(P_BLOCK_STATE_STOMP);
+						vy = -MARIO_JUMP_DEFLECT_SPEED;
+					}
+				}	
+			}
 			if (ny > 0)
 			{
 				if (obj->GetType() == eType::BRICK)
@@ -641,20 +651,28 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	if (tail_whip)
 	{
-		LPGAMEOBJECT enemy = NULL;
-		if (PointCollision(*coObjects, pointTail_X, pointTail_Y, enemy))
+		LPGAMEOBJECT object = NULL;
+		if (PointCollision(*coObjects, pointTail_X, pointTail_Y, object))
 		{
-			if(enemy == NULL)
+			if(object == NULL)
 				DebugOut(L"NULL \n");
 			else
 			{
-				enemy->SetDirection(direction);
-				enemy->SetState(ENEMY_STATE_HIT_TAIL);
-				
-				if (direction > 0)
-					enemy->SetPosition(pointTail_X , pointTail_Y - enemy->GetHeight());
+				if (object->GetType() == eType::ENEMY)
+				{
+					object->SetDirection(direction);
+					object->SetState(ENEMY_STATE_HIT_TAIL);
+
+					if (direction > 0)
+						object->SetPosition(pointTail_X, pointTail_Y - object->GetHeight());
+					else
+						object->SetPosition(pointTail_X - object->GetWidth(), pointTail_Y - object->GetHeight());
+				}
 				else
-					enemy->SetPosition(pointTail_X - enemy->GetWidth(), pointTail_Y - enemy->GetHeight());
+				{
+					if (object->GetState() == P_BLOCK_STATE_NORMAL)
+						object->SetState(P_BLOCK_STATE_HIT);
+				}
 
 			}
 			
@@ -1481,6 +1499,10 @@ bool Mario::PointCollision(vector<LPGAMEOBJECT>& coObjects, float pointX, float 
 
 	for (LPGAMEOBJECT object : coObjects)
 	{
+		if (object->GetType() != eType::P_BLOCK)
+			if (object->GetType() != eType::ENEMY)
+				continue;
+
 		object->GetBoundingBox(left, top, right, bottom);
 
 		if (right < this->x - STANDARD_SIZE)
@@ -1490,6 +1512,7 @@ bool Mario::PointCollision(vector<LPGAMEOBJECT>& coObjects, float pointX, float 
 
 		switch (object->GetType())
 		{
+		case eType::P_BLOCK:
 		case eType::ENEMY:
 			if (pointX >= left && pointX <= right && pointY >= top && pointY <= bottom)
 			{

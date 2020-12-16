@@ -151,6 +151,7 @@ void WorldMap::Update(DWORD dt)
 		numberTwo->SetType(eType::MAP_START);
 		numberTwo->SetDrawOrder(HUD_TEXT_DRAW_ORDER);
 		this->gameObjects.push_back(numberTwo);
+
 	}
 	else if (showPopup)
 	{
@@ -163,6 +164,8 @@ void WorldMap::Update(DWORD dt)
 			PAUSE = false;
 			showPopup = false;
 		}
+		else
+			PAUSE = true;
 	}
 	else if (gameOver)
 	{

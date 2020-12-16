@@ -172,6 +172,7 @@
     <ClCompile Include="MarioMap.cpp" />
     <ClCompile Include="Plant.cpp" />
     <ClCompile Include="PlayerIntro.cpp" />
+    <ClCompile Include="P_Block.cpp" />
     <ClCompile Include="QuestionBlock.cpp" />
     <ClCompile Include="Mushroom.cpp" />
     <ClCompile Include="Rubbish.cpp" />
@@ -218,6 +219,7 @@
     <ClInclude Include="MarioMap.h" />
     <ClInclude Include="Plant.h" />
     <ClInclude Include="PlayerIntro.h" />
+    <ClInclude Include="P_Block.h" />
     <ClInclude Include="QuestionBlock.h" />
     <ClInclude Include="Mushroom.h" />
     <ClInclude Include="Rubbish.h" />

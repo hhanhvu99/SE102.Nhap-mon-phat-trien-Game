@@ -6,15 +6,20 @@
 #include "Block.h"
 #include "BackGround.h"
 #include "GroupObject.h"
+
 #include "BrickShiny.h"
 #include "QuestionBlock.h"
+#include "P_Block.h"
+
 #include "Groomba.h"
 #include "Koopas.h"
 #include "Plant.h"
+
 #include "SuperLeaf.h"
 #include "SuperStar.h"
 #include "Mushroom.h"
 #include "Coin.h"
+
 #include "EnemyTroop.h"
 #include "Teleport.h"
 #include "EndGoal.h"

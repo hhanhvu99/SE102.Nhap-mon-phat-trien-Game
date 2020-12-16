@@ -110,6 +110,9 @@
     <Filter Include="GameObject\ActiveBlock\End Goal">
       <UniqueIdentifier>{c986fb96-01f8-4935-bfdf-48b881a6a813}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\ActiveBlock\P-Block">
+      <UniqueIdentifier>{993d2655-d50f-4697-934e-16902382802b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -244,6 +247,9 @@
     <ClCompile Include="EndGoal.cpp">
       <Filter>GameObject\ActiveBlock\End Goal</Filter>
     </ClCompile>
+    <ClCompile Include="P_Block.cpp">
+      <Filter>GameObject\ActiveBlock\P-Block</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine.h">
@@ -377,6 +383,9 @@
     </ClInclude>
     <ClInclude Include="EndGoal.h">
       <Filter>GameObject\ActiveBlock\End Goal</Filter>
+    </ClInclude>
+    <ClInclude Include="P_Block.h">
+      <Filter>GameObject\ActiveBlock\P-Block</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
