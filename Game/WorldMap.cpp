@@ -6,6 +6,7 @@
 WorldMap::WorldMap(int id, LPCWSTR filePath) : TestScene(id, filePath)
 {
 	this->type = 3;
+	this->current = NULL;
 	global->level = MARIO_LEVEL_SMALL;
 }
 
@@ -28,6 +29,7 @@ void WorldMap::Load()
 	CHOOSE = 3;
 	TestScene::Load();
 	Global::GetInstance()->background_color = D3DCOLOR_XRGB(248, 236, 160);
+	allowResetStart = false;
 
 	showPopup = false;
 	startTime = true;
@@ -56,11 +58,10 @@ void WorldMap::Load()
 		case MAP_PATH_START:
 			startX = indexX * STANDARD_SIZE;
 			startY = indexY * STANDARD_SIZE;
-			startPosX = startX;
-			startPosY = startY;
 			global->currentX = indexX;
 			global->currentY = indexY;
-			current = path;
+			if (current == NULL)
+				current = path;
 			break;
 		case MAP_PATH_STAGE_ONE:
 		case MAP_PATH_STAGE_TWO:	
@@ -116,7 +117,14 @@ void WorldMap::Update(DWORD dt)
 	TestScene::Update(dt);
 	DWORD now = GetTickCount();
 
-	mario->GetPosition(startPosX, startPosY);
+	if(!castMario->IsMoving())
+		castMario->GetPosition(startPosX, startPosY);
+
+	if (global->die && PAUSE == false)
+	{
+		Reset();
+		global->die = false;
+	}
 	
 	if (startTime)
 	{
@@ -134,12 +142,12 @@ void WorldMap::Update(DWORD dt)
 		world->SetDrawOrder(HUD_TEXT_DRAW_ORDER);
 		this->gameObjects.push_back(world);
 
-		auto number = HUD::numberToList(global->live, 2);
-		numberOne = new BackGround(160.0f, 72.0f, SpriteManager::GetInstance()->Get(HUD_ID + ('0' + number[0])));
+		auto number = HUD::numberToString(global->live, 2);
+		numberOne = new BackGround(160.0f, 72.0f, SpriteManager::GetInstance()->Get(HUD_ID + int(number[0])));
 		numberOne->SetType(eType::MAP_START);
 		numberOne->SetDrawOrder(HUD_TEXT_DRAW_ORDER);
 		this->gameObjects.push_back(numberOne);
-		numberTwo = new BackGround(168.0f, 72.0f, SpriteManager::GetInstance()->Get(HUD_ID + ('0' + number[1])));
+		numberTwo = new BackGround(168.0f, 72.0f, SpriteManager::GetInstance()->Get(HUD_ID + int(number[1])));
 		numberTwo->SetType(eType::MAP_START);
 		numberTwo->SetDrawOrder(HUD_TEXT_DRAW_ORDER);
 		this->gameObjects.push_back(numberTwo);
@@ -281,8 +289,8 @@ void WorldMap::SetState(int state)
 	case SCENE_STATE_MAP_TO_STAGE:
 	{
 		Teleport* gate = static_cast<Teleport*>(currentGate);
-		//SceneManager::GetInstance()->SwitchScene(gate->GetTargetID());
-		SceneManager::GetInstance()->SwitchScene(SCENE_WORLD_1_1);
+		SceneManager::GetInstance()->SwitchScene(gate->GetTargetID());
+		//SceneManager::GetInstance()->SwitchScene(SCENE_WORLD_1_1);
 	}
 		
 		break;

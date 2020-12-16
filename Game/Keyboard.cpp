@@ -262,12 +262,10 @@ void Keyboard::OnKeyDown(int KeyCode)
 			break;
 		case DIK_C:
 			if (Global::GetInstance()->allowSwitch)
-			{
-
-			}
+				SceneManager::GetInstance()->GetCurrentScene()->SetState(SCENE_STATE_MAP_TO_STAGE);
 			else
 				SceneManager::GetInstance()->GetCurrentScene()->SetState(MAP_STATE_CHOOSE);
-			SceneManager::GetInstance()->GetCurrentScene()->SetState(SCENE_STATE_MAP_TO_STAGE);
+			
 			break;
 		}
 	}

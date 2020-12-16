@@ -9,6 +9,7 @@
 #define MARIO_WALKING_SPEED				0.00015f 
 #define MARIO_RUNNING_SPEED				0.00008f 
 #define MARIO_JUMPING_SPEED				0.0025f
+#define MARIO_WALKING_FINISH_SPEED		0.05f
 #define MARIO_MAX_WALKING_SPEED			0.1f
 #define MARIO_HALF_MAX_RUNNING_SPEED	0.15f
 #define MARIO_MAX_RUNNING_SPEED			0.2f
@@ -16,7 +17,7 @@
 #define MARIO_SLIDE_SPEED				0.0002f
 #define MARIO_BREAK_SPEED				0.0005f
 #define MARIO_RUNNING_BREAK_SPEED		0.001f
-#define MARIO_TRANSPORT_SPEED			0.05f
+#define MARIO_TRANSPORT_SPEED			0.03f
 
 #define MARIO_JUMP_SPEED_Y				0.3f
 #define MARIO_JUMP_DEFLECT_SPEED		0.15f
@@ -61,6 +62,7 @@
 #define MARIO_STATE_UP					901
 #define MARIO_STATE_TRANSITION_1		902
 #define MARIO_STATE_TRANSITION_2		903
+#define MARIO_STATE_FINISH				999
 #define MARIO_STATE_DIE					1000
 
 //Time
@@ -79,6 +81,7 @@
 #define MARIO_SWITCHING_TIME			80
 #define MARIO_SWITCHING_DURATION		240
 #define MARIO_TRANSPORT_TIME			1000
+#define MARIO_FINISH_TIME				2000
 #define MARIO_DIE_TIME					500
 #define MARIO_DIE_TIME_SECOND			2000
 
@@ -147,7 +150,7 @@ protected:
 	float start_x;			// initial position of Mario at scene
 	float start_y;
 	float tempVx;
-
+	float targetY;
 
 	float pointX;
 	float pointY;
@@ -207,6 +210,9 @@ protected:
 	bool readyToSwitch = false;
 	DWORD startTransport = 0;
 
+	bool finished = false;
+	DWORD startFinish = 0;
+
 	bool touchLeft = false, touchRight = false;
 	bool isRunning = false;
 	bool isMax = false;
@@ -230,6 +236,7 @@ public:
 	void SetState(int state);
 	void SetLevel(int l);
 	void SetPositionBack(float min_tx, int nx) {x += min_tx * dx + nx * 3.0f;}
+	void SetTargetY(float y) { targetY = y; }
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
 	int GetLevel() { return global->level; }
 
@@ -243,6 +250,7 @@ public:
 	bool isGrappingPress() { return grabTurtlePress; }
 	bool isGrapping() { return grabbing; }
 	bool isDying() { return die; }
+	bool isFinish() { return finished; }
 
 	void Reset();
 

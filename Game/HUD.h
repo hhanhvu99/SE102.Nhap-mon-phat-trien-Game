@@ -67,7 +67,7 @@ public:
 	void Add();
 	void Destroy();
 	void Setup();
-	static vector<int> numberToList(int number, int n);
+	static string numberToString(int number, int n);
 
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom) {};
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL);

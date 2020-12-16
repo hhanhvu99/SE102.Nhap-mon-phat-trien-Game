@@ -17,12 +17,15 @@
 #include "Coin.h"
 #include "EnemyTroop.h"
 #include "Teleport.h"
+#include "EndGoal.h"
 
 #include "HUD.h"
 
 #include "Global.h"
 
 #define FLOAT_TEXT_HEIGHT		8.0f
+#define SWITCH_TIME				200
+
 
 using namespace std;
 
@@ -41,9 +44,12 @@ protected:
 	int combo = 0;
 	int soLanUpdate = 0;
 	int currentWorld;
+	bool allowResetStart = true;
+
+	bool startTimerSwitch = true;
+	DWORD timeSwitch = 0;
 
 public:
-
 	TestScene(int id, LPCWSTR filePath);
 
 	void Add(LPGAMEOBJECT gameObject);

@@ -77,11 +77,14 @@ void GameEngine::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, in
 	r.right = right;
 	r.bottom = bottom;
 
+	if (allowColor == false)
+		this->color = color;
+
 	//DebugOut(L"Direction: %d\n", angle);
 
 	if (angle == 0.0f)
 	{
-		spriteHandler->Draw(texture, &r, NULL, &p, color);
+		spriteHandler->Draw(texture, &r, NULL, &p, this->color);
 	}
 	else if (angle == 180.0f)
 	{
@@ -91,7 +94,7 @@ void GameEngine::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, in
 		anhCuoi = anhGoc * scale;
 
 		spriteHandler->SetTransform(&anhCuoi);
-		spriteHandler->Draw(texture, &r, NULL, &p, color);
+		spriteHandler->Draw(texture, &r, NULL, &p, this->color);
 		spriteHandler->SetTransform(&anhGoc);
 	}
 	else if (angle == 90.0f)
@@ -102,7 +105,7 @@ void GameEngine::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, in
 		anhCuoi = anhGoc * scale;
 
 		spriteHandler->SetTransform(&anhCuoi);
-		spriteHandler->Draw(texture, &r, NULL, &p, color);
+		spriteHandler->Draw(texture, &r, NULL, &p, this->color);
 		spriteHandler->SetTransform(&anhGoc);
 	}
 	else if (angle != 0.0f)
@@ -113,7 +116,7 @@ void GameEngine::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, in
 		anhCuoi = anhGoc * scale;
 
 		spriteHandler->SetTransform(&anhCuoi);
-		spriteHandler->Draw(texture, &r, NULL, &p, color);
+		spriteHandler->Draw(texture, &r, NULL, &p, this->color);
 		spriteHandler->SetTransform(&anhGoc);
 	}
 	

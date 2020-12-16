@@ -107,8 +107,8 @@ void Teleport::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				}		
 			}	
 		}
-			
-					
+
+		//DebugOut(L"width: %d - height: %d\n", mario->GetWidth(), mario->GetHeight());
 		//DebugOut(L"x: %f - y: %f\n", marioX, marioY);
 		//DebugOut(L"tx: %f - ty: %f\n", currentX, currentY);
 		allowSwitch = false;

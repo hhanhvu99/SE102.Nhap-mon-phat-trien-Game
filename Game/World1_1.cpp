@@ -15,7 +15,13 @@ void World1_1::Load()
 	castMario = static_cast<Mario*>(mario);
 	castMario->SetDrawOrder(PLAYER_DRAW_ORDER);
 	castMario->SetLevel(global->level);
-	castMario->SetPosition(startPosX, startPosY);
+
+	if (global->level == MARIO_LEVEL_FROG)
+		castMario->SetPosition(startPosX, startPosY - (MARIO_FROG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT));
+	else if (global->level > MARIO_LEVEL_SMALL)
+		castMario->SetPosition(startPosX, startPosY - (MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT));
+	else
+		castMario->SetPosition(startPosX, startPosY);
 
 	Keyboard::GetInstance()->SetKeyHandler(castMario);
 	castMario->SetAnimationSet(AnimationManager::GetInstance()->Get(MARIO));
@@ -54,9 +60,12 @@ void World1_1::Update(DWORD dt)
 	if (castMario->isDying())
 	{
 		if (castMario->isReady())
-		{
 			SetState(SCENE_STATE_STAGE_TO_MAP);
-		}
+	}
+	else if (castMario->isFinish())
+	{
+		if (castMario->isReady())
+			SetState(SCENE_STATE_STAGE_TO_MAP);
 	}
 	else if (startSwitching)
 	{
@@ -102,16 +111,24 @@ void World1_1::SetState(int state)
 			int direction;
 			float cx, cy;
 			float x, y;
+
 			gate->GetDirection(direction);
 			gate->GetCurrentPos(cx, cy);
-			castMario->GetPosition(x, y);
 
+			castMario->GetPosition(x, y);
 			castMario->SetPosition(cx - 6.0f, y);
 
 			if (direction == 1)
+			{
+				castMario->SetTargetY(cy - castMario->GetHeight());
 				castMario->SetState(MARIO_STATE_TRANSPORT_UP);
+			}
 			else if (direction == 2)
+			{
+				castMario->SetTargetY(cy + STANDARD_SIZE);
 				castMario->SetState(MARIO_STATE_TRANSPORT_DOWN);
+			}
+				
 		}
 			
 		break;
@@ -119,9 +136,11 @@ void World1_1::SetState(int state)
 	{
 		Teleport* gate = static_cast<Teleport*>(currentGate);
 		int direction;
+		int height;
 		float tx, ty;
 		gate->GetDirection(direction);
 		gate->GetTargetPos(tx, ty);
+		height = castMario->GetHeight();
 
 		PAUSE = true;
 
@@ -131,16 +150,19 @@ void World1_1::SetState(int state)
 		//DebugOut(L"Direction: %d\n", direction);
 
 		currentScene->SetState(SCENE_STATE_STILL_SWITCH);
+		castMario = static_cast<Mario*>(currentScene->GetMario());
 
 		if (direction == 1)
 		{
-			currentScene->GetMario()->SetPosition(tx - 6.0f, ty + 16.0f);
-			currentScene->GetMario()->SetState(MARIO_STATE_TRANSPORT_UP);
+			castMario->SetPosition(tx - 6.0f, ty + height);
+			castMario->SetTargetY(ty - (castMario->GetHeight() - STANDARD_SIZE));
+			castMario->SetState(MARIO_STATE_TRANSPORT_UP);
 		}
 		else if (direction == 2)
 		{
-			currentScene->GetMario()->SetPosition(tx - 6.0f, ty - 16.0f);
-			currentScene->GetMario()->SetState(MARIO_STATE_TRANSPORT_DOWN);
+			castMario->SetPosition(tx - 6.0f, ty - height);
+			castMario->SetTargetY(ty);
+			castMario->SetState(MARIO_STATE_TRANSPORT_DOWN);
 		}
 
 	}

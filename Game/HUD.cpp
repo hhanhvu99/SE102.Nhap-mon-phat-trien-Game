@@ -1,3 +1,5 @@
+#include <sstream>
+
 #include "HUD.h"
 #include "debug.h"
 
@@ -76,13 +78,10 @@ void HUD::Setup()
 			draw_order = HUD_TEXT_DRAW_ORDER;
 
 			oldNumber = global->live;
-			auto listNumber = numberToList(global->live, 2);
+			auto listNumber = numberToString(global->live, 2);
 
-			for (auto number : listNumber)
-			{
-				object = new HUD_Object(SpriteManager::GetInstance()->Get(HUD_ID + ('0' + number)));
-				spriteHolder.push_back(object);
-			}
+			object = new HUD_Object(listNumber, 2);
+			spriteHolder.push_back(object);
 
 		}
 
@@ -111,13 +110,11 @@ void HUD::Setup()
 			draw_order = HUD_TEXT_DRAW_ORDER;
 
 			oldNumber = global->point;
-			auto listNumber = numberToList(global->point, 7);
-
-			for (auto number : listNumber)
-			{
-				object = new HUD_Object(SpriteManager::GetInstance()->Get(HUD_ID + ('0' + number)));
-				spriteHolder.push_back(object);
-			}
+			auto listNumber = numberToString(global->point, 7);
+	
+			object = new HUD_Object(listNumber, 7);
+			spriteHolder.push_back(object);
+			
 		}
 			
 			break;
@@ -126,13 +123,10 @@ void HUD::Setup()
 			draw_order = HUD_TEXT_DRAW_ORDER;
 
 			oldNumber = global->money;
-			auto listNumber = numberToList(global->money, 2);
+			auto listNumber = numberToString(global->money, 2);
 
-			for (auto number : listNumber)
-			{
-				object = new HUD_Object(SpriteManager::GetInstance()->Get(HUD_ID + ('0' + number)));
-				spriteHolder.push_back(object);
-			}
+			object = new HUD_Object(listNumber, 2);
+			spriteHolder.push_back(object);	
 
 		}
 			break;
@@ -141,13 +135,10 @@ void HUD::Setup()
 			draw_order = HUD_TEXT_DRAW_ORDER;
 
 			oldNumber = global->time;
-			auto listNumber = numberToList(global->time, 3);
+			auto listNumber = numberToString(global->time, 3);
 
-			for (auto number : listNumber)
-			{
-				object = new HUD_Object(SpriteManager::GetInstance()->Get(HUD_ID + ('0' + number)));
-				spriteHolder.push_back(object);
-			}
+			object = new HUD_Object(listNumber, 3);
+			spriteHolder.push_back(object);
 
 		}
 			break;
@@ -172,8 +163,12 @@ void HUD::Setup()
 			break;
 		}
 
-		this->width = object->GetSprite()->GetWidth();
-		this->height = object->GetSprite()->GetHeight();
+		if (object->GetType() == HUD_OBJECT_IMAGE)
+		{
+			this->width = object->GetSprite()->GetWidth();
+			this->height = object->GetSprite()->GetHeight();
+		}
+		
 	}
 	/*
 	if (!sprite)
@@ -181,7 +176,7 @@ void HUD::Setup()
 
 }
 
-vector<int> HUD::numberToList(int number, int n)
+string HUD::numberToString(int number, int n)
 {
 	vector<int> listNumber;
 
@@ -204,7 +199,10 @@ vector<int> HUD::numberToList(int number, int n)
 
 	reverse(listNumber.begin(), listNumber.end());
 
-	return listNumber;
+	stringstream result;
+	copy(listNumber.begin(), listNumber.end(), std::ostream_iterator<int>(result, ""));
+
+	return result.str();
 }
 
 void HUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
@@ -252,23 +250,11 @@ void HUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			{
 				oldNumber = global->live;
 
-				auto listNumber = numberToList(global->live, 2);
-				int i = 0;
-
-				for (auto number : listNumber)
-				{
-					spriteHolder[i]->SetSprite(SpriteManager::GetInstance()->Get(HUD_ID + ('0' + number)));
-					++i;
-				}
-
+				auto listNumber = numberToString(global->live, 2);
+				spriteHolder.front()->SetText(listNumber);
 			}
-			int i = 0;
 
-			for (auto object : spriteHolder)
-			{
-				object->SetPosition(x + i * object->GetSprite()->GetWidth(), y);
-				++i;
-			}
+			spriteHolder.front()->SetPosition(x, y);
 		}
 			
 			break;
@@ -326,23 +312,11 @@ void HUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			{
 				oldNumber = global->point;
 
-				auto listNumber = numberToList(global->point, 7);
-				int i = 0;
-
-				for (auto number : listNumber)
-				{
-					spriteHolder[i]->SetSprite(SpriteManager::GetInstance()->Get(HUD_ID + ('0' + number)));
-					++i;
-				}
-
+				auto listNumber = numberToString(global->point, 7);
+				spriteHolder.front()->SetText(listNumber);
 			}
-			int i = 0;
 
-			for (auto object : spriteHolder)
-			{
-				object->SetPosition(x + i * object->GetSprite()->GetWidth(), y);
-				++i;
-			}
+			spriteHolder.front()->SetPosition(x, y);
 		}
 			
 			break;
@@ -355,23 +329,12 @@ void HUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			{
 				oldNumber = global->money;
 
-				auto listNumber = numberToList(global->money, 2);
-				int i = 0;
-
-				for (auto number : listNumber)
-				{
-					spriteHolder[i]->SetSprite(SpriteManager::GetInstance()->Get(HUD_ID + ('0' + number)));
-					++i;
-				}
+				auto listNumber = numberToString(global->money, 2);
+				spriteHolder.front()->SetText(listNumber);
 
 			}
-			int i = 0;
 
-			for (auto object : spriteHolder)
-			{
-				object->SetPosition(x + i * object->GetSprite()->GetWidth(), y);
-				++i;
-			}
+			spriteHolder.front()->SetPosition(x, y);
 		}
 			break;
 		case HUD_TIME:
@@ -383,23 +346,12 @@ void HUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			{
 				oldNumber = global->time;
 
-				auto listNumber = numberToList(global->time, 3);
-				int i = 0;
-
-				for (auto number : listNumber)
-				{
-					spriteHolder[i]->SetSprite(SpriteManager::GetInstance()->Get(HUD_ID + ('0' + number)));
-					++i;
-				}
+				auto listNumber = numberToString(global->time, 3);
+				spriteHolder.front()->SetText(listNumber);
 
 			}
-			int i = 0;
 
-			for (auto object : spriteHolder)
-			{
-				object->SetPosition(x + i * object->GetSprite()->GetWidth(), y);
-				++i;
-			}
+			spriteHolder.front()->SetPosition(x, y);
 		}
 			break;
 		case HUD_CARD_ONE:

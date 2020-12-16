@@ -2,6 +2,9 @@
 
 #include "TestScene.h"
 
+#define STAGE_OFFSET_TRANSPORT_UP		8.0f
+#define STAGE_OFFSET_TRANSPORT_DOWN		8.0f
+
 class World1_1 : public TestScene
 {
 	Mario* castMario;

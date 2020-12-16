@@ -107,6 +107,9 @@
     <Filter Include="GameEngine\Scene\World1Scene">
       <UniqueIdentifier>{6daa85b7-8ccb-4a16-821c-73ef38bc2f68}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\ActiveBlock\End Goal">
+      <UniqueIdentifier>{c986fb96-01f8-4935-bfdf-48b881a6a813}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -238,6 +241,9 @@
     <ClCompile Include="World1_1.cpp">
       <Filter>GameEngine\Scene\World1Scene</Filter>
     </ClCompile>
+    <ClCompile Include="EndGoal.cpp">
+      <Filter>GameObject\ActiveBlock\End Goal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine.h">
@@ -368,6 +374,9 @@
     </ClInclude>
     <ClInclude Include="World1_1.h">
       <Filter>GameEngine\Scene\World1Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="EndGoal.h">
+      <Filter>GameObject\ActiveBlock\End Goal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

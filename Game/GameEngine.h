@@ -33,6 +33,9 @@ class GameEngine
 
 	LPKEYEVENTHANDLER keyHandler;  
 
+	D3DCOLOR color;
+	bool allowColor = false;;
+
 	float cam_x = 0.0f;
 	float cam_y = 0.0f;
 
@@ -85,6 +88,10 @@ public:
 
 	void SetCamPos(float x, float y) { cam_x = x; cam_y = y; }
 	void GetCamPos(float &x, float &y) { x = cam_x ; y = cam_y ; }
+
+	void SetColor(D3DCOLOR color) { this->color = color; }
+	void EnableColor() { this->allowColor = true; }
+	void DisableColor() { this->allowColor = false; }
 
 	static GameEngine* GetInstance();
 

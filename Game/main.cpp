@@ -62,6 +62,7 @@ void LoadResources()
 	texture->Add(5, L"Asset\\HUD\\HUD_Sheet.png", NULL);
 	texture->Add(6, L"Asset\\Menu\\MenuSheet.png", NULL);
 	texture->Add(7, L"Asset\\Map\\SpriteSheetMap.png", NULL);
+	texture->Add(8, L"Asset\\Block\\Goal.png", D3DCOLOR_XRGB(0, 183, 239));
 	texture->Add(ID_TEX_BBOX, L"Asset\\Debug\\BoundingBox.png", NULL);
 
 	SpriteManager* spriteData = SpriteManager::GetInstance();
@@ -146,6 +147,10 @@ void LoadResources()
 	sheet = texture->Get(7);
 	spriteData->Load(L"Script\\Assets\\Sprites\\MapSprites.txt", sheet);
 
+	//--End Goal--//
+	sheet = texture->Get(8);
+	spriteData->Load(L"Script\\Assets\\Sprites\\GoalSprite.txt", sheet);
+
 	////////////////////////
 	//---Load animation---//
 	////////////////////////
@@ -167,6 +172,9 @@ void LoadResources()
 
 	//--World Map--//
 	aniData->Load(L"Script\\Assets\\Animations\\MapAnimation.txt");
+
+	//--End Goal--//
+	aniData->Load(L"Script\\Assets\\Animations\\GoalAnimation.txt");
 	
 	////////////////////
 	//---Load Array---//

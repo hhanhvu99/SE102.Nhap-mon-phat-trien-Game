@@ -101,14 +101,13 @@ void SceneManager::SwitchScene(int scene_id)
 
 	scenes[current_scene]->Unload();
 
-	//Texture::GetInstance()->Clear();
-	//SpriteManager::GetInstance()->Clear();
-	//AnimationManager::GetInstance()->Clear();
-
 	current_scene = scene_id;
 	LPSCENE s = scenes[scene_id];
-	//SceneManager::GetInstance()->SetKeyHandler(s->GetKeyEventHandler());
+
 	s->Load();
+
+	if (s->GetID() != SCENE_INTRO)
+		s->SetSwitch();
 }
 
 SceneManager* SceneManager::GetInstance()

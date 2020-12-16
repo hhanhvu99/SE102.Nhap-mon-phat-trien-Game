@@ -10,7 +10,6 @@
 Mario::Mario(float x, float y) : GameObject()
 {
 	global = Global::GetInstance();
-	global->level = MARIO_LEVEL_SMALL;
 	untouchable = 0;
 
 	start_x = x;
@@ -48,7 +47,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	if (transporting)
 	{
-		if (GetTickCount() - startTransport > MARIO_TRANSPORT_TIME)
+		if (state == MARIO_STATE_TRANSPORT_UP && y <= targetY)
 		{
 			PAUSE = false;
 			transporting = false;
@@ -57,6 +56,18 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			vy = 0;
 
 			readyToSwitch = true;
+			return;
+		}
+		else if (state == MARIO_STATE_TRANSPORT_DOWN && y >= targetY)
+		{
+			PAUSE = false;
+			transporting = false;
+
+			vx = 0;
+			vy = 0;
+
+			readyToSwitch = true;
+			return;
 		}
 		else
 		{
@@ -364,6 +375,11 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 				continue;
 			}
+			else if (obj->GetType() == eType::GOAL)
+			{
+				obj->SetState(GOAL_STATE_HIT);
+				SetState(MARIO_STATE_FINISH);
+			}
 
 			if (ny > 0)
 			{
@@ -399,6 +415,21 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		delete coEvents[i];
 		coEvents[i] = NULL;
+	}
+
+	//Finish
+	if (finished)
+	{
+		if (touchGround)
+		{
+			vx = MARIO_WALKING_FINISH_SPEED;
+			ani_walk_time = 50;
+		}	
+
+		if (GetTickCount() - startFinish > MARIO_FINISH_TIME)
+			readyToSwitch = true;
+		
+		return;
 	}
 
 	//Is running or not?
@@ -681,7 +712,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		jumpCrouch = true;
 	else if (touchGround)
 		jumpCrouch = false;
-
+	
 }
 
 void Mario::Render()
@@ -892,6 +923,9 @@ void Mario::SetState(int state)
 	DWORD now = GetTickCount();
 	//DebugOut(L"State: %d\n", state);
 	//DebugOut(L"----------\n");
+
+	if (finished)
+		return;
 
 	switch (state)
 	{
@@ -1302,11 +1336,35 @@ void Mario::SetState(int state)
 		readyToSwitch = false;
 		this->draw_order = PLAYER_DRAW_ORDER;
 		break;
+	case MARIO_STATE_FINISH:
+		inTransition = false;
+		tail_whip = false;
+		shoot = false;
+		flapAni = false;
+		flapping = false;
+
+		if (grabbing)
+		{
+			grabbing = false;
+			grabObject->SetState(ENEMY_STATE_RELEASE);
+			grabTurtlePress = false;
+			grabObject = NULL;
+		}
+
+		finished = true;
+		startFinish = now;
+
+		vx = 0;
+		vy = 0;
+		direction = 1;
+
+		break;
 	case MARIO_STATE_DIE:
 		PAUSE = true;
 		dying = true;
 		die = true;
 		die_time = now;
+		global->die = true;
 
 		break;
 	}
@@ -1452,7 +1510,6 @@ bool Mario::PointCollision(vector<LPGAMEOBJECT>& coObjects, float pointX, float 
 void Mario::Reset()
 {
 	SetState(MARIO_STATE_IDLE);
-	SetPosition(start_x, start_y);
 	SetSpeed(0, 0);	
 
 	tail_whip = false;

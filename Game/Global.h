@@ -47,6 +47,10 @@
 #define QUESTION_BLOCK_STATE_MOVING		2
 #define QUESTION_BLOCK_STATE_HIT		3
 
+#define GOAL_STATE_IDLE					0
+#define GOAL_STATE_NORMAL				1
+#define GOAL_STATE_HIT					2
+
 #define MOVING_SPEED					0.3f
 #define DEFLECT_SPEED					0.05f
 #define BOUNDARY						0.8f
@@ -416,6 +420,23 @@ extern int CHOOSE;
 #define SCENE_STATE_STAGE_TO_MAP		903
 #define SCENE_STATE_STILL_SWITCH        1000
 	
+////////////
+//End Goal//
+////////////
+#define	END_GOAL_ID						6162
+
+#define END_GOAL_SPRITE_ID				334
+#define END_GOAL_SQUARE					601
+
+#define END_GOAL_ANI_ID					600
+
+#define END_GOAL_STAR					2
+#define END_GOAL_FLOWER					3
+#define END_GOAL_MUSHROOM				4
+
+#define MUSHROOM_ANI_GOAL				612
+#define FLOWER_ANI_GOAL					613
+#define STAR_ANI_GOAL					614
 
 enum eType
 {
@@ -443,6 +464,9 @@ enum eType
 	//Item
 	ITEM = 13,
 
+	//End Goal
+	GOAL = 14,
+
 	//Teleport Type
 	TELEPORT_SCENE = 20,
 	TELEPORT_MAP = 21,
@@ -465,6 +489,8 @@ enum eType
 	HUD_CARD_TWO = 109,
 	HUD_CARD_THREE = 110,
 	HUD_BUBBLE = 111,
+	HUD_OBJECT_IMAGE = 112,
+	HUD_OBJECT_TEXT	= 113,
 
 	//Menu
 	MENU_TITLE = 200,
@@ -482,8 +508,9 @@ class Global
 	static Global* __instance;
 
 public:
-	//Mario Level
+	//Mario 
 	int level;
+	bool die = false;
 
 	//HUD
 	int live, player, world, point, time, money;

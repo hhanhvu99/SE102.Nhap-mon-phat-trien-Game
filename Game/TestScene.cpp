@@ -227,6 +227,20 @@ void TestScene::Load()
 					gameObject->SetAnimationSet(AnimationManager::GetInstance()->Get(ITEM_ID));
 
 				}
+				else if (id == END_GOAL_SPRITE_ID)
+				{
+					gameObject = new BackGround(STANDARD_SIZE * i, STANDARD_SIZE * j, sprites->Get(END_GOAL_SQUARE));
+					gameObject->SetIndex(i, j);
+					gameObject->SetDrawOrder(BLOCK_DRAW_ORDER);
+					this->gameObjects.push_back(gameObject);
+
+					gameObject = new EndGoal(STANDARD_SIZE * i, STANDARD_SIZE * j);
+					gameObject->SetIndex(i, j);
+					gameObject->SetDrawOrder(ACTIVE_BLOCK_DRAW_ORDER);
+					gameObject->SetAnimationSet(AnimationManager::GetInstance()->Get(END_GOAL_ID));
+					this->gameObjects.push_back(gameObject);
+					this->collideObjects.push_back(gameObject);
+				}
 				else
 				{
 					gameObject = new BackGround(STANDARD_SIZE * i, STANDARD_SIZE * j, sprites->Get(id));
@@ -458,9 +472,12 @@ void TestScene::Load()
 	}
 
 	//Set Start Position
-	startPosX = float(START[0]) * STANDARD_SIZE;
-	startPosY = float(START[1]) * STANDARD_SIZE;
-
+	if (allowResetStart)
+	{
+		startPosX = float(START[0]) * STANDARD_SIZE;
+		startPosY = float(START[1]) * STANDARD_SIZE;
+	}
+	
 	//Set Background color
 	backgroundColor = D3DCOLOR_XRGB(COLOR[0], COLOR[1], COLOR[2]);
 
@@ -505,6 +522,44 @@ void TestScene::Update(DWORD dt)
 {
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	//if (mario == NULL) return;
+
+	if (startSwitch)
+	{
+		DWORD timePass = GetTickCount() - timeSwitch;
+
+		if (startTimerSwitch)
+		{
+			GameEngine::GetInstance()->EnableColor();
+			timeSwitch = GetTickCount();
+			startTimerSwitch = false;
+			PAUSE = true;
+		}
+
+		else if (timePass > SWITCH_TIME)
+		{
+			GameEngine::GetInstance()->SetColor(D3DCOLOR_XRGB(255, 255, 255));
+			GameEngine::GetInstance()->DisableColor();
+			startSwitch = false;
+			startTimerSwitch = true;
+			PAUSE = false;
+		}
+		else if (timePass > SWITCH_TIME * 3 / 4)
+		{
+			GameEngine::GetInstance()->SetColor(D3DCOLOR_XRGB(200, 200, 200));
+		}
+		else if (timePass > SWITCH_TIME * 1 / 2)
+		{
+			GameEngine::GetInstance()->SetColor(D3DCOLOR_XRGB(100, 100, 100));
+		}
+		else if (timePass > SWITCH_TIME * 1 / 4)
+		{
+			GameEngine::GetInstance()->SetColor(D3DCOLOR_XRGB(50, 50, 50));
+		}
+		else
+		{
+			GameEngine::GetInstance()->SetColor(D3DCOLOR_XRGB(0, 0, 0));
+		}
+	}
 
 	for (auto x : gameObjects)
 	{

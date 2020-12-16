@@ -27,6 +27,8 @@ protected:
 
 	LPCWSTR sceneFilePath;
 
+	bool startSwitch = false;
+
 public:
 	int width, height;
 	int map[500][500];
@@ -38,6 +40,7 @@ public:
 	LPCWSTR GetFilePath();
 	int GetID();
 
+	void SetSwitch() { startSwitch = true; }
 	void LoadBlock(LPCWSTR gameFile);
 	void SetStartPos(float x, float y) { startPosX = x; startPosY = y; }
 
