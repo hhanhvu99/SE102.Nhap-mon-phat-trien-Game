@@ -11,8 +11,12 @@
 #define MARIO_JUMPING_SPEED				0.0025f
 #define MARIO_WALKING_FINISH_SPEED		0.05f
 #define MARIO_MAX_WALKING_SPEED			0.1f
-#define MARIO_HALF_MAX_RUNNING_SPEED	0.15f
-#define MARIO_MAX_RUNNING_SPEED			0.2f
+#define MARIO_HALF_MAX_RUNNING_SPEED_1	0.115f
+#define MARIO_HALF_MAX_RUNNING_SPEED_2	0.135f
+#define MARIO_HALF_MAX_RUNNING_SPEED_3	0.15f
+#define MARIO_MAX_RUNNING_SPEED_1		0.165f
+#define MARIO_MAX_RUNNING_SPEED_2		0.185f
+#define MARIO_MAX_RUNNING_SPEED_3		0.2f
 #define MARIO_MAX_FALLING_SPEED			0.2f
 #define MARIO_SLIDE_SPEED				0.0002f
 #define MARIO_BREAK_SPEED				0.0005f
@@ -20,6 +24,7 @@
 #define MARIO_TRANSPORT_SPEED			0.03f
 
 #define MARIO_JUMP_SPEED_Y				0.3f
+#define MARIO_JUMP_SPEED_FLAP			0.1f
 #define MARIO_JUMP_DEFLECT_SPEED		0.15f
 #define MARIO_GRAVITY					0.0007f
 #define MARIO_MAX_GRAVITY				0.05f
@@ -76,6 +81,8 @@
 #define MARIO_FLAP_TIME					200
 #define MARIO_FLAP_DURATION				100
 #define MARIO_FLAP_RUN_DURATION			150
+#define MARIO_FLAP_JUMP_TIME			5000
+#define MARIO_FLAP_JUMP_DURATION		200
 #define MARIO_ANI_KICK_DURATION			200
 #define MARIO_SWITCHING_TIME			80
 #define MARIO_SWITCHING_DURATION		240
@@ -200,6 +207,11 @@ protected:
 	DWORD startFlap = 0;
 	DWORD startFlapAni = 0;
 
+	bool allowFlapJump = false;
+	bool flapJump = false;
+	DWORD flapDuration = 0;
+	DWORD startFlapJump = 0;
+
 	bool kicking = false;
 	DWORD startKicking = 0;
 
@@ -245,6 +257,7 @@ public:
 
 	bool isReady() { return readyToSwitch; }
 	bool isCrouching() { return isCrouch; }
+	bool isJumpFlap() { return flapJump; }
 	bool isTouchGround() { return touchGround; }
 	bool isAllowJump() { return jump_allow; }
 	bool isGrappingPress() { return grabTurtlePress; }

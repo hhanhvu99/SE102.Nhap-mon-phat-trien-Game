@@ -199,6 +199,8 @@ void LoadResources()
 	sceneManager->Load(world);
 	sceneManager->SwitchScene(SCENE_INTRO);
 
+	Global::GetInstance()->Setup(4, HUD_ICON_MARIO, 1, 0, 0, 0, 0, HUD_ITEM_EMPTY, HUD_ITEM_EMPTY, HUD_ITEM_EMPTY);
+
 	DebugOut(L"[INFO] Loading map successfully\n");
 }
 
@@ -307,7 +309,6 @@ int Run()
 	int done = 0;
 	DWORD frameStart = GetTickCount();
 	DWORD accumulator = 0;
-	DWORD timePass = 0;
 	const DWORD timeStep = 16;
 	float tickPerFrame = 1000.0f / MAX_FRAME_RATE;
 
@@ -349,17 +350,6 @@ int Run()
 		else
 		{
 			Sleep((DWORD)tickPerFrame - dt);
-		}
-		
-		if (Global::GetInstance()->time > 0)
-		{
-			timePass += dt;
-
-			if (timePass >= 1000)
-			{
-				Global::GetInstance()->time -= 1;
-				timePass -= 1000;
-			}
 		}
 
 	}

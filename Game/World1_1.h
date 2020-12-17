@@ -10,6 +10,7 @@ class World1_1 : public TestScene
 	Mario* castMario;
 	bool startSwitching;
 	bool stillSwitching;
+	DWORD timeCounter = 0;
 
 public:
 	World1_1(int id, LPCWSTR filePath);

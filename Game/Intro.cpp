@@ -289,7 +289,7 @@ void Intro::Update(DWORD dt)
 				groomba->SetDrawOrder(MENU_DRAW_ORDER_ENEMY);
 				groomba->SetAnimationSet(AnimationManager::GetInstance()->Get(ENEMY_MOB));
 				groomba->SetDirection(-1);
-				groomba->SetState(ENEMY_STATE_IDLE);
+				groomba->SetState(ENEMY_STATE_DROP);
 
 				Mushroom* mushroom = new Mushroom(4 * STANDARD_SIZE, -1 * STANDARD_SIZE, ITEM_MUSHROOM_RED);
 				mushroom->SetDrawOrder(MENU_DRAW_ORDER_ITEM);

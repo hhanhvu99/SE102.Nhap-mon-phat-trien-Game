@@ -28,6 +28,7 @@
 #define ENEMY_STATE_MOVING				1
 #define ENEMY_STATE_STOMP				2
 #define ENEMY_STATE_HIT					3
+#define ENEMY_STATE_DROP				9
 
 class Groomba : public GameObject
 {
@@ -48,6 +49,12 @@ class Groomba : public GameObject
 
 	DWORD timeLeft;
 	DWORD timeJump;
+
+	//Pausing outside camera
+	bool firstRun = true;
+	int lastState;
+	DWORD timeLeft_dt;
+	DWORD timeJump_dt;
 
 public:
 	Groomba(int placeX, int placeY, int mobType, bool hasWing);

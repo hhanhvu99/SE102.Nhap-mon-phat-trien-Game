@@ -157,7 +157,7 @@ void Keyboard::OnKeyDown(int KeyCode)
 			//Short Jump
 			if (PAUSE == false)
 			{
-				if (mario->isTouchGround() == false)
+				if (mario->isTouchGround() == false || mario->isJumpFlap())
 					mario->SetState(MARIO_STATE_JUMP_FLAP);
 				else
 					mario->SetState(MARIO_STATE_SHORT_JUMP);

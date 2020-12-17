@@ -519,7 +519,6 @@ void TestScene::Load()
 	//Setup HUD
 	if (type != 2)
 	{
-		Global::GetInstance()->Setup(3, HUD_ICON_MARIO, 1, 7, 0, 300, 0, HUD_ITEM_MUSHROOM, HUD_ITEM_FLOWER, HUD_ITEM_STAR);
 		HUD* mainFrame = new HUD(eType::HUD_MAIN_FRAME);
 		HUD* playerIcon = new HUD(eType::HUD_PLAYER_ICON);
 		HUD* playerLive = new HUD(eType::HUD_PLAYER_LIVE);

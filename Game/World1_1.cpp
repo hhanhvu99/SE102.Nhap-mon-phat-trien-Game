@@ -32,17 +32,8 @@ void World1_1::Load()
 	startSwitching = false;
 	stillSwitching = false;
 
-	float cx, cy;
-	castMario->GetPosition(cx, cy);
-
-	GameEngine* game = GameEngine::GetInstance();
-	cx -= game->GetScreenWidth() / 2;
-	cy -= game->GetScreenHeight() / 2;
-
-	float camY = (height - 12) * STANDARD_SIZE;
-
-	GameEngine::GetInstance()->SetCamPos(cx, camY);
-
+	
+	Global::GetInstance()->time = 300;
 }
 
 void World1_1::Update(DWORD dt)
@@ -83,6 +74,16 @@ void World1_1::Update(DWORD dt)
 		}
 	}
 
+	if (Global::GetInstance()->time > 0)
+	{
+		timeCounter += dt;
+
+		if (timeCounter >= 1000)
+		{
+			Global::GetInstance()->time -= 1;
+			timeCounter -= 1000;
+		}
+	}
 }
 
 void World1_1::Render()

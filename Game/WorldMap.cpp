@@ -110,6 +110,7 @@ void WorldMap::Load()
 	GameEngine::GetInstance()->SetCamPos(0.0f, 0.0f);
 
 	PAUSE = true;
+	Global::GetInstance()->time = 0;
 }
 
 void WorldMap::Update(DWORD dt)

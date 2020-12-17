@@ -445,29 +445,65 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		if (speed < MARIO_MAX_WALKING_SPEED)
 		{
 			ani_walk_time = MARIO_ANI_WALKING_TIME_DEFAULT;
+			global->speed = 0;
 			if (touchGround)
 				isMax = false;
 		}
 		else if (speed == MARIO_MAX_WALKING_SPEED)
 		{
 			ani_walk_time = MARIO_ANI_WALKING_TIME_WARMUP;
+			global->speed = 0;
 			if (touchGround)
 				isMax = false;
 		}
-		else if (speed < MARIO_HALF_MAX_RUNNING_SPEED)
+		else if (speed < MARIO_HALF_MAX_RUNNING_SPEED_1)
 		{
 			ani_walk_time = MARIO_ANI_WALKING_TIME_WARMUP;
+			global->speed = 1;
 			if (touchGround)
 				isMax = false;
 		}
-		else if (speed < MARIO_MAX_RUNNING_SPEED)
+		else if (speed < MARIO_HALF_MAX_RUNNING_SPEED_2)
+		{
+			ani_walk_time = MARIO_ANI_WALKING_TIME_WARMUP;
+			global->speed = 2;
+			if (touchGround)
+				isMax = false;
+		}
+		else if (speed < MARIO_HALF_MAX_RUNNING_SPEED_3)
+		{
+			ani_walk_time = MARIO_ANI_WALKING_TIME_WARMUP;
+			global->speed = 3;
+			if (touchGround)
+				isMax = false;
+		}
+		else if (speed < MARIO_MAX_RUNNING_SPEED_1)
 		{
 			ani_walk_time = MARIO_ANI_WALKING_TIME_RUN;
+			global->speed = 4;
+			if (touchGround)
+				isMax = false;
+		}
+		else if (speed < MARIO_MAX_RUNNING_SPEED_2)
+		{
+			ani_walk_time = MARIO_ANI_WALKING_TIME_RUN;
+			global->speed = 5;
+			if (touchGround)
+				isMax = false;
+		}
+		else if (speed < MARIO_MAX_RUNNING_SPEED_3)
+		{
+			ani_walk_time = MARIO_ANI_WALKING_TIME_RUN;
+			global->speed = 6;
 			if (touchGround)
 				isMax = false;
 		}
 		else
+		{
 			ani_walk_time = MARIO_ANI_WALKING_TIME_MAX;
+			global->speed = 7;
+		}
+			
 	}
 	else
 	{
@@ -693,9 +729,25 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			
 		if (GetTickCount() - startFlap > MARIO_FLAP_TIME)
 			flapping = false;
-		else	
+		else
 			vy = MARIO_MAX_GRAVITY;
-				
+			
+	}
+
+	if (allowFlapJump)
+	{
+		if (GetTickCount() - startFlapJump > MARIO_FLAP_JUMP_TIME)
+		{
+			allowFlapJump = false;
+		}
+		
+		if (GetTickCount() - flapDuration > MARIO_FLAP_JUMP_DURATION)
+			flapJump = false;
+		else
+			vy = -MARIO_JUMP_SPEED_FLAP;
+
+		global->speed = 7;
+
 	}
 	
 	//Kicking
@@ -792,12 +844,12 @@ void Mario::Render()
 			{
 				if (direction > 0)
 				{
-					if (isMax) ani = global->level + MARIO_ANI_FLAP_RUN_RIGHT;
+					if (isMax || allowFlapJump) ani = global->level + MARIO_ANI_FLAP_RUN_RIGHT;
 					else ani = global->level + MARIO_ANI_FLAP_RIGHT;
 				}
 				else
 				{
-					if (isMax) ani = global->level + MARIO_ANI_FLAP_RUN_LEFT;
+					if (isMax || allowFlapJump) ani = global->level + MARIO_ANI_FLAP_RUN_LEFT;
 					else ani = global->level + MARIO_ANI_FLAP_LEFT;
 				}
 			}
@@ -805,7 +857,7 @@ void Mario::Render()
 			{
 				if (direction > 0)
 				{
-					if (isMax) ani = global->level + MARIO_ANI_RUN_JUMP_RIGHT;
+					if (isMax || allowFlapJump) ani = global->level + MARIO_ANI_RUN_JUMP_RIGHT;
 					else
 					{
 						if (global->level != MARIO_LEVEL_FROG)
@@ -819,7 +871,7 @@ void Mario::Render()
 				}
 				else
 				{
-					if (isMax) ani = global->level + MARIO_ANI_RUN_JUMP_LEFT;
+					if (isMax || allowFlapJump) ani = global->level + MARIO_ANI_RUN_JUMP_LEFT;
 					else
 					{
 						if (global->level != MARIO_LEVEL_FROG)
@@ -987,13 +1039,17 @@ void Mario::SetState(int state)
 
 		break;
 	case MARIO_STATE_RUNNING_RIGHT:
-		if (!touchRight)
+		if (!touchGround)
+		{
+			SetState(MARIO_STATE_WALKING_RIGHT);
+		}
+		else if (!touchRight)
 		{
 			vx += MARIO_RUNNING_SPEED * dt;
 
-			if (abs(vx) > MARIO_MAX_RUNNING_SPEED)
+			if (abs(vx) > MARIO_MAX_RUNNING_SPEED_3)
 			{
-				vx = MARIO_MAX_RUNNING_SPEED;
+				vx = MARIO_MAX_RUNNING_SPEED_3;
 				if (global->level != MARIO_LEVEL_FROG)
 					isMax = true;
 				else
@@ -1054,13 +1110,17 @@ void Mario::SetState(int state)
 
 		break;
 	case MARIO_STATE_RUNNING_LEFT:
-		if (!touchLeft)
+		if (!touchGround)
+		{
+			SetState(MARIO_STATE_WALKING_LEFT);
+		}
+		else if (!touchLeft)
 		{
 			vx += -MARIO_RUNNING_SPEED * dt;
 
-			if (abs(vx) > MARIO_MAX_RUNNING_SPEED)
+			if (abs(vx) > MARIO_MAX_RUNNING_SPEED_3)
 			{
-				vx = -MARIO_MAX_RUNNING_SPEED;
+				vx = -MARIO_MAX_RUNNING_SPEED_3;
 				if (global->level != MARIO_LEVEL_FROG)
 					isMax = true;
 				else
@@ -1108,6 +1168,20 @@ void Mario::SetState(int state)
 		jump_allow = false;
 		break;
 	case MARIO_STATE_SHORT_JUMP:
+		if (global->level == MARIO_LEVEL_RACC || global->level == MARIO_LEVEL_TANU)
+		{
+			if (!allowFlapJump)
+			{
+				if (global->speed == 7)
+				{
+					allowFlapJump = true;
+					flapJump = true;
+					startFlapJump = now;
+					flapDuration = now;
+
+				}
+			}
+		}	
 		if (touchGround)
 		{
 			vy = -MARIO_JUMP_SPEED_Y;
@@ -1139,6 +1213,9 @@ void Mario::SetState(int state)
 			flapping = true;
 			flapAni = true;
 			
+			if (allowFlapJump)
+				flapDuration = now;			
+
 		}
 		break;
 	case MARIO_STATE_CROUCH:
@@ -1382,6 +1459,9 @@ void Mario::SetState(int state)
 void Mario::SetLevel(int l)
 {
 	this->global->level = l;
+
+	if (prevLevel == l)
+		return;
 
 	switch (l)
 	{

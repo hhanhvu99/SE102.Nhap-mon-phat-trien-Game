@@ -68,6 +68,42 @@ void Groomba::GetBoundingBox(float& left, float& top, float& right, float& botto
 
 void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	//Check outside camera
+	GameEngine::GetInstance()->GetCamPos(camPosX, camPosY);
+	if (x < camPosX - ENTITY_SAFE_DELETE_RANGE || x > camPosX + ENTITY_SAFE_DELETE_RANGE ||
+		y < camPosY - ENTITY_SAFE_DELETE_RANGE || y > camPosY + ENTITY_SAFE_DELETE_RANGE)
+	{
+		if (firstRun)
+		{
+			lastState = state;
+			state = ENEMY_STATE_IDLE;
+
+			timeLeft_dt = GetTickCount() - timeLeft;
+			timeJump_dt = GetTickCount() - timeJump;
+
+			firstRun = false;
+		}
+	}
+	else
+	{
+		if (firstRun == false)
+		{
+			state = lastState;
+			firstRun = true;
+		}
+	}
+
+	if (state == ENEMY_STATE_IDLE)
+	{
+		vx = 0;
+		vy = 0;
+
+		timeLeft = GetTickCount() - timeLeft_dt;
+		timeJump = GetTickCount() - timeJump_dt;
+
+		return;
+	}
+
 	// Calculate dx, dy 
 	GameObject::Update(dt);
 
@@ -108,8 +144,7 @@ void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		return;
 	}
 
-	GameEngine::GetInstance()->GetCamPos(camPosX, camPosY);
-	if (state == ENEMY_STATE_IDLE)
+	if (state == ENEMY_STATE_DROP)
 	{
 		vx = 0;
 	}
@@ -240,16 +275,13 @@ void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		coEvents[i] = NULL;
 	}
 
-	if (x < camPosX - ENTITY_SAFE_DELETE_RANGE || x > camPosX + ENTITY_SAFE_DELETE_RANGE ||
-		y < camPosY - ENTITY_SAFE_DELETE_RANGE || y > camPosY + ENTITY_SAFE_DELETE_RANGE)
-	{
-		this->Destroy();
-		return;
-	}
 }
 
 void Groomba::Render()
 {
+	if (firstRun == false)
+		return;
+
 	int ani = -1;
 	
 	if (hasWing)
@@ -275,7 +307,7 @@ void Groomba::Render()
 	}
 	else
 	{
-		if (state == ENEMY_STATE_IDLE)
+		if (state == ENEMY_STATE_DROP)
 		{
 			ani = mobType + ENEMY_ANI_IDLE;
 		}
