@@ -495,19 +495,18 @@ void PlayerIntro::Render()
 		}
 		else
 		{
-			if (GetTickCount() - transition_frame > MARIO_TRANSITION_2_CYCLE)
+			ani_walk_time = 60;
+
+			if (transitionUp)
 			{
-				if (direction > 0) ani = oldLevel + MARIO_ANI_IDLE_RIGHT;
-				else ani = oldLevel + MARIO_ANI_IDLE_LEFT;
-				transition_frame = GetTickCount();
+				if (direction > 0) ani = MARIO_ANI_TRAN_RIGHT_UP;
+				else ani = MARIO_ANI_TRAN_LEFT_UP;
 			}
 			else
 			{
-				if (direction > 0) ani = MARIO_LEVEL_BIG + MARIO_ANI_TRANSITION_RIGHT;
-				else ani = MARIO_LEVEL_BIG + MARIO_ANI_TRANSITION_LEFT;
-				color = D3DCOLOR_ARGB(128, 255, 255, 255);
+				if (direction > 0) ani = MARIO_ANI_TRAN_RIGHT_DOWN;
+				else ani = MARIO_ANI_TRAN_LEFT_DOWN;
 			}
-
 		}
 	}
 
@@ -519,7 +518,7 @@ void PlayerIntro::Render()
 	//this->sprite->Draw(x, y);
 
 	//DebugOut(L"Direction: %d\n", direction);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void PlayerIntro::SetState(int state)
@@ -797,7 +796,7 @@ void PlayerIntro::SetState(int state)
 
 		GameObject::SetState(MARIO_STATE_TRANSITION_2);
 		startTransitionTwo = now;
-		transition_frame = now;
+		transitionUp = false;
 		oldLevel = MARIO_LEVEL_BIG;
 		level = MARIO_LEVEL_SMALL;
 

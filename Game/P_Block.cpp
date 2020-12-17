@@ -16,6 +16,37 @@ P_Block::P_Block(float x, float y) : GameObject()
 	this->stomp_Block = SpriteManager::GetInstance()->Get(P_BLOCK_ANI_STOMP);
 }
 
+void P_Block::AddObject(LPGAMEOBJECT object)
+{
+	listOfObject.push_back(object);
+
+}
+
+void P_Block::ChangeToCoin()
+{
+	LPTESTSCENE tempScene = static_cast<TestScene*>(SceneManager::GetInstance()->GetCurrentScene());
+	LPGAMEOBJECT tempCoin;
+	int indexX, indexY;
+	float posX, posY;
+	vector<LPGAMEOBJECT> tempVector(listOfObject);
+
+	listOfObject.clear();
+
+	for (auto object : tempVector)
+	{
+		object->GetIndex(indexX, indexY);
+		object->GetPosition(posX, posY);
+
+		tempCoin = new Coin(posX, posY, ITEM_COIN, true);
+		tempCoin->SetDrawOrder(BLOCK_DRAW_ORDER);
+		tempCoin->SetAnimationSet(AnimationManager::GetInstance()->Get(ITEM_ID));
+		listOfObject.push_back(tempCoin);
+
+		tempScene->Destroy(object);
+	}
+
+}
+
 void P_Block::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
 	if (state == P_BLOCK_STATE_HIT)
@@ -60,5 +91,10 @@ void P_Block::Render()
 void P_Block::SetState(int state)
 {
 	GameObject::SetState(state);
+
+	if (state == P_BLOCK_STATE_STOMP)
+	{
+		ChangeToCoin();
+	}
 
 }

@@ -36,6 +36,12 @@ void Scene::LoadBlock(LPCWSTR gameFile)
 	ACTIVE_BLOCKS.clear();
 	GROUP.clear();
 	ENEMY.clear();
+	ITEM.clear();
+	PATH.clear();
+	START.clear();
+	GATE.clear();
+	COLOR.clear();
+	P_BLOCK_HOLDER.clear();
 
 	while (f.getline(str, MAX_GAME_LINE))
 	{
@@ -52,6 +58,7 @@ void Scene::LoadBlock(LPCWSTR gameFile)
 		if (line == "[START]") { option = 8; continue; }
 		if (line == "[GATE]") { option = 9; continue; }
 		if (line == "[COLOR]") { option = 10; continue; }
+		if (line == "[P-BLOCK]") { option = 11; continue; }
 		if (option == 1)
 		{
 			vector<string> tokens = split(line, ",");
@@ -112,6 +119,12 @@ void Scene::LoadBlock(LPCWSTR gameFile)
 			for (int i = 0; i < tokens.size(); ++i)
 				COLOR.push_back(atoi(tokens[i].c_str()));
 		}
+		else if (option == 11)
+		{
+			vector<string> tokens = split(line, ",");
+			for (int i = 0; i < tokens.size(); ++i)
+				P_BLOCK_HOLDER.push_back(atoi(tokens[i].c_str()));
+		}
 		else
 		{
 			DebugOut(L"[ERROR] Loading script: %s \n", gameFile);
@@ -128,10 +141,13 @@ void Scene::LoadBlock(LPCWSTR gameFile)
 Scene::~Scene()
 {
 	BLOCKS.clear();
-	PLATFORM.clear();
 	ACTIVE_BLOCKS.clear();
 	GROUP.clear();
 	ENEMY.clear();
 	ITEM.clear();
 	PATH.clear();
+	START.clear();
+	GATE.clear();
+	COLOR.clear();
+	P_BLOCK_HOLDER.clear();
 }

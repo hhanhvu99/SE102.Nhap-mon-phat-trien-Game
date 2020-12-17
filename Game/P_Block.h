@@ -1,6 +1,9 @@
 #pragma once
 
+#include "SceneManager.h"
+#include "TestScene.h"
 #include "GameObject.h"
+#include "Coin.h"
 
 class P_Block : public GameObject
 {
@@ -10,6 +13,9 @@ class P_Block : public GameObject
 
 public:
 	P_Block(float x, float y);
+
+	void AddObject(LPGAMEOBJECT object);
+	void ChangeToCoin();
 
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL);

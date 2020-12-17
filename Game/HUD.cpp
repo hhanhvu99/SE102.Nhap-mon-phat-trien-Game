@@ -59,7 +59,7 @@ void HUD::Setup()
 		case HUD_MAIN_FRAME:
 			instance->GetCamPos(x, y);
 
-			y = y + instance->GetScreenHeight() - height;
+			y = y + SCREEN_HEIGHT - height;
 			draw_order = HUD_FRAME_DRAW_ORDER;
 			object = new HUD_Object(SpriteManager::GetInstance()->Get(HUD_ID + HUD_FRAME));
 			spriteHolder.push_back(object);
@@ -70,13 +70,13 @@ void HUD::Setup()
 		case HUD_PLAYER_ICON:
 			draw_order = HUD_TEXT_DRAW_ORDER;
 			object = new HUD_Object(SpriteManager::GetInstance()->Get(HUD_ID + global->player));
+
 			spriteHolder.push_back(object);
 
 			break;
 		case HUD_PLAYER_LIVE:
 		{
 			draw_order = HUD_TEXT_DRAW_ORDER;
-
 			oldNumber = global->live;
 			auto listNumber = numberToString(global->live, 2);
 
@@ -88,6 +88,7 @@ void HUD::Setup()
 			break;
 		case HUD_WORLD:
 			draw_order = HUD_TEXT_DRAW_ORDER;
+
 			object = new HUD_Object(SpriteManager::GetInstance()->Get(HUD_ID + ('0' + global->world)));
 			spriteHolder.push_back(object);
 
@@ -111,8 +112,8 @@ void HUD::Setup()
 
 			oldNumber = global->point;
 			auto listNumber = numberToString(global->point, 7);
-	
 			object = new HUD_Object(listNumber, 7);
+
 			spriteHolder.push_back(object);
 			
 		}
@@ -124,8 +125,8 @@ void HUD::Setup()
 
 			oldNumber = global->money;
 			auto listNumber = numberToString(global->money, 2);
-
 			object = new HUD_Object(listNumber, 2);
+
 			spriteHolder.push_back(object);	
 
 		}
@@ -136,26 +137,29 @@ void HUD::Setup()
 
 			oldNumber = global->time;
 			auto listNumber = numberToString(global->time, 3);
-
 			object = new HUD_Object(listNumber, 3);
+
 			spriteHolder.push_back(object);
 
 		}
 			break;
 		case HUD_CARD_ONE:
 			draw_order = HUD_TEXT_DRAW_ORDER;
+
 			object = new HUD_Object(SpriteManager::GetInstance()->Get(HUD_ID + global->cardOne));
 			spriteHolder.push_back(object);
 
 			break;
 		case HUD_CARD_TWO:
 			draw_order = HUD_TEXT_DRAW_ORDER;
+
 			object = new HUD_Object(SpriteManager::GetInstance()->Get(HUD_ID + global->cardTwo));
 			spriteHolder.push_back(object);
 
 			break;
 		case HUD_CARD_THREE:
 			draw_order = HUD_TEXT_DRAW_ORDER;
+
 			object = new HUD_Object(SpriteManager::GetInstance()->Get(HUD_ID + global->cardThree));
 			spriteHolder.push_back(object);
 			break;
@@ -229,15 +233,18 @@ void HUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		case HUD_MAIN_FRAME:
 			instance->GetCamPos(x, y);
 
-			y = y + instance->GetScreenHeight() - height;
+			y = y + SCREEN_HEIGHT - height;
 			spriteHolder.front()->SetPosition(x, y);
 
-			global->frameHUD_x = x;
-			global->frameHUD_y = y;
+			global->frameHUD_x = trunc(x);
+			global->frameHUD_y = trunc(y);
+
 			break;
 		case HUD_PLAYER_ICON:
 			x = global->frameHUD_x + HUD_PLAYER_ICON_X;
 			y = global->frameHUD_y + HUD_PLAYER_ICON_Y;
+
+
 			spriteHolder.front()->SetPosition(x, y);
 
 			break;
@@ -245,6 +252,7 @@ void HUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			x = global->frameHUD_x + HUD_PLAYER_LIVE_X;
 			y = global->frameHUD_y + HUD_PLAYER_LIVE_Y;
+
 
 			if (oldNumber != global->live)
 			{
@@ -262,6 +270,7 @@ void HUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			x = global->frameHUD_x + HUD_WORLD_X;
 			y = global->frameHUD_y + HUD_WORLD_Y;
 
+
 			spriteHolder.front()->SetPosition(x, y);
 
 			break;
@@ -269,6 +278,7 @@ void HUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			x = global->frameHUD_x + HUD_SPEED_O_METER_X;
 			y = global->frameHUD_y + HUD_SPEED_O_METER_Y;
+
 
 			int limit = global->speed;
 
@@ -308,6 +318,7 @@ void HUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			x = global->frameHUD_x + HUD_POINT_X;
 			y = global->frameHUD_y + HUD_POINT_Y;
 
+
 			if (oldNumber != global->point)
 			{
 				oldNumber = global->point;
@@ -324,6 +335,7 @@ void HUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			x = global->frameHUD_x + HUD_MONEY_X;
 			y = global->frameHUD_y + HUD_MONEY_Y;
+
 
 			if (oldNumber != global->money)
 			{
@@ -357,18 +369,21 @@ void HUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		case HUD_CARD_ONE:
 			x = global->frameHUD_x + HUD_CARD_ONE_X;
 			y = global->frameHUD_y + HUD_CARD_ONE_Y;
+
 			spriteHolder.front()->SetPosition(x, y);
 
 			break;
 		case HUD_CARD_TWO:
 			x = global->frameHUD_x + HUD_CARD_TWO_X;
 			y = global->frameHUD_y + HUD_CARD_TWO_Y;
+
 			spriteHolder.front()->SetPosition(x, y);
 
 			break;
 		case HUD_CARD_THREE:
 			x = global->frameHUD_x + HUD_CARD_THREE_X;
 			y = global->frameHUD_y + HUD_CARD_THREE_Y;
+
 			spriteHolder.front()->SetPosition(x, y);
 
 			break;

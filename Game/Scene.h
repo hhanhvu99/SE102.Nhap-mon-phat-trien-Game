@@ -17,6 +17,7 @@ protected:
 	std::vector<int> START;
 	std::vector<int> GATE;
 	std::vector<int> COLOR;
+	std::vector<int> P_BLOCK_HOLDER;
 
 	KeyEventHandler* key_handler;
 

@@ -85,6 +85,46 @@ void Plant::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 
 void Plant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	//Check if outside camera
+	GameEngine::GetInstance()->GetCamPos(camPosX, camPosY);
+
+	if (x < camPosX - ENTITY_SAFE_DELETE_RANGE || x > camPosX + ENTITY_SAFE_DELETE_RANGE ||
+		y < camPosY - ENTITY_SAFE_DELETE_RANGE || y > camPosY + ENTITY_SAFE_DELETE_RANGE)
+	{
+		if (firstRun)
+		{
+			lastState = state;
+			state = ENEMY_STATE_IDLE;
+
+			timeShoot_dt = GetTickCount() - timeShoot;
+			timePass_dt = GetTickCount() - timePass;
+
+			firstRun = false;
+		}
+		
+	}
+	else
+	{
+		if (firstRun == false)
+		{
+			state = ENEMY_STATE_MOVING;
+			firstRun = true;
+		}
+		
+	}
+		
+
+	if (state == ENEMY_STATE_IDLE)
+	{
+		vx = 0;
+		vy = 0;
+
+		timeShoot = GetTickCount() - timeShoot_dt;
+		timePass = GetTickCount() - timePass_dt;
+
+		return;
+	}
+
 	// Calculate dx, dy 
 	GameObject::Update(dt);
 
@@ -163,13 +203,6 @@ void Plant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	//DebugOut(L"moving: %d - %d\n", moving, showFace);
 	//DebugOut(L"y - down: %f - %f\n", y, boundaryY_DOWN);
 	//DebugOut(L"vy: %f \n", vy);
-
-	GameEngine::GetInstance()->GetCamPos(camPosX, camPosY);
-	if (state == ENEMY_STATE_IDLE)
-	{
-		vx = 0;
-		vy = 0;
-	}
 	
 
 	// No collision occured, proceed normally
@@ -218,17 +251,13 @@ void Plant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		delete coEvents[i];
 		coEvents[i] = NULL;
 	}
-
-	if (x < camPosX - ENTITY_SAFE_DELETE_RANGE || x > camPosX + ENTITY_SAFE_DELETE_RANGE ||
-		y < camPosY - ENTITY_SAFE_DELETE_RANGE || y > camPosY + ENTITY_SAFE_DELETE_RANGE)
-	{
-		this->Destroy();
-		return;
-	}
 }
 
 void Plant::Render()
 {
+	if (firstRun == false)
+		return;
+
 	int ani = -1;
 
 	if (mobType >= ENEMY_VENUS_GREEN)

@@ -69,6 +69,12 @@ class Koopas : public GameObject
 
 	DWORD timeLeft;
 
+	//Pausing outside camera
+	bool firstRun = true;
+	int lastState;
+	DWORD shakeTime_dt;
+	DWORD timeLeft_dt;
+
 public:
 	Koopas(int placeX, int placeY, int mobType, bool hasWing);
 

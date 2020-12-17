@@ -357,7 +357,60 @@ void GameEngine::SweptAABB(
 
 }
 
-GameEngine* GameEngine::GetInstance()
+void GameEngine::UpdateCamPos(float marioX, float marioY)
+{
+	//Check inside
+	float left = cam_x + CAMERA_POSITION_LEFT;
+	float top = cam_y + CAMERA_POSITION_TOP;
+	float right = cam_x + CAMERA_POSITION_RIGHT;
+	float bottom = cam_y + CAMERA_POSITION_BOTTOM;
+
+	if (marioX < left)
+	{
+		cam_x = marioX - CAMERA_POSITION_LEFT;
+	}
+	else if (marioX > right)
+	{
+		cam_x = marioX - CAMERA_POSITION_RIGHT;
+	}
+	
+	if (marioY < top)
+	{
+		cam_y = marioY - CAMERA_POSITION_TOP;
+	}
+	else if (marioY > bottom)
+	{
+		cam_y = marioY - CAMERA_POSITION_BOTTOM;
+	}
+
+	//Check outside
+	float outSideRight = cam_x + SCREEN_WIDTH;
+	float outSideBottom = cam_y + SCREEN_HEIGHT;
+
+	if (cam_x < 0.0f)
+	{
+		cam_x = 0.0f;
+	}
+	else if (outSideRight > Global::GetInstance()->screenWidth)
+	{
+		cam_x = Global::GetInstance()->screenWidth - SCREEN_WIDTH;
+	}
+
+	if (cam_y < 0.0f)
+	{
+		cam_y = 0.0f;
+	}
+	else if (outSideBottom > Global::GetInstance()->screenHeight + 35.0f)
+	{
+		cam_y = Global::GetInstance()->screenHeight - SCREEN_HEIGHT + 35.0f;
+	}
+
+
+	cam_x = trunc(cam_x);
+	cam_y = trunc(cam_y);
+}
+
+	GameEngine* GameEngine::GetInstance()
 {
 	if (__instance == NULL) __instance = new GameEngine();
 	return __instance;

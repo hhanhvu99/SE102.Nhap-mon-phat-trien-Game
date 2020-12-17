@@ -6,6 +6,7 @@
 #include <unordered_map>
 
 #include "SceneManager.h"
+#include "Global.h"
 
 #define KEYBOARD_BUFFER_SIZE 1024
 #define DIRECTINPUT_VERSION 0x0800
@@ -88,6 +89,7 @@ public:
 
 	void SetCamPos(float x, float y) { cam_x = x; cam_y = y; }
 	void GetCamPos(float &x, float &y) { x = cam_x ; y = cam_y ; }
+	void UpdateCamPos(float marioX, float marioY);
 
 	void SetColor(D3DCOLOR color) { this->color = color; }
 	void EnableColor() { this->allowColor = true; }

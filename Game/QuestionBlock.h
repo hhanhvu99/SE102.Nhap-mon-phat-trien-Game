@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ActiveBlock.h"
+#include "Mushroom.h"
 
 class QuestionBlock : public ActiveBlock
 {

@@ -52,6 +52,12 @@ class Plant : public GameObject
 	DWORD timeShoot;
 	DWORD timePass;
 
+	//Pausing outside camera
+	bool firstRun = true;
+	int lastState;
+	DWORD timeShoot_dt;
+	DWORD timePass_dt;
+
 public:
 	Plant(int placeX, int placeY, int mobType);
 

@@ -68,8 +68,7 @@
 //Time
 #define MARIO_UNTOUCHABLE_TIME			2000
 #define MARIO_TRANSITION_1_TIME			200
-#define MARIO_TRANSITION_2_TIME			600
-#define MARIO_TRANSITION_2_CYCLE		200
+#define MARIO_TRANSITION_2_TIME			720
 #define MARIO_INVINCIBILITY_TIME		5000	
 #define MARIO_FROG_JUMPING_TIME			500
 #define MARIO_SHOOT_WAITING_TIME		1000
@@ -168,6 +167,7 @@ protected:
 	DWORD untouchable_start = 0;
 	DWORD untouchable_frame = 0;
 
+	bool transitionUp = true;
 	bool inTransition = false;
 	DWORD startTransitionOne = 0;
 	DWORD startTransitionTwo = 0;

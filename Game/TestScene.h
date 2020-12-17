@@ -39,6 +39,8 @@ class TestScene: public Scene
 protected:
 	GLOBAL global;
 	LPGAMEOBJECT mario;
+	LPGAMEOBJECT p_Block_Temp;
+
 	vector<LPGAMEOBJECT> gameObjects;
 	vector<LPGAMEOBJECT> collideObjects;
 	vector<LPGAMEOBJECT> deleteList;

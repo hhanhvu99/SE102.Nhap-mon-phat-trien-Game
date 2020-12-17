@@ -95,14 +95,12 @@ void TestScene::FloatText(float x, float y)
 void TestScene::FloatTextCoin(float x, float y)
 {
 	y = y - FLOAT_TEXT_HEIGHT;
-
 	HUD* temp = new HUD(x, y, HUD_BONUS_POINT_100);
-
 }
 
 void TestScene::SortGameObject()
 {
-	for (std::size_t j = 1; j < gameObjects.size(); ++j)
+	for (int j = 1; j < gameObjects.size(); ++j)
 	{
 		LPGAMEOBJECT key = gameObjects[j];
 		int i = j - 1;
@@ -203,7 +201,7 @@ void TestScene::Load()
 						gameObject->SetIndex(i, j);
 						gameObject->SetDrawOrder(ACTIVE_BLOCK_DRAW_ORDER);
 						gameObject->SetAnimationSet(AnimationManager::GetInstance()->Get(ACTIVE_BLOCK));
-						LPGAMEOBJECT coin = new Coin(STANDARD_SIZE * i, STANDARD_SIZE * j, ITEM_COIN, false);
+						Item* coin = new Coin(STANDARD_SIZE * i, STANDARD_SIZE * j, ITEM_COIN, false);
 						coin->SetDrawOrder(BLOCK_DRAW_ORDER);
 						coin->SetAnimationSet(AnimationManager::GetInstance()->Get(ITEM_ID));
 						static_cast<QuestionBlock*>(gameObject)->SetItem(coin);
@@ -223,6 +221,8 @@ void TestScene::Load()
 
 						this->gameObjects.push_back(gameObject);
 						this->collideObjects.push_back(gameObject);
+
+						p_Block_Temp = gameObject;
 					}
 					break;
 
@@ -265,13 +265,36 @@ void TestScene::Load()
 	}
 	
 
-	int left, top, right, bottom;
+	//Add P_Block object
+	int objectX, objectY;
 	int indexX, indexY;
-	GroupObject* group;
-	vector<LPGAMEOBJECT>::iterator pos;
+	int length = P_BLOCK_HOLDER.size();
+	P_Block* tempBlock = static_cast<P_Block*>(p_Block_Temp);
+	for (int x = 0; x < length; x += 2)
+	{
+		objectX = P_BLOCK_HOLDER[x];
+		objectY = P_BLOCK_HOLDER[x + 1];
+
+		//DebugOut(L"Left: %d -- Top: %d -- Right: %d -- Bottom: %d \n", left,top,right,bottom);
+		
+		for (LPGAMEOBJECT object : gameObjects)
+		{
+			object->GetIndex(indexX, indexY);
+
+			if (objectX == indexX && objectY == indexY)
+				tempBlock->AddObject(object);
+		
+		}
+			
+	}
+
+	
 
 	//Group object
-	int length = GROUP.size();
+	int left, top, right, bottom;
+	GroupObject* group;
+	vector<LPGAMEOBJECT>::iterator pos;
+	length = GROUP.size();
 	for (int x = 0; x < length; x+=4)
 	{
 		left = GROUP[x];
@@ -410,7 +433,7 @@ void TestScene::Load()
 
 	//Add Item
 	int itemType;
-	LPGAMEOBJECT item = NULL;
+	Item* item = NULL;
 	ActiveBlock* newObject;
 	int indexObj_x, indexObj_y;
 
@@ -510,6 +533,10 @@ void TestScene::Load()
 		HUD* cardThree = new HUD(eType::HUD_CARD_THREE);
 	}
 
+	//Set screen width and height
+	global->screenWidth = this->width * STANDARD_SIZE;
+	global->screenHeight = this->height * STANDARD_SIZE;
+
 	sort(gameObjects.begin(), gameObjects.end(), 
 		[](const LPGAMEOBJECT& lhs, const LPGAMEOBJECT& rhs)
 		{
@@ -534,6 +561,7 @@ void TestScene::Update(DWORD dt)
 {
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	//if (mario == NULL) return;
+
 
 	if (startSwitch)
 	{

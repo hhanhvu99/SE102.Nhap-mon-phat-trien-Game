@@ -65,6 +65,42 @@ void Koopas::GetBoundingBox(float& left, float& top, float& right, float& bottom
 
 void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	//Check outside camera
+	GameEngine::GetInstance()->GetCamPos(camPosX, camPosY);
+	if (x < camPosX - ENTITY_SAFE_DELETE_RANGE || x > camPosX + ENTITY_SAFE_DELETE_RANGE ||
+		y < camPosY - ENTITY_SAFE_DELETE_RANGE || y > camPosY + ENTITY_SAFE_DELETE_RANGE)
+	{
+		if (firstRun)
+		{
+			lastState = state;
+			state = ENEMY_STATE_IDLE;
+
+			shakeTime_dt = GetTickCount() - shakeTime;
+			timeLeft_dt = GetTickCount() - timeLeft;
+
+			firstRun = false;
+		}
+	}
+	else
+	{
+		if (firstRun == false)
+		{
+			state = lastState;
+			firstRun = true;
+		}
+	}
+
+	if (state == ENEMY_STATE_IDLE)
+	{
+		vx = 0;
+		vy = 0;
+
+		shakeTime = GetTickCount() - shakeTime_dt;
+		timeLeft = GetTickCount() - timeLeft_dt;
+
+		return;
+	}
+
 	// Calculate dx, dy 
 	GameObject::Update(dt);
 
@@ -121,13 +157,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		return;
 	}
 
-	GameEngine::GetInstance()->GetCamPos(camPosX, camPosY);
-	if (state == ENEMY_STATE_IDLE)
-	{
-		vx = 0;
-		vy = 0;
-	}
-	else if (immobilize)
+	if (immobilize)
 	{
 		if (GetTickCount() - timeLeft > ENEMY_KOOPAS_TIME_LEFT)
 		{
@@ -302,16 +332,13 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		coEvents[i] = NULL;
 	}
 
-	if (x < camPosX - ENTITY_SAFE_DELETE_RANGE || x > camPosX + ENTITY_SAFE_DELETE_RANGE ||
-		y < camPosY - ENTITY_SAFE_DELETE_RANGE || y > camPosY + ENTITY_SAFE_DELETE_RANGE)
-	{
-		this->Destroy();
-		return;
-	}
 }
 
 void Koopas::Render()
 {
+	if (firstRun == false)
+		return;
+
 	int ani = -1;
 
 	if (hasWing)

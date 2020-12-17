@@ -39,9 +39,9 @@ void World1_1::Load()
 	cx -= game->GetScreenWidth() / 2;
 	cy -= game->GetScreenHeight() / 2;
 
-	global->camY = (height - 12) * STANDARD_SIZE;
+	float camY = (height - 12) * STANDARD_SIZE;
 
-	GameEngine::GetInstance()->SetCamPos(cx, global->camY);
+	GameEngine::GetInstance()->SetCamPos(cx, camY);
 
 }
 

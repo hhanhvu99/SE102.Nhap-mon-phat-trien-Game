@@ -35,16 +35,6 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// Calculate dx, dy 
 	GameObject::Update(dt);
 
-	// Update camera to follow mario
-	float cx, cy;
-	this->GetPosition(cx, cy);
-
-	GameEngine* game = GameEngine::GetInstance();
-	cx -= game->GetScreenWidth() / 2;
-	cy -= game->GetScreenHeight() / 2;
-
-	GameEngine::GetInstance()->SetCamPos(cx, global->camY);
-
 	if (transporting)
 	{
 		if (state == MARIO_STATE_TRANSPORT_UP && y <= targetY)
@@ -731,6 +721,8 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	else if (touchGround)
 		jumpCrouch = false;
 	
+	// Update camera to follow mario
+	GameEngine::GetInstance()->UpdateCamPos(x, y);
 }
 
 void Mario::Render()
@@ -882,17 +874,16 @@ void Mario::Render()
 		}
 		else
 		{
-			if (GetTickCount() - transition_frame > MARIO_TRANSITION_2_CYCLE)
+			ani_walk_time = 60;
+			if (transitionUp)
 			{
-				if (direction > 0) ani = oldLevel + MARIO_ANI_IDLE_RIGHT;
-				else ani = oldLevel + MARIO_ANI_IDLE_LEFT;
-				transition_frame = GetTickCount();
+				if (direction > 0) ani =  MARIO_ANI_TRAN_RIGHT_UP;
+				else ani = MARIO_ANI_TRAN_LEFT_UP;
 			}
 			else
 			{
-				if (direction > 0) ani = MARIO_LEVEL_BIG + MARIO_ANI_TRANSITION_RIGHT;
-				else ani = MARIO_LEVEL_BIG + MARIO_ANI_TRANSITION_LEFT;
-				color = D3DCOLOR_ARGB(128, 255, 255, 255);
+				if (direction > 0) ani = MARIO_ANI_TRAN_RIGHT_DOWN;
+				else ani = MARIO_ANI_TRAN_LEFT_DOWN;
 			}
 
 		}
@@ -1259,7 +1250,7 @@ void Mario::SetState(int state)
 					global->level = MARIO_LEVEL_SMALL;
 					GameObject::SetState(MARIO_STATE_TRANSITION_2);
 					startTransitionTwo = now;
-					transition_frame = now;
+					transitionUp = false;
 				}
 
 				inTransition = true;
@@ -1309,7 +1300,7 @@ void Mario::SetState(int state)
 			{
 				GameObject::SetState(MARIO_STATE_TRANSITION_2);
 				startTransitionTwo = now;
-				transition_frame = now;
+				transitionUp = true;
 			}
 
 			inTransition = true;

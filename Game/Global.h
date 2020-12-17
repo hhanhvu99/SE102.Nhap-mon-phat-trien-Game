@@ -72,7 +72,7 @@
 #define ITEM_STATE_DROP					4
 
 //Entity
-#define ENTITY_SAFE_DELETE_RANGE		600.0f
+#define ENTITY_SAFE_DELETE_RANGE		300.0f
 
 //Animation
 #define MARIO							1412
@@ -196,9 +196,6 @@ extern int CHOOSE;
 #define MARIO_ANI_ATTACK_SET_RIGHT	77
 //Statues
 #define MARIO_ANI_STAUTES			78
-//Transition
-#define MARIO_ANI_TRANSITION_LEFT	79
-#define MARIO_ANI_TRANSITION_RIGHT	80
 //Title Screen
 #define MARIO_ANI_TITLE_1			81
 #define MARIO_ANI_TITLE_2			82
@@ -212,6 +209,11 @@ extern int CHOOSE;
 #define MARIO_ANI_HOLD_JUMP_RIGHT	88
 #define MARIO_ANI_HOLD_L_TO_R		89
 #define MARIO_ANI_HOLD_R_TO_L		90
+//Transition
+#define MARIO_ANI_TRAN_LEFT_UP		1279
+#define MARIO_ANI_TRAN_RIGHT_UP		1280
+#define MARIO_ANI_TRAN_LEFT_DOWN	1291
+#define MARIO_ANI_TRAN_RIGHT_DOWN	1292
 //Die
 #define MARIO_ANI_DIE				1800
 //Icon Map
@@ -445,6 +447,14 @@ extern int CHOOSE;
 #define FLOWER_ANI_GOAL					613
 #define STAR_ANI_GOAL					614
 
+//////////
+//Camera//
+//////////
+#define CAMERA_POSITION_LEFT			112.0f
+#define CAMERA_POSITION_TOP				32.0f
+#define CAMERA_POSITION_RIGHT			144.0f
+#define CAMERA_POSITION_BOTTOM			144.0f
+
 enum eType
 {
 	//None
@@ -516,6 +526,9 @@ class Global
 	static Global* __instance;
 
 public:
+	//Screen width and height
+	float screenWidth, screenHeight;
+
 	//Mario 
 	int level;
 	bool die = false;
@@ -523,12 +536,11 @@ public:
 	//HUD
 	int live, player, world, point, time, money;
 	int cardOne, cardTwo, cardThree;
-	int frameHUD_x, frameHUD_y;
+	float frameHUD_x, frameHUD_y;
 	int speed;
 
 	//Switch Scene
 	bool allowSwitch;
-	float camY;
 
 	D3DCOLOR background_color = D3DCOLOR_XRGB(255, 255, 255);
 

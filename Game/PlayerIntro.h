@@ -88,11 +88,10 @@ protected:
 	int ani_walk_time;
 	float offset_Draw_X, offset_Draw_Y, offset_BBox_X, offset_BBox_Y;
 
-
+	bool transitionUp = true;
 	bool inTransition = false;
 	DWORD startTransitionOne = 0;
 	DWORD startTransitionTwo = 0;
-	DWORD transition_frame = 0;
 
 	bool jump_allow = true;
 	bool startJumping = false;

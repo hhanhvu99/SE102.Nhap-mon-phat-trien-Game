@@ -110,6 +110,8 @@ void Mushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			if (state == ITEM_STATE_DROP)
 				state = ITEM_STATE_MOVING;
+
+			vy = 0;
 		}
 
 		if (nx > 0)

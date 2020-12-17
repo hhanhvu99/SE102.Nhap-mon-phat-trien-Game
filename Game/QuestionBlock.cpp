@@ -77,7 +77,23 @@ void QuestionBlock::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 				if (item)
 				{
-					item->SetState(ITEM_STATE_SHOW);
+					if (item->getItemType() == ITEM_SUPER_LEAF)
+					{
+						if (Global::GetInstance()->level > MARIO_LEVEL_SMALL)
+							item->SetState(ITEM_STATE_SHOW);
+						else
+						{
+							item->Destroy();
+							item = new Mushroom(x, y, ITEM_MUSHROOM_RED);
+							item->SetAnimationSet(AnimationManager::GetInstance()->Get(ITEM_ID));
+							item->SetState(ITEM_STATE_SHOW);
+						}
+					}
+					else
+					{
+						item->SetState(ITEM_STATE_SHOW);
+					}
+					
 					item = NULL;
 				}
 			}
