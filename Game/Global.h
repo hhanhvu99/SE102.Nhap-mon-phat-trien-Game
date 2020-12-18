@@ -40,6 +40,8 @@
 
 //State
 //Object
+#define ACTIVE_BLOCK_STATE_HIT			3
+
 #define BRICK_SHINY_STATE_DESTROY		0
 #define BRICK_SHINY_STATE_NORMAL		1
 #define BRICK_SHINY_STATE_MOVING		2
@@ -54,9 +56,11 @@
 #define GOAL_STATE_NORMAL				1
 #define GOAL_STATE_HIT					2
 
+#define P_BLOCK_STATE_IDLE				0
 #define P_BLOCK_STATE_NORMAL			1
-#define P_BLOCK_STATE_HIT				2
-#define P_BLOCK_STATE_STOMP				3
+#define P_BLOCK_STATE_MOVING			2
+#define P_BLOCK_STATE_HIT				3
+#define P_BLOCK_STATE_STOMP				4
 
 #define MOVING_SPEED					0.3f
 #define DEFLECT_SPEED					0.05f
@@ -351,7 +355,7 @@ extern int CHOOSE;
 //Game Over
 #define HUD_GAMEOVER					40001
 //Start Screen
-#define HUD_START						40002
+#define HUD_START						40002					
 
 ////////
 //Menu//
@@ -386,6 +390,7 @@ extern int CHOOSE;
 
 #define MAP_TREE_ID						506
 #define MAP_POPUP_ID					508
+#define MAP_MARIO_FINISHED				527
 
 //Map Animation
 #define MAP_TREE_ANIMATION_ID			505
@@ -438,10 +443,12 @@ extern int CHOOSE;
 #define END_GOAL_SQUARE					601
 
 #define END_GOAL_ANI_ID					600
+#define END_GOAL_TEXT_1					612
+#define END_GOAL_TEXT_2					613
 
-#define END_GOAL_STAR					2
+#define END_GOAL_MUSHROOM				2
 #define END_GOAL_FLOWER					3
-#define END_GOAL_MUSHROOM				4
+#define END_GOAL_STAR					4
 
 #define MUSHROOM_ANI_GOAL				612
 #define FLOWER_ANI_GOAL					613
@@ -450,10 +457,10 @@ extern int CHOOSE;
 //////////
 //Camera//
 //////////
-#define CAMERA_POSITION_LEFT			112.0f
+#define CAMERA_POSITION_LEFT			96.0f
 #define CAMERA_POSITION_TOP				32.0f
 #define CAMERA_POSITION_RIGHT			144.0f
-#define CAMERA_POSITION_BOTTOM			144.0f
+#define CAMERA_POSITION_BOTTOM			128.0f
 
 enum eType
 {
@@ -509,6 +516,7 @@ enum eType
 	HUD_BUBBLE = 111,
 	HUD_OBJECT_IMAGE = 112,
 	HUD_OBJECT_TEXT	= 113,
+	HUD_CUSTOM = 114,
 
 	//Menu
 	MENU_TITLE = 200,
@@ -531,31 +539,36 @@ public:
 
 	//Mario 
 	int level;
+	int cardGet;
 	bool die = false;
+	bool finished = false;
+	bool allowCountTime = false;
 
 	//HUD
 	int live, player, world, point, time, money;
 	int cardOne, cardTwo, cardThree;
 	float frameHUD_x, frameHUD_y;
 	int speed;
+	int currentCardEmpty;
 
 	//Switch Scene
 	bool allowSwitch;
 
 	D3DCOLOR background_color = D3DCOLOR_XRGB(255, 255, 255);
 
-	void Setup(int live, int player, int world, int speed, int point, int time, int money, int cardOne, int cardTwo, int cardThree)
+	void Setup()
 	{
-		this->live = live;
-		this->player = player;
-		this->world = world;
-		this->speed = speed;
-		this->point = point;
-		this->money = money;
-		this->time = time;
-		this->cardOne = cardOne;
-		this->cardTwo = cardTwo;
-		this->cardThree = cardThree;
+		this->live = 4;
+		this->player = HUD_ICON_MARIO;
+		this->world = 1;
+		this->speed = 0;
+		this->point = 0;
+		this->money = 0;
+		this->time = 0;
+		this->cardOne = HUD_ITEM_EMPTY;
+		this->cardTwo = HUD_ITEM_EMPTY;
+		this->cardThree = HUD_ITEM_EMPTY;
+		this->currentCardEmpty = 1;
 	}
 
 	//Map

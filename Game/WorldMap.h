@@ -19,6 +19,7 @@ struct Path {
 	BackGround* currentPath;
 	int type;
 	int adjacent[8];
+	bool isFinished = false;
 };
 
 typedef Path* LPPATH;

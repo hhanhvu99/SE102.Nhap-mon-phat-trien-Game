@@ -4,7 +4,7 @@
 Koopas::Koopas(int placeX, int placeY, int mobType, bool hasWing)
 {
 	this->x = placeX * STANDARD_SIZE;
-	this->y = placeY * STANDARD_SIZE - ENEMY_KOOPAS_HEIGHT;
+	this->y = placeY * STANDARD_SIZE - 1.0f;
 
 	this->immobilize = false;
 	this->rolling = false;
@@ -19,7 +19,7 @@ Koopas::Koopas(int placeX, int placeY, int mobType, bool hasWing)
 	this->type = eType::ENEMY;
 
 	this->state = ENEMY_STATE_MOVING;
-	this->direction = 1;
+	this->direction = -1;
 	this->mobType = mobType;
 	this->hasWing = hasWing;
 
@@ -67,8 +67,8 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	//Check outside camera
 	GameEngine::GetInstance()->GetCamPos(camPosX, camPosY);
-	if (x < camPosX - ENTITY_SAFE_DELETE_RANGE || x > camPosX + ENTITY_SAFE_DELETE_RANGE ||
-		y < camPosY - ENTITY_SAFE_DELETE_RANGE || y > camPosY + ENTITY_SAFE_DELETE_RANGE)
+	if (x < camPosX - ENTITY_SAFE_DELETE_RANGE || x > camPosX + SCREEN_WIDTH + ENTITY_SAFE_DELETE_RANGE ||
+		y < camPosY - ENTITY_SAFE_DELETE_RANGE || y > camPosY + SCREEN_HEIGHT + ENTITY_SAFE_DELETE_RANGE)
 	{
 		if (firstRun)
 		{
@@ -251,8 +251,8 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				
 
 		}
-			
 
+		
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
@@ -311,14 +311,36 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				}
 					
 			}
-			else
+			else if (rolling)
 			{
+				if (e->obj->GetType() == eType::QUESTION || e->obj->GetType() == eType::BRICK)
+				{
+					e->obj->SetState(ACTIVE_BLOCK_STATE_HIT);
+
+				}
+
 				if (nx > 0)
 					direction = 1;
 				else if (nx < 0)
 					direction = -1;
-				
 			}
+			else if (mobType == ENEMY_KOOPAS_RED && state == ENEMY_STATE_MOVING)
+			{
+				if (e->obj->GetType() == eType::BLOCK || e->obj->GetType() == eType::GROUP ||
+					e->obj->GetType() == eType::PLATFORM || e->obj->GetType() == eType::BRICK)
+				{
+					float objX, objY;
+					e->obj->GetPosition(objX, objY);
+
+					if (this->x < objX)
+						direction = 1;
+					else if (this->x + width > objX + e->obj->GetWidth())
+						direction = -1;
+
+				}
+			}
+
+			
 		}
 
 	}

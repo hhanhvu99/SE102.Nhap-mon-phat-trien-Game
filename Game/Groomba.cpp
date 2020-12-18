@@ -4,7 +4,7 @@
 Groomba::Groomba(int placeX, int placeY, int mobType, bool hasWing)
 {
 	this->x = placeX * STANDARD_SIZE;
-	this->y = placeY * STANDARD_SIZE - ENEMY_GROOMBA_HEIGHT;
+	this->y = placeY * STANDARD_SIZE - 1.0f;
 
 	this->hitByStomp = false;
 	this->hitByBullet = false;
@@ -17,7 +17,7 @@ Groomba::Groomba(int placeX, int placeY, int mobType, bool hasWing)
 	this->ani_walk_speed = 100;
 
 	this->state = ENEMY_STATE_MOVING;
-	this->direction = 1;
+	this->direction = -1;
 	this->mobType = mobType;
 	this->hasWing = hasWing;
 
@@ -70,8 +70,8 @@ void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	//Check outside camera
 	GameEngine::GetInstance()->GetCamPos(camPosX, camPosY);
-	if (x < camPosX - ENTITY_SAFE_DELETE_RANGE || x > camPosX + ENTITY_SAFE_DELETE_RANGE ||
-		y < camPosY - ENTITY_SAFE_DELETE_RANGE || y > camPosY + ENTITY_SAFE_DELETE_RANGE)
+	if (x < camPosX - ENTITY_SAFE_DELETE_RANGE || x > camPosX + SCREEN_WIDTH + ENTITY_SAFE_DELETE_RANGE ||
+		y < camPosY - ENTITY_SAFE_DELETE_RANGE || y > camPosY + SCREEN_HEIGHT + ENTITY_SAFE_DELETE_RANGE)
 	{
 		if (firstRun)
 		{
@@ -242,7 +242,13 @@ void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				if (e->ny > 0)
 				{
 					if (hasWing)
+					{
 						hasWing = false;
+
+						LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
+						LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
+						current->FloatText(x, y);
+					}
 					else
 						SetState(ENEMY_STATE_STOMP);
 					e->obj->SetSpeed(vx, -MARIO_JUMP_DEFLECT_SPEED);
@@ -320,7 +326,7 @@ void Groomba::Render()
 		{
 			ani = mobType + ENEMY_ANI_DIE_STOMP;
 		}
-		else if (state == ENEMY_STATE_HIT)
+		else if (state == ENEMY_STATE_HIT || state == ENEMY_STATE_HIT_TAIL)
 		{
 			if (direction > 0) ani = mobType + ENEMY_ANI_DIE_HIT_RIGHT;
 			else ani = mobType + ENEMY_ANI_DIE_HIT_LEFT;
@@ -340,9 +346,16 @@ void Groomba::SetState(int state)
 	switch (state)
 	{
 	case ENEMY_STATE_STOMP:
+	{
 		pause = true;
 		timeLeft = now;
 		this->type = eType::ENEMY_MOB_DIE;
+
+		LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
+		LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
+		current->FloatText(x, y);
+	}	
+
 		break;
 	case ENEMY_STATE_HIT:
 	case ENEMY_STATE_HIT_TAIL:

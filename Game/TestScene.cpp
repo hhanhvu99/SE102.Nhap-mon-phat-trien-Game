@@ -50,8 +50,11 @@ void TestScene::GetMarioPos(float& x, float& y)
 
 void TestScene::FloatText(float x, float y)
 {
-	combo += 1;
+	
 	HUD* temp;
+
+	if (combo < 9)
+		combo += 1;
 
 	y = y - FLOAT_TEXT_HEIGHT;
 
@@ -59,30 +62,39 @@ void TestScene::FloatText(float x, float y)
 	{
 	case 1:
 		temp = new HUD(x, y, HUD_BONUS_POINT_100);
+		global->point += HUD_BONUS_POINT_100;
 		break;
 	case 2:
 		temp = new HUD(x, y, HUD_BONUS_POINT_200);
+		global->point += HUD_BONUS_POINT_200;
 		break;
 	case 3:
 		temp = new HUD(x, y, HUD_BONUS_POINT_400);
+		global->point += HUD_BONUS_POINT_400;
 		break;
 	case 4:
 		temp = new HUD(x, y, HUD_BONUS_POINT_800);
+		global->point += HUD_BONUS_POINT_800;
 		break;
 	case 5:
 		temp = new HUD(x, y, HUD_BONUS_POINT_1000);
+		global->point += HUD_BONUS_POINT_1000;
 		break;
 	case 6:
 		temp = new HUD(x, y, HUD_BONUS_POINT_2000);
+		global->point += HUD_BONUS_POINT_2000;
 		break;
 	case 7:
 		temp = new HUD(x, y, HUD_BONUS_POINT_4000);
+		global->point += HUD_BONUS_POINT_4000;
 		break;
 	case 8:
 		temp = new HUD(x, y, HUD_BONUS_POINT_8000);
+		global->point += HUD_BONUS_POINT_8000;
 		break;
 	case 9:
 		temp = new HUD(x, y, HUD_BONUS_POINT_UP);
+		global->live += 1;
 		break;
 	default:
 		break;
@@ -94,8 +106,16 @@ void TestScene::FloatText(float x, float y)
 
 void TestScene::FloatTextCoin(float x, float y)
 {
+	global->point += 100;
 	y = y - FLOAT_TEXT_HEIGHT;
 	HUD* temp = new HUD(x, y, HUD_BONUS_POINT_100);
+}
+
+void TestScene::FloatTextCustom(float x, float y, int point)
+{
+	global->live += 1;
+	y = y - FLOAT_TEXT_HEIGHT;
+	HUD* temp = new HUD(x, y, point);
 }
 
 void TestScene::SortGameObject()
@@ -282,7 +302,10 @@ void TestScene::Load()
 			object->GetIndex(indexX, indexY);
 
 			if (objectX == indexX && objectY == indexY)
+			{
 				tempBlock->AddObject(object);
+				static_cast<BrickShiny*>(object)->SetMaster(tempBlock);
+			}	
 		
 		}
 			
@@ -497,13 +520,33 @@ void TestScene::Load()
 		direction = GATE[x + 6];
 
 		if (currentX + currentY < 0)
+		{
 			currentWorld = currentScene;
+			continue;
+		}		
 		else if (targetX + targetY < 0)
 			gate = new Teleport(currentScene, currentX, currentY, targetScene);
 		else
 			gate = new Teleport(currentScene, currentX, currentY, targetScene, targetX, targetY, direction);
 
 		teleport.push_back(gate);
+	}
+	
+	//Set Stage Finished
+	length = STAGE_FINISHED.size();
+	for (int x = 0; x < length; x += 2)
+	{
+		indexX = STAGE_FINISHED[x];
+		indexY = STAGE_FINISHED[x+1];
+
+		for (LPGAMEOBJECT object : gameObjects)
+		{
+			object->GetIndex(indexObj_x, indexObj_y);
+
+			if (indexX == indexObj_x && indexY == indexObj_y)
+				object->SetSprite(SpriteManager::GetInstance()->Get(MAP_MARIO_FINISHED));
+			
+		}
 	}
 
 	//Set Start Position
@@ -512,7 +555,7 @@ void TestScene::Load()
 		startPosX = float(START[0]) * STANDARD_SIZE;
 		startPosY = float(START[1]) * STANDARD_SIZE;
 	}
-	
+
 	//Set Background color
 	backgroundColor = D3DCOLOR_XRGB(COLOR[0], COLOR[1], COLOR[2]);
 

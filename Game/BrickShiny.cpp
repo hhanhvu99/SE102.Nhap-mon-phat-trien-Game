@@ -11,12 +11,17 @@ BrickShiny::BrickShiny(float x, float y, LPSPRITE sprite) : ActiveBlock(x, y, sp
 	this->moving = false;
 	this->type = eType::BRICK;
 	this->state = BRICK_SHINY_STATE_NORMAL;
+
+	this->master = NULL;
 }
 
 void BrickShiny::Destroy()
 {
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
 	LPTESTSCENE current = dynamic_cast<LPTESTSCENE>(scene);
+	
+	if (master != NULL)
+		static_cast<P_Block*>(master)->RemoveObject(this);
 
 	current->Destroy(this);
 }
@@ -36,7 +41,7 @@ void BrickShiny::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	x += dx;
 	y += dy;
 
-	if (state == BRICK_SHINY_STATE_HIT)
+	if (state == ACTIVE_BLOCK_STATE_HIT)
 	{
 		oldX = x;
 		oldY = y;
@@ -110,7 +115,7 @@ void BrickShiny::SetState(int state)
 
 	switch (state)
 	{
-	case BRICK_SHINY_STATE_HIT:
+	case ACTIVE_BLOCK_STATE_HIT:
 	{
 		Rubbish* brick1 = new Rubbish(x + RUBBISH_OFFSET_X, y + RUBBISH_OFFSET_Y, RUBBISH_SPEED_X, RUBBISH_SPEED_Y, RUBBISH_DEFLECT_SPEED, -1);
 		Rubbish* brick2 = new Rubbish(x + RUBBISH_OFFSET_X, y + RUBBISH_OFFSET_Y, RUBBISH_SPEED_X, RUBBISH_SPEED_Y, RUBBISH_DEFLECT_SPEED - 0.1f, -1);
@@ -125,4 +130,9 @@ void BrickShiny::SetState(int state)
 		break;
 	}
 
+}
+
+BrickShiny::~BrickShiny()
+{
+	master = NULL;
 }

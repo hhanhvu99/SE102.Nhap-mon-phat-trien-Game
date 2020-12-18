@@ -69,6 +69,7 @@ public:
 	void GetMarioPos(float& x, float& y);
 	void FloatText(float x, float y);
 	void FloatTextCoin(float x, float y);
+	void FloatTextCustom(float x, float y, int point);
 	void SortGameObject();
 
 	virtual void Load();

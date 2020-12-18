@@ -31,7 +31,7 @@ void World1_1::Load()
 
 	startSwitching = false;
 	stillSwitching = false;
-
+	global->allowCountTime = true;
 	
 	Global::GetInstance()->time = 300;
 }
@@ -74,16 +74,20 @@ void World1_1::Update(DWORD dt)
 		}
 	}
 
-	if (Global::GetInstance()->time > 0)
+	if (global->allowCountTime)
 	{
-		timeCounter += dt;
-
-		if (timeCounter >= 1000)
+		if (Global::GetInstance()->time > 0)
 		{
-			Global::GetInstance()->time -= 1;
-			timeCounter -= 1000;
+			timeCounter += dt;
+
+			if (timeCounter >= 1000)
+			{
+				Global::GetInstance()->time -= 1;
+				timeCounter -= 1000;
+			}
 		}
 	}
+	
 }
 
 void World1_1::Render()

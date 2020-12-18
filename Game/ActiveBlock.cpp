@@ -6,3 +6,7 @@ ActiveBlock::ActiveBlock(float x, float y, LPSPRITE sprite)
 	this->sprite = sprite;
 	this->item = NULL;
 }
+
+ActiveBlock::~ActiveBlock()
+{
+}

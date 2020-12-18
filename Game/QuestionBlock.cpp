@@ -28,7 +28,7 @@ void QuestionBlock::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	x += dx;
 	y += dy;
 	
-	if (state == QUESTION_BLOCK_STATE_HIT && hit == false)
+	if (state == ACTIVE_BLOCK_STATE_HIT && hit == false)
 	{
 		oldX = x;
 		oldY = y;
@@ -83,7 +83,7 @@ void QuestionBlock::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 							item->SetState(ITEM_STATE_SHOW);
 						else
 						{
-							item->Destroy();
+							item->Replace();
 							item = new Mushroom(x, y, ITEM_MUSHROOM_RED);
 							item->SetAnimationSet(AnimationManager::GetInstance()->Get(ITEM_ID));
 							item->SetState(ITEM_STATE_SHOW);

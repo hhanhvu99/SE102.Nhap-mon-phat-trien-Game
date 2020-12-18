@@ -29,7 +29,12 @@ void EndGoal::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	if (state == GOAL_STATE_NORMAL)
 	{
-		currentItem += 1;
+		if (GetTickCount() - timeStart > END_GOAL_TIME)
+		{
+			currentItem += 1;
+			timeStart = GetTickCount();
+		}
+		
 
 		if (currentItem > 4)
 			currentItem = 2;
@@ -37,6 +42,14 @@ void EndGoal::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	else if (state = GOAL_STATE_HIT)
 	{
 		vy = -END_GOAL_ITEM_MOVE_SPEED;
+		Global::GetInstance()->cardGet = currentItem;
+		
+		if (Global::GetInstance()->currentCardEmpty == 1)
+			Global::GetInstance()->cardOne = 30000 + currentItem;
+		else if (Global::GetInstance()->currentCardEmpty == 2)
+			Global::GetInstance()->cardTwo = 30000 + currentItem;
+		else
+			Global::GetInstance()->cardThree = 30000 + currentItem;
 
 		float cx, cy;
 		GameEngine::GetInstance()->GetCamPos(cx, cy);

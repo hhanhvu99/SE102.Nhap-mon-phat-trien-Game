@@ -71,7 +71,6 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		return;
 	}
-		
 
 	// Simple fall down
 	vy += MARIO_GRAVITY * dt;
@@ -112,7 +111,19 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			readyToSwitch = true;
 	}
 
-			
+	if (transporting == false && finished == false)
+	{
+		if (fallOutside == false && die == false)
+		{
+			if (isOutSideCam())
+			{
+				fallOutside = true;
+				SetState(MARIO_STATE_DIE);
+			}
+		}
+		
+	}
+
 	// reset untouchable timer if untouchable time has passed
 	if (untouchable)
 	{
@@ -339,6 +350,10 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					item->Destroy();
 					break;
 
+				case ITEM_MUSHROOM_GREEN:
+					item->Destroy();
+					break;
+
 				case ITEM_SUPER_STAR:
 					SetState(MARIO_STATE_INVINCIBLE);
 					item->Destroy();
@@ -372,7 +387,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			}
 			else if (obj->GetType() == eType::P_BLOCK)
 			{
-				if (obj->GetState() == P_BLOCK_STATE_HIT)
+				if (obj->GetState() == P_BLOCK_STATE_NORMAL)
 				{
 					if (ny < 0)
 					{
@@ -383,13 +398,9 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			}
 			if (ny > 0)
 			{
-				if (obj->GetType() == eType::BRICK)
+				if (obj->GetType() == eType::BRICK || obj->GetType() == eType::QUESTION)
 				{
-					obj->SetState(BRICK_SHINY_STATE_HIT);
-				}
-				else if (obj->GetType() == eType::QUESTION)
-				{
-					obj->SetState(QUESTION_BLOCK_STATE_HIT);
+					obj->SetState(ACTIVE_BLOCK_STATE_HIT);
 				}
 			}
 
@@ -420,15 +431,74 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	//Finish
 	if (finished)
 	{
+		DWORD timePass = GetTickCount() - startFinish;
+
 		if (touchGround)
 		{
+			direction = 1;
 			vx = MARIO_WALKING_FINISH_SPEED;
 			ani_walk_time = 50;
 		}	
 
-		if (GetTickCount() - startFinish > MARIO_FINISH_TIME)
-			readyToSwitch = true;
+		if (finishWaiting)
+		{
+			if (timePass > MARIO_FINISH_TIME_4)
+				readyToSwitch = true;
+		}
+		else 
+		{
+			if (timePass > MARIO_FINISH_TIME_3)
+			{
+				if (global->time > 0)
+				{
+					global->time -= 1;
+					global->point += 50;
+				}
+				else
+				{
+					finishWaiting = true;
+					startFinish = GetTickCount();
+				}
+			}
+			else if (timePass > MARIO_FINISH_TIME_2)
+			{
+				if (firstText_2)
+				{
+					LPSPRITE sprite = SpriteManager::GetInstance()->Get(END_GOAL_TEXT_2);
+					int id = HUD_ID;
+
+					if (global->cardGet == END_GOAL_STAR)
+						id += HUD_ITEM_STAR;
+					else if (global->cardGet == END_GOAL_FLOWER)
+						id += HUD_ITEM_FLOWER;
+					else
+						id += HUD_ITEM_MUSHROOM;
+
+					LPSPRITE iconCard = SpriteManager::GetInstance()->Get(id);
+
+					HUD* text2 = new HUD(global->frameHUD_x + HUD_TEXT_2_X, global->frameHUD_y + HUD_TEXT_2_Y, sprite);
+					HUD* card = new HUD(global->frameHUD_x + HUD_ITEM_ICON_X, global->frameHUD_y + HUD_ITEM_ICON_Y, iconCard);
+					firstText_2 = false;
+				}
+			}
+			else if (timePass > MARIO_FINISH_TIME_1)
+			{
+				if (firstText_1)
+				{
+					LPSPRITE sprite = SpriteManager::GetInstance()->Get(END_GOAL_TEXT_1);
+					HUD* text1 = new HUD(global->frameHUD_x + HUD_TEXT_1_X, global->frameHUD_y + HUD_TEXT_1_Y, sprite);
+					firstText_1 = false;
+				}
+
+			}
+			else
+			{
+				global->allowCountTime = false;
+			}
+		}
 		
+		
+
 		return;
 	}
 
@@ -694,10 +764,14 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					else
 						object->SetPosition(pointTail_X - object->GetWidth(), pointTail_Y - object->GetHeight());
 				}
+				else if (object->GetType() == eType::P_BLOCK)
+				{
+					if (object->GetState() == P_BLOCK_STATE_IDLE)
+						object->SetState(P_BLOCK_STATE_HIT);
+				}
 				else
 				{
-					if (object->GetState() == P_BLOCK_STATE_NORMAL)
-						object->SetState(P_BLOCK_STATE_HIT);
+					object->SetState(ACTIVE_BLOCK_STATE_HIT);
 				}
 
 			}
@@ -1335,6 +1409,7 @@ void Mario::SetState(int state)
 				shoot = false;
 				flapAni = false;
 				flapping = false;
+				allowFlapJump = false;
 				
 				if (grabbing)
 				{
@@ -1387,6 +1462,7 @@ void Mario::SetState(int state)
 			flapping = false;
 			grabbing = false;
 			grabTurtlePress = false;
+			allowFlapJump = false;
 			
 
 		}
@@ -1428,6 +1504,7 @@ void Mario::SetState(int state)
 		shoot = false;
 		flapAni = false;
 		flapping = false;
+		isMax = false;
 
 		if (grabbing)
 		{
@@ -1437,6 +1514,7 @@ void Mario::SetState(int state)
 			grabObject = NULL;
 		}
 
+		global->finished = true;
 		finished = true;
 		startFinish = now;
 
@@ -1446,11 +1524,35 @@ void Mario::SetState(int state)
 
 		break;
 	case MARIO_STATE_DIE:
-		PAUSE = true;
+		global->level = MARIO_LEVEL_SMALL;
+
+		untouchable = false;
+		startInvincible = false;
+		inTransition = false;
+		tail_whip = false;
+		shoot = false;
+		flapAni = false;
+		flapping = false;
+		allowFlapJump = false;
+
+		if (grabbing)
+		{
+			grabbing = false;
+			grabObject->SetState(ENEMY_STATE_RELEASE);
+			grabTurtlePress = false;
+			grabObject = NULL;
+		}
+
 		dying = true;
 		die = true;
 		die_time = now;
+
 		global->die = true;
+		global->allowCountTime = false;
+
+		type = eType::ENEMY_MOB_DIE;
+
+		PAUSE = true;
 
 		break;
 	}
@@ -1547,6 +1649,7 @@ bool Mario::PointCollision(vector<LPGAMEOBJECT>& coObjects, float pointX, float 
 		case eType::BLOCK:
 		case eType::BRICK:
 		case eType::QUESTION:
+		case eType::P_BLOCK:
 			//pointY += 16;
 
 			//DebugOut(L"PointX: %f -- PointY: %f\n", pointX, pointY);
@@ -1570,9 +1673,11 @@ bool Mario::PointCollision(vector<LPGAMEOBJECT>& coObjects, float pointX, float 
 
 	for (LPGAMEOBJECT object : coObjects)
 	{
-		if (object->GetType() != eType::P_BLOCK)
-			if (object->GetType() != eType::ENEMY)
-				continue;
+		if (object->GetType() != eType::ENEMY)
+			if (object->GetType() != eType::QUESTION)
+				if (object->GetType() != eType::BRICK)
+					if (object->GetType() != eType::P_BLOCK)	
+						continue;
 
 		object->GetBoundingBox(left, top, right, bottom);
 
@@ -1583,8 +1688,10 @@ bool Mario::PointCollision(vector<LPGAMEOBJECT>& coObjects, float pointX, float 
 
 		switch (object->GetType())
 		{
-		case eType::P_BLOCK:
 		case eType::ENEMY:
+		case eType::QUESTION:
+		case eType::BRICK:
+		case eType::P_BLOCK:
 			if (pointX >= left && pointX <= right && pointY >= top && pointY <= bottom)
 			{
 				target = object;
@@ -1595,6 +1702,13 @@ bool Mario::PointCollision(vector<LPGAMEOBJECT>& coObjects, float pointX, float 
 
 	}
 
+	return false;
+}
+
+bool Mario::isOutSideCam()
+{
+	if (y > global->screenHeight)
+		return true;
 	return false;
 }
 

@@ -42,6 +42,15 @@
 #define HUD_CARD_THREE_X			223
 #define HUD_CARD_THREE_Y			3
 
+#define HUD_TEXT_1_X				75
+#define HUD_TEXT_1_Y				-160
+
+#define HUD_TEXT_2_X				59
+#define HUD_TEXT_2_Y				-136
+
+#define HUD_ITEM_ICON_X				183
+#define HUD_ITEM_ICON_Y				-142
+
 //Time
 #define HUD_BUTTON_FLASH_TIME		149
 #define HUD_BUTTON_FLASH_TIME_2		300
@@ -63,6 +72,7 @@ class HUD : public GameObject
 public:
 	HUD(eType type);
 	HUD(float x, float y, int number);
+	HUD(float x, float y, LPSPRITE sprite);
 
 	void Add();
 	void Destroy();

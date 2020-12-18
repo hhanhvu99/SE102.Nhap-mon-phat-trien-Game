@@ -12,7 +12,6 @@
 //Offset
 #define BULLET_HAMMER_DRAW_OFFSET_X		0.0f
 #define BULLET_HAMMER_DRAW_OFFSET_Y		0.0f
-#define BULLET_SAFE_DELETE_RANGE		300.0f
 
 class Hammer : public Bullet
 {

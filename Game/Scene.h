@@ -18,6 +18,7 @@ protected:
 	std::vector<int> GATE;
 	std::vector<int> COLOR;
 	std::vector<int> P_BLOCK_HOLDER;
+	std::vector<int> STAGE_FINISHED;
 
 	KeyEventHandler* key_handler;
 

@@ -29,8 +29,8 @@ void WorldMap::Load()
 	CHOOSE = 3;
 	TestScene::Load();
 	Global::GetInstance()->background_color = D3DCOLOR_XRGB(248, 236, 160);
-	allowResetStart = false;
 
+	global->allowCountTime = false;
 	showPopup = false;
 	startTime = true;
 	timePass = 0;
@@ -58,8 +58,6 @@ void WorldMap::Load()
 		case MAP_PATH_START:
 			startX = indexX * STANDARD_SIZE;
 			startY = indexY * STANDARD_SIZE;
-			global->currentX = indexX;
-			global->currentY = indexY;
 			if (current == NULL)
 				current = path;
 			break;
@@ -97,7 +95,10 @@ void WorldMap::Load()
 
 		listOfPath[Global::TwoDimension_To_OneDimension(indexX, indexY, height)] = path;
 	}
-
+	
+	//Find current path
+	if (allowResetStart == false)
+		current = listOfPath[Global::TwoDimension_To_OneDimension(global->currentX, global->currentY, height)];
 
 	//Setup Mario
 	mario = new MarioMap(startPosX, startPosY);
@@ -110,6 +111,7 @@ void WorldMap::Load()
 	GameEngine::GetInstance()->SetCamPos(0.0f, 0.0f);
 
 	PAUSE = true;
+	allowResetStart = false;
 	Global::GetInstance()->time = 0;
 }
 
@@ -121,13 +123,59 @@ void WorldMap::Update(DWORD dt)
 	if(!castMario->IsMoving())
 		castMario->GetPosition(startPosX, startPosY);
 
-	if (global->die && PAUSE == false)
+
+	if (global->die)
 	{
-		Reset();
+		global->live -= 1;
+
+		if (global->live > 0)
+			Reset();
+		else
+			gameOver = true;
+			
 		global->die = false;
 	}
+	else if (global->finished)
+	{
+		int indexX, indexY;
+
+		current->currentPath->SetSprite(SpriteManager::GetInstance()->Get(MAP_MARIO_FINISHED));
+		current->currentPath->GetIndex(indexX, indexY);
+		current->isFinished = true;
+		STAGE_FINISHED.push_back(indexX);
+		STAGE_FINISHED.push_back(indexY);
+
+		global->finished = false;
+	}
 	
-	if (startTime)
+	
+	if (gameOver)
+	{
+		if (firstOver)
+		{
+			timePass = now;
+			firstOver = false;
+
+			text = new BackGround(64.0f, 32.0f, SpriteManager::GetInstance()->Get(HUD_ID + HUD_GAMEOVER));
+			text->SetType(eType::MAP_START);
+			text->SetDrawOrder(HUD_FRAME_DRAW_ORDER);
+			this->gameObjects.push_back(text);
+
+			arrow = new BackGround(MAP_POS_ARROW_1_X, MAP_POS_ARROW_1_Y, SpriteManager::GetInstance()->Get(MENU_ARROW));
+			arrow->SetType(eType::MAP_START);
+			arrow->SetDrawOrder(HUD_TEXT_DRAW_ORDER);
+			this->gameObjects.push_back(arrow);
+		}
+		else
+		{
+			PAUSE = true;
+			if (firstOption)
+				arrow->SetPosition(MAP_POS_ARROW_1_X, MAP_POS_ARROW_1_Y);
+			else
+				arrow->SetPosition(MAP_POS_ARROW_2_X, MAP_POS_ARROW_2_Y);
+		}
+	}
+	else if (startTime)
 	{
 		showPopup = true;
 		timePass = now;
@@ -168,32 +216,7 @@ void WorldMap::Update(DWORD dt)
 		else
 			PAUSE = true;
 	}
-	else if (gameOver)
-	{
-		if (firstOver)
-		{
-			timePass = now;
-			firstOver = false;
-			PAUSE = true;
-
-			text = new BackGround(64.0f, 32.0f, SpriteManager::GetInstance()->Get(HUD_ID + HUD_GAMEOVER));
-			text->SetType(eType::MAP_START);
-			text->SetDrawOrder(HUD_FRAME_DRAW_ORDER);
-			this->gameObjects.push_back(text);
-
-			arrow = new BackGround(MAP_POS_ARROW_1_X, MAP_POS_ARROW_1_Y, SpriteManager::GetInstance()->Get(MENU_ARROW));
-			arrow->SetType(eType::MAP_START);
-			arrow->SetDrawOrder(HUD_TEXT_DRAW_ORDER);
-			this->gameObjects.push_back(arrow);
-		}
-		else
-		{
-			if (firstOption)
-				arrow->SetPosition(MAP_POS_ARROW_1_X, MAP_POS_ARROW_1_Y);
-			else
-				arrow->SetPosition(MAP_POS_ARROW_2_X, MAP_POS_ARROW_2_Y);
-		}
-	}
+	
 }
 
 void WorldMap::Render()
@@ -231,6 +254,7 @@ void WorldMap::SetState(int state)
 			{
 				castMario->MoveTo(current->adjacent[0] * STANDARD_SIZE, current->adjacent[1] * STANDARD_SIZE);
 				current = listOfPath[Global::TwoDimension_To_OneDimension(current->adjacent[0], current->adjacent[1], height)];
+				current->currentPath->GetIndex(global->currentX, global->currentY);
 			}
 		}
 		break;
@@ -241,6 +265,7 @@ void WorldMap::SetState(int state)
 			{
 				castMario->MoveTo(current->adjacent[2] * STANDARD_SIZE, current->adjacent[3] * STANDARD_SIZE);
 				current = listOfPath[Global::TwoDimension_To_OneDimension(current->adjacent[2], current->adjacent[3], height)];
+				current->currentPath->GetIndex(global->currentX, global->currentY);
 			}
 		}
 		break;
@@ -251,6 +276,7 @@ void WorldMap::SetState(int state)
 			{
 				castMario->MoveTo(current->adjacent[4] * STANDARD_SIZE, current->adjacent[5] * STANDARD_SIZE);
 				current = listOfPath[Global::TwoDimension_To_OneDimension(current->adjacent[4], current->adjacent[5], height)];
+				current->currentPath->GetIndex(global->currentX, global->currentY);
 			}
 		}
 		break;
@@ -261,6 +287,7 @@ void WorldMap::SetState(int state)
 			{
 				castMario->MoveTo(current->adjacent[6] * STANDARD_SIZE, current->adjacent[7] * STANDARD_SIZE);
 				current = listOfPath[Global::TwoDimension_To_OneDimension(current->adjacent[6], current->adjacent[7], height)];
+				current->currentPath->GetIndex(global->currentX, global->currentY);
 			}
 		}
 		break;
@@ -284,6 +311,9 @@ void WorldMap::SetState(int state)
 			gameOver = false;
 			firstOver = true;
 			PAUSE = false;
+
+			Global::GetInstance()->Setup();
+
 			Restart();
 
 			Destroy(text);
@@ -292,6 +322,9 @@ void WorldMap::SetState(int state)
 		break;
 	case SCENE_STATE_MAP_TO_STAGE:
 	{
+		if (current->isFinished)
+			return;
+
 		Teleport* gate = static_cast<Teleport*>(currentGate);
 		SceneManager::GetInstance()->SwitchScene(gate->GetTargetID());
 		//SceneManager::GetInstance()->SwitchScene(SCENE_WORLD_1_1);

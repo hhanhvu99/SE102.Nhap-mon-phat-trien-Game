@@ -32,10 +32,15 @@ void Coin::Destroy()
 	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
 
 	if (outSide)
+	{
+		Global::GetInstance()->money += 1;
+		Global::GetInstance()->point += 50;
 		current->Destroy(this);
+	}
 	else
 		current->Destroy_Visual(this);
-
+	
+		
 }
 
 void Coin::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
@@ -153,6 +158,7 @@ void Coin::SetState(int state)
 	{
 	case ITEM_STATE_SHOW:
 		vy = -ITEM_COIN_JUMP_SPEED;
+		Global::GetInstance()->money += 1;
 		
 		break;
 	case ITEM_STATE_HIT:

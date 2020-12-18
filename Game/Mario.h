@@ -87,9 +87,13 @@
 #define MARIO_SWITCHING_TIME			80
 #define MARIO_SWITCHING_DURATION		240
 #define MARIO_TRANSPORT_TIME			1000
-#define MARIO_FINISH_TIME				2000
 #define MARIO_DIE_TIME					500
 #define MARIO_DIE_TIME_SECOND			2000
+
+#define MARIO_FINISH_TIME_1				2000
+#define MARIO_FINISH_TIME_2				3000
+#define MARIO_FINISH_TIME_3				4000
+#define MARIO_FINISH_TIME_4				3000
 
 //Point collide
 #define MARIO_POINT_COLLIDE_OFFSET_X	8.0f
@@ -198,6 +202,7 @@ protected:
 	bool shoot = false;
 	DWORD startShoot = 0;
 
+	bool fallOutside = false;
 	bool die = false;
 	bool dying = false;
 	DWORD die_time = 0;
@@ -223,7 +228,12 @@ protected:
 	DWORD startTransport = 0;
 
 	bool finished = false;
+	bool finishWaiting = false;
 	DWORD startFinish = 0;
+
+	bool firstText_1 = true;
+	bool firstText_2 = true;
+	bool firstIcon = true;
 
 	bool touchLeft = false, touchRight = false;
 	bool isRunning = false;
@@ -255,6 +265,7 @@ public:
 	bool PointCollision(vector<LPGAMEOBJECT>& collideObjects, float pointX, float pointY);
 	bool PointCollision(vector<LPGAMEOBJECT>& collideObjects, float pointX, float pointY, LPGAMEOBJECT& target);
 
+	bool isOutSideCam();
 	bool isReady() { return readyToSwitch; }
 	bool isCrouching() { return isCrouch; }
 	bool isJumpFlap() { return flapJump; }

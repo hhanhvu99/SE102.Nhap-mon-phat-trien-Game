@@ -10,6 +10,7 @@ Fireball::Fireball(float x, float y, int direction)
 	this->height = BULLET_FIREBALL_HEIGHT;
 	this->direction = direction;
 
+	this->draw_order = BULLET_DRAW_ORDER;
 	this->bulletType = BULLET_FIREBALL_TYPE_NORMAL;
 	this->type = eType::MARIO_BULLET;
 	this->state = BULLET_STATE_MOVING;
@@ -30,6 +31,7 @@ Fireball::Fireball(float x, float y, int direction, float unitVectorX, float uni
 	this->height = BULLET_FIREBALL_HEIGHT;
 	this->direction = direction;
 
+	this->draw_order = BULLET_DRAW_ORDER;
 	this->bulletType = BULLET_FIREBALL_TYPE_NORMAL;
 	this->type = eType::ENEMY_BULLET;
 
@@ -86,8 +88,8 @@ void Fireball::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 		else
 		{
-			vy = unitVectorY * BULLET_FIREBALL_SPEED_X;
-			vx = unitVectorX * BULLET_FIREBALL_SPEED_X;
+			vy = unitVectorY * BULLET_FIREBALL_SPEED_ENEMY;
+			vx = unitVectorX * BULLET_FIREBALL_SPEED_ENEMY;
 			if (state != BULLET_STATE_HIT)
 				CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY, eType::ENEMY_BULLET, eType::ENEMY_MOB_DIE, 
 					eType::BLOCK, eType::GROUP, eType::BRICK, eType::QUESTION, eType::PLAYER_UNTOUCHABLE, eType::PLATFORM , eType::ITEM });
@@ -190,8 +192,8 @@ void Fireball::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		coEvents[i] = NULL;
 	}
 
-	if (x < camPosX - BULLET_SAFE_DELETE_RANGE || x > camPosX + BULLET_SAFE_DELETE_RANGE ||
-		y < camPosY - BULLET_SAFE_DELETE_RANGE || y > camPosY + BULLET_SAFE_DELETE_RANGE)
+	if (x < camPosX - BULLET_SAFE_DELETE_RANGE || x > camPosX + SCREEN_WIDTH + BULLET_SAFE_DELETE_RANGE ||
+		y < camPosY - BULLET_SAFE_DELETE_RANGE || y > camPosY + SCREEN_HEIGHT + BULLET_SAFE_DELETE_RANGE)
 	{
 		this->Destroy();
 		return;

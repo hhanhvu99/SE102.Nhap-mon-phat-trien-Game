@@ -21,6 +21,8 @@ void SuperStar::Destroy()
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
 	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
 
+	Global::GetInstance()->point += 1000;
+
 	current->Destroy(this);
 
 }
@@ -140,8 +142,8 @@ void SuperStar::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		coEvents[i] = NULL;
 	}
 
-	if (x < camPosX - ITEM_SAFE_DELETE_RANGE || x > camPosX + ITEM_SAFE_DELETE_RANGE ||
-		y < camPosY - ITEM_SAFE_DELETE_RANGE || y > camPosY + ITEM_SAFE_DELETE_RANGE)
+	if (x < camPosX - ITEM_SAFE_DELETE_RANGE || x > camPosX + SCREEN_WIDTH + ITEM_SAFE_DELETE_RANGE ||
+		y < camPosY - ITEM_SAFE_DELETE_RANGE || y > camPosY + SCREEN_HEIGHT + ITEM_SAFE_DELETE_RANGE)
 	{
 		this->Destroy();
 		return;

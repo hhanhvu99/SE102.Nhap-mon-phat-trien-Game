@@ -15,6 +15,7 @@ public:
 
 	virtual void Add();
 	virtual void Destroy();
+	virtual void Replace();
 
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL);
 	virtual void Render();

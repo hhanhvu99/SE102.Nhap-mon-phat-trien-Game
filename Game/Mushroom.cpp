@@ -21,6 +21,13 @@ void Mushroom::Destroy()
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
 	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
 
+	if (itemType == ITEM_MUSHROOM_GREEN)
+		current->FloatTextCustom(x, y, HUD_BONUS_POINT_UP);
+	else if (Global::GetInstance()->level > MARIO_LEVEL_SMALL)
+		current->FloatTextCustom(x, y, HUD_BONUS_POINT_1000);
+
+	Global::GetInstance()->point += 1000;
+
 	current->Destroy(this);
 
 }
@@ -134,8 +141,8 @@ void Mushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		coEvents[i] = NULL;
 	}
 
-	if (x < camPosX - ITEM_SAFE_DELETE_RANGE || x > camPosX + ITEM_SAFE_DELETE_RANGE ||
-		y < camPosY - ITEM_SAFE_DELETE_RANGE || y > camPosY + ITEM_SAFE_DELETE_RANGE)
+	if (x < camPosX - ITEM_SAFE_DELETE_RANGE || x > camPosX + SCREEN_WIDTH + ITEM_SAFE_DELETE_RANGE ||
+		y < camPosY - ITEM_SAFE_DELETE_RANGE || y > camPosY + SCREEN_HEIGHT + ITEM_SAFE_DELETE_RANGE)
 	{
 		this->Destroy();
 		return;

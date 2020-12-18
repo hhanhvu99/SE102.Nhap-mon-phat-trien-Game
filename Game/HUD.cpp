@@ -31,6 +31,23 @@ HUD::HUD(float x, float y, int number)
 	this->Add();
 }
 
+HUD::HUD(float x, float y, LPSPRITE sprite)
+{
+	this->x = x;
+	this->y = y;
+	this->isBubble = false;
+	this->type = eType::HUD_CUSTOM;
+	this->instance = GameEngine::GetInstance();
+	this->global = Global::GetInstance();
+
+	object = new HUD_Object(sprite);
+	spriteHolder.push_back(object);
+	draw_order = HUD_FRAME_DRAW_ORDER;
+
+	this->Setup();
+	this->Add();
+}
+
 void HUD::Add()
 {
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
@@ -370,6 +387,7 @@ void HUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			x = global->frameHUD_x + HUD_CARD_ONE_X;
 			y = global->frameHUD_y + HUD_CARD_ONE_Y;
 
+			spriteHolder.front()->SetSprite(SpriteManager::GetInstance()->Get(HUD_ID + global->cardOne));
 			spriteHolder.front()->SetPosition(x, y);
 
 			break;
@@ -377,6 +395,7 @@ void HUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			x = global->frameHUD_x + HUD_CARD_TWO_X;
 			y = global->frameHUD_y + HUD_CARD_TWO_Y;
 
+			spriteHolder.front()->SetSprite(SpriteManager::GetInstance()->Get(HUD_ID + global->cardTwo));
 			spriteHolder.front()->SetPosition(x, y);
 
 			break;
@@ -384,6 +403,11 @@ void HUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			x = global->frameHUD_x + HUD_CARD_THREE_X;
 			y = global->frameHUD_y + HUD_CARD_THREE_Y;
 
+			spriteHolder.front()->SetSprite(SpriteManager::GetInstance()->Get(HUD_ID + global->cardThree));
+			spriteHolder.front()->SetPosition(x, y);
+
+			break;
+		case HUD_CUSTOM:
 			spriteHolder.front()->SetPosition(x, y);
 
 			break;
@@ -439,6 +463,9 @@ void HUD::Render()
 			spriteHolder.front()->Render();
 			break;
 		case HUD_CARD_THREE:
+			spriteHolder.front()->Render();
+			break;
+		case HUD_CUSTOM:
 			spriteHolder.front()->Render();
 			break;
 		default:

@@ -42,6 +42,7 @@ void Scene::LoadBlock(LPCWSTR gameFile)
 	GATE.clear();
 	COLOR.clear();
 	P_BLOCK_HOLDER.clear();
+	STAGE_FINISHED.clear();
 
 	while (f.getline(str, MAX_GAME_LINE))
 	{
@@ -150,4 +151,5 @@ Scene::~Scene()
 	GATE.clear();
 	COLOR.clear();
 	P_BLOCK_HOLDER.clear();
+	STAGE_FINISHED.clear();
 }

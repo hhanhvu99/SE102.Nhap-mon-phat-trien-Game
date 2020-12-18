@@ -49,8 +49,8 @@ void Rubbish::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 
 	GameEngine::GetInstance()->GetCamPos(camPosX, camPosY);
-	if (x < camPosX - BULLET_SAFE_DELETE_RANGE || x > camPosX + BULLET_SAFE_DELETE_RANGE ||
-		y < camPosY - BULLET_SAFE_DELETE_RANGE || y > camPosY + BULLET_SAFE_DELETE_RANGE)
+	if (x < camPosX - BULLET_SAFE_DELETE_RANGE || x > camPosX + SCREEN_WIDTH + BULLET_SAFE_DELETE_RANGE ||
+		y < camPosY - BULLET_SAFE_DELETE_RANGE || y > camPosY + SCREEN_HEIGHT + BULLET_SAFE_DELETE_RANGE)
 	{
 		this->Destroy();
 		return;

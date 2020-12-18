@@ -199,8 +199,7 @@ void LoadResources()
 	sceneManager->Load(world);
 	sceneManager->SwitchScene(SCENE_INTRO);
 
-	Global::GetInstance()->Setup(4, HUD_ICON_MARIO, 1, 0, 0, 0, 0, HUD_ITEM_EMPTY, HUD_ITEM_EMPTY, HUD_ITEM_EMPTY);
-
+	Global::GetInstance()->Setup();
 	DebugOut(L"[INFO] Loading map successfully\n");
 }
 

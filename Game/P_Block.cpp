@@ -1,19 +1,21 @@
 #include "P_Block.h"
+#include "debug.h"
 
 P_Block::P_Block(float x, float y) : GameObject()
 {
-	this->x = x;
-	this->y = y;
+	this->x = this->currentX = x;
+	this->y = this->currentY = y;
 	this->width = STANDARD_SIZE;
 	this->height = STANDARD_SIZE;
 
-	this->state = P_BLOCK_STATE_NORMAL;
+	this->state = P_BLOCK_STATE_IDLE;
 	this->listOfObject.clear();
 	this->type = eType::P_BLOCK;
 
 	this->sprite = SpriteManager::GetInstance()->Get(QUESTION_BLOCK_ANI_HIT);
 	this->p_Block = SpriteManager::GetInstance()->Get(P_BLOCK_ANI);
 	this->stomp_Block = SpriteManager::GetInstance()->Get(P_BLOCK_ANI_STOMP);
+
 }
 
 void P_Block::AddObject(LPGAMEOBJECT object)
@@ -47,9 +49,15 @@ void P_Block::ChangeToCoin()
 
 }
 
+void P_Block::RemoveObject(LPGAMEOBJECT objectToDelete)
+{
+	listOfObject.erase(std::remove(listOfObject.begin(), listOfObject.end(), objectToDelete), listOfObject.end());
+
+}
+
 void P_Block::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
-	if (state == P_BLOCK_STATE_HIT)
+	if (switchToP)
 	{
 		left = x;
 		top = y - STANDARD_SIZE;
@@ -67,24 +75,95 @@ void P_Block::GetBoundingBox(float& left, float& top, float& right, float& botto
 
 void P_Block::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	GameObject::Update(dt);
+	currentX += dx;
+	currentY += dy;
 
+	DebugOut(L"x: %f -- y: %f\n", currentX, currentY);
+
+	if (state == ACTIVE_BLOCK_STATE_HIT && hit == false)
+	{
+		oldX = currentX;
+		oldY = currentY;
+
+		switchToP = true;
+		hit = true;
+
+		moving = true;
+
+		startMoving = GetTickCount();
+	}
+	else if (state == P_BLOCK_STATE_STOMP)
+	{
+		stomp = true;
+		switchToP = false;
+	}
+
+	if (switchToP)
+	{
+		float distanceX = oldX - currentX;
+		float distanceY = oldY - currentY;
+
+		if (distanceX + distanceY != 0)
+			state = P_BLOCK_STATE_MOVING;
+		else
+			state = P_BLOCK_STATE_NORMAL;
+		
+			
+		//DebugOut(L"State: %d \n", state);
+
+		if (moving)
+			vy = -MOVING_SPEED;
+
+		if (state == P_BLOCK_STATE_MOVING)
+		{
+			if (GetTickCount() - startMoving > BLOCK_MOVING_TIME)
+			{
+				moving = false;
+			}
+
+			if (moving == false)
+			{
+				if (abs(distanceX) >= BOUNDARY)
+				{
+					vx = Global::Sign(distanceX) * DEFLECT_SPEED;
+				}
+				else
+				{
+					vx = 0;
+					currentX = oldX;
+				}
+				if (abs(distanceY) >= BOUNDARY)
+				{
+					vy = Global::Sign(distanceY) * DEFLECT_SPEED;
+				}
+				else
+				{
+					vy = 0;
+					currentY = oldY;
+				}
+			}
+
+		}
+	}
+	
 }
 
 void P_Block::Render()
 {
-	if (state == P_BLOCK_STATE_NORMAL)
-	{
-		animation_set->Get(BRICK_SHINY_ANI)->Render(x, y);
-	}
-	else if (state == P_BLOCK_STATE_HIT)
-	{
-		sprite->Draw(x, y);
-		p_Block->Draw(x, y - height);
-	}
-	else
+	if (stomp)
 	{
 		sprite->Draw(x, y);
 		stomp_Block->Draw(x, y - height);
+	}
+	else if (switchToP == false)
+	{
+		animation_set->Get(BRICK_SHINY_ANI)->Render(x, y);
+	}
+	else if (switchToP)
+	{
+		p_Block->Draw(x, y - height);
+		sprite->Draw(currentX, currentY);
 	}
 }
 

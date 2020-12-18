@@ -3,10 +3,12 @@
 #include "GameObject.h"
 
 #define END_GOAL_ITEM_MOVE_SPEED		0.2f
+#define END_GOAL_TIME					200	
 
 class EndGoal : public GameObject
 {
 	int currentItem;
+	DWORD timeStart = 0;
 
 public:
 	EndGoal(float x, float y);
