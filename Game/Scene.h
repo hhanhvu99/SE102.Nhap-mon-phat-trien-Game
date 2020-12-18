@@ -42,7 +42,9 @@ public:
 	LPCWSTR GetFilePath();
 	int GetID();
 
+	int GetState() { return this->state; }
 	void SetSwitch() { startSwitch = true; }
+	void DisableSwitch() { startSwitch = false; }
 	void LoadBlock(LPCWSTR gameFile);
 	void SetStartPos(float x, float y) { startPosX = x; startPosY = y; }
 

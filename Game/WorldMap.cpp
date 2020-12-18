@@ -306,7 +306,7 @@ void WorldMap::SetState(int state)
 		}
 		break;
 	case MAP_STATE_CHOOSE:
-		if (gameOver)
+		if (gameOver && firstOption)
 		{
 			gameOver = false;
 			firstOver = true;

@@ -721,6 +721,8 @@ void Intro::Update(DWORD dt)
 			title->GetPosition(x, y);
 			number->GetPosition(xNum, yNum);
 
+			state = MENU_STATE_OPTION;
+
 			moveRibbon = false;
 			moveTitle = false;
 			allowTranform = false;

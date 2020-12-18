@@ -33,6 +33,7 @@ void World1_1::Load()
 	stillSwitching = false;
 	global->allowCountTime = true;
 	
+	GameEngine::GetInstance()->UpdateCamPos(startPosX, startPosY);
 	Global::GetInstance()->time = 300;
 }
 
@@ -46,7 +47,7 @@ void World1_1::Update(DWORD dt)
 		combo = 0;
 
 	//soLanUpdate += 1;
-	//DebugOut(L"Update lan thu: %d\n", soLanUpdate);
+	//DebugOut(L"CamX: %f - CamY: %f\n", cx, cy);
 
 	if (castMario->isDying())
 	{
@@ -120,16 +121,18 @@ void World1_1::SetState(int state)
 			gate->GetDirection(direction);
 			gate->GetCurrentPos(cx, cy);
 
-			castMario->GetPosition(x, y);
-			castMario->SetPosition(cx - 6.0f, y);
 
-			if (direction == 1)
+			if (direction == 1 && GameEngine::GetInstance()->IsKeyDown(DIK_UP))
 			{
+				castMario->GetPosition(x, y);
+				castMario->SetPosition(cx - 6.0f, y);
 				castMario->SetTargetY(cy - castMario->GetHeight());
 				castMario->SetState(MARIO_STATE_TRANSPORT_UP);
 			}
-			else if (direction == 2)
+			else if (direction == 2 && GameEngine::GetInstance()->IsKeyDown(DIK_DOWN))
 			{
+				castMario->GetPosition(x, y);
+				castMario->SetPosition(cx - 6.0f, y);
 				castMario->SetTargetY(cy + STANDARD_SIZE);
 				castMario->SetState(MARIO_STATE_TRANSPORT_DOWN);
 			}
@@ -153,7 +156,7 @@ void World1_1::SetState(int state)
 		LPTESTSCENE currentScene = static_cast<TestScene*>(SceneManager::GetInstance()->GetCurrentScene());
 
 		//DebugOut(L"Direction: %d\n", direction);
-
+		currentScene->DisableSwitch();
 		currentScene->SetState(SCENE_STATE_STILL_SWITCH);
 		castMario = static_cast<Mario*>(currentScene->GetMario());
 

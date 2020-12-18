@@ -1505,6 +1505,7 @@ void Mario::SetState(int state)
 		flapAni = false;
 		flapping = false;
 		isMax = false;
+		state = MARIO_STATE_IDLE;
 
 		if (grabbing)
 		{

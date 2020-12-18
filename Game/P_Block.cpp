@@ -79,8 +79,6 @@ void P_Block::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	currentX += dx;
 	currentY += dy;
 
-	DebugOut(L"x: %f -- y: %f\n", currentX, currentY);
-
 	if (state == ACTIVE_BLOCK_STATE_HIT && hit == false)
 	{
 		oldX = currentX;

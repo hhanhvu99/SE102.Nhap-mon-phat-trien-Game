@@ -39,7 +39,7 @@ void Keyboard::KeyState(BYTE* states)
 				}
 
 			//Attack
-			if (game->IsKeyDown(DIK_D))
+			if (game->IsKeyDown(DIK_A))
 			{
 				mario->SetState(MARIO_STATE_ATTACK);
 				//mario->SetState(MARIO_STATE_IDLE);
@@ -49,7 +49,7 @@ void Keyboard::KeyState(BYTE* states)
 			//Run
 			if (mario->GetLevel() != MARIO_LEVEL_FROG)
 			{
-				if (game->IsKeyDown(DIK_LSHIFT))
+				if (game->IsKeyDown(DIK_Z))
 				{
 					if (game->IsKeyDown(DIK_RIGHT))
 						if (mario->isCrouching())
@@ -67,6 +67,8 @@ void Keyboard::KeyState(BYTE* states)
 								mario->SetState(MARIO_STATE_BREAK_LEFT);
 							else
 								mario->SetState(MARIO_STATE_RUNNING_LEFT);
+					else
+						mario->SetState(MARIO_STATE_IDLE);
 					return;
 				}
 			}
@@ -141,6 +143,16 @@ void Keyboard::OnKeyDown(int KeyCode)
 	{
 		switch (KeyCode)
 		{
+		case DIK_Z:
+			//Attack
+			//Grabbing
+			if (PAUSE == false)
+			{
+				mario->SetState(MARIO_STATE_ATTACK);
+				mario->SetState(MARIO_STATE_HOLD);
+			}
+				
+			break;
 		case DIK_I:
 			//Transport Up
 			mario->SetState(MARIO_STATE_TRANSPORT_UP);
@@ -149,11 +161,12 @@ void Keyboard::OnKeyDown(int KeyCode)
 			//Transport Down
 			mario->SetState(MARIO_STATE_TRANSPORT_DOWN);
 			break;
-		case DIK_B:
+		case DIK_UP:
+		case DIK_DOWN:
 			if (PAUSE == false && Global::GetInstance()->allowSwitch == true)
 				SceneManager::GetInstance()->GetCurrentScene()->SetState(SCENE_STATE_SWITCH);
 			break;
-		case DIK_X:
+		case DIK_S:
 			//Short Jump
 			if (PAUSE == false)
 			{
@@ -163,17 +176,12 @@ void Keyboard::OnKeyDown(int KeyCode)
 					mario->SetState(MARIO_STATE_SHORT_JUMP);
 			}
 			break;
-		case DIK_S:
-			//Grabbing
-			if (PAUSE == false)
-				mario->SetState(MARIO_STATE_HOLD);
-			break;
 		case DIK_Q:
 			//Invincible
 			if (PAUSE == false)
 				mario->SetState(MARIO_STATE_INVINCIBLE);
 			break;
-		case DIK_SPACE:
+		case DIK_X:
 			//Jump high
 			if (PAUSE == false)
 			{
@@ -222,15 +230,13 @@ void Keyboard::OnKeyDown(int KeyCode)
 		switch (KeyCode)
 		{
 		case DIK_W:
-			SceneManager::GetInstance()->GetCurrentScene()->SetState(MENU_STATE_SKIP);
+			if (SceneManager::GetInstance()->GetCurrentScene()->GetState() == MENU_STATE_OPTION)
+				SceneManager::GetInstance()->GetCurrentScene()->SetState(SCENE_STATE_STAGE_TO_MAP);
+			else
+				SceneManager::GetInstance()->GetCurrentScene()->SetState(MENU_STATE_SKIP);
 			break;
-		case DIK_UPARROW:
-		case DIK_DOWNARROW:
 		case DIK_Q:
 			SceneManager::GetInstance()->GetCurrentScene()->SetState(MENU_STATE_OPTION);
-			break;
-		case DIK_S:
-			SceneManager::GetInstance()->GetCurrentScene()->SetState(SCENE_STATE_STAGE_TO_MAP);
 			break;
 		}
 	}
@@ -257,10 +263,10 @@ void Keyboard::OnKeyDown(int KeyCode)
 		case DIK_E:
 			SceneManager::GetInstance()->GetCurrentScene()->SetState(MAP_STATE_RESTART);
 			break;
-		case DIK_S:
+		case DIK_Q:
 			SceneManager::GetInstance()->GetCurrentScene()->SetState(MAP_STATE_SELECT);
 			break;
-		case DIK_C:
+		case DIK_W:
 			if (Global::GetInstance()->allowSwitch && Global::GetInstance()->live > 0)
 				SceneManager::GetInstance()->GetCurrentScene()->SetState(SCENE_STATE_MAP_TO_STAGE);
 			else
@@ -284,11 +290,11 @@ void Keyboard::OnKeyUp(int KeyCode)
 	{
 		switch (KeyCode)
 		{
-		case DIK_S:
+		case DIK_Z:
 			if (PAUSE == false)
 				mario->SetState(MARIO_STATE_RELEASE);
 			break;
-		case DIK_SPACE:
+		case DIK_X:
 			if (PAUSE == false)
 				mario->SetState(MARIO_STATE_STOP_JUMP);
 			break;
