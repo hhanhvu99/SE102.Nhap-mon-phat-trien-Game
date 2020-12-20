@@ -144,7 +144,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			if (beingGrab == true)
 				CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY_MOB_DIE, eType::ENEMY_BULLET, eType::PLAYER_UNTOUCHABLE, eType::PLAYER, eType::ITEM });
 			else if (rolling == false)
-				CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY, eType::ENEMY_BULLET, eType::ENEMY_MOB_DIE, eType::PLAYER_UNTOUCHABLE, eType::ITEM });
+				CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY_MOB_DIE, eType::ENEMY, eType::ENEMY_BULLET, eType::PLAYER_UNTOUCHABLE, eType::ITEM });
 			else if (rolling == true)
 				CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY_MOB_DIE, eType::ENEMY_BULLET, eType::PLAYER_UNTOUCHABLE, eType::ITEM });
 		}
@@ -189,15 +189,13 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		vx = direction * ENEMY_KOOPAS_ROLL_SPEED_X;
 	}
-	else if (beingGrab)
+
+	if (beingGrab)
 	{
-		if (mario != NULL)
-		{
-			vx = 0;
-			vy = 0;
-		}
-		else
-			DebugOut(L"[ERROR] No Mario!!!\n");
+		vx = 0;
+		vy = 0;
+		dx = 0;
+		dy = 0;
 	}
 
 	// No collision occured, proceed normally
@@ -252,6 +250,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		}
 
+		bool hitEnemy = false;
 		
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
@@ -309,6 +308,8 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					mario->SetState(MARIO_STATE_RELEASE_FULL);
 					SetState(ENEMY_STATE_HIT);
 				}
+
+				hitEnemy = true;
 					
 			}
 			else if (rolling)
@@ -319,10 +320,14 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 				}
 
-				if (nx > 0)
-					direction = 1;
-				else if (nx < 0)
-					direction = -1;
+				if (!hitEnemy)
+				{
+					if (nx > 0)
+						direction = 1;
+					else if (nx < 0)
+						direction = -1;
+				}
+				
 			}
 			else if (mobType == ENEMY_KOOPAS_RED && state == ENEMY_STATE_MOVING)
 			{

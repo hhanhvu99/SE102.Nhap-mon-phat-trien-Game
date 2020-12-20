@@ -219,9 +219,6 @@ void Keyboard::OnKeyDown(int KeyCode)
 			mario->SetLevel(MARIO_LEVEL_HAM);
 			mario->Reset();
 			break;
-		case DIK_A:
-			mario->Reset();
-			break;
 		}
 	}
 		break;

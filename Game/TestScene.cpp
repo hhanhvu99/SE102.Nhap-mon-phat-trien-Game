@@ -109,6 +109,7 @@ void TestScene::FloatTextCoin(float x, float y)
 	global->point += 100;
 	y = y - FLOAT_TEXT_HEIGHT;
 	HUD* temp = new HUD(x, y, HUD_BONUS_POINT_100);
+	temp->SetDrawOrder(HUD_TEXT_DRAW_ORDER);
 }
 
 void TestScene::FloatTextCustom(float x, float y, int point)
@@ -116,6 +117,7 @@ void TestScene::FloatTextCustom(float x, float y, int point)
 	global->live += 1;
 	y = y - FLOAT_TEXT_HEIGHT;
 	HUD* temp = new HUD(x, y, point);
+	temp->SetDrawOrder(HUD_TEXT_DRAW_ORDER);
 }
 
 void TestScene::SortGameObject()

@@ -619,91 +619,6 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 	}
 
-	//Grabbing
-	if (grabbing)
-	{
-		if (grabObject != NULL)
-		{
-			if (grabTurtlePress == false)
-			{
-				grabObject->SetDirection(direction);
-				grabObject->SetState(ENEMY_STATE_KICK);
-				grabObject = NULL;
-				grabbing = false;
-				directionGrab = 0;
-
-				SetState(MARIO_STATE_KICK);
-			}
-			else
-			{
-				float x, y;
-				int widthObject;
-				grabObject->GetWidth(widthObject);
-
-				if (switching == false)
-				{
-					if (direction > 0)
-					{
-						if (global->level != MARIO_LEVEL_FROG)
-							x = this->x + widthObject + MARIO_GRAB_OFFSET_X;
-						else
-							x = this->x + width + MARIO_GRAB_OFFSET_X - 5.0f;
-					}
-					else
-						x = this->x - widthObject - MARIO_GRAB_OFFSET_X;
-
-					if (global->level != 1100)
-						y = this->y + MARIO_GRAB_OFFSET_Y;
-					else
-						y = this->y - 1.0f;
-
-				}	
-				else //Switching
-				{
-					if (GetTickCount() - startSwitching >= MARIO_SWITCHING_DURATION * 2 / 3)
-					{
-						if (direction > 0)
-						{
-							if (global->level != MARIO_LEVEL_FROG)
-								x = this->x + widthObject + MARIO_GRAB_OFFSET_X;
-							else
-								x = this->x + width + MARIO_GRAB_OFFSET_X - 5.0f;
-						}
-						else
-							x = this->x - widthObject - MARIO_GRAB_OFFSET_X;
-						switching = false;
-					}
-					else if (GetTickCount() - startSwitching >= MARIO_SWITCHING_DURATION * 1 / 3)
-						x = this->x + (widthObject - width) / 2;
-					else
-					{
-						if (direction < 0)
-						{
-							if (global->level != MARIO_LEVEL_FROG)
-								x = this->x + widthObject + MARIO_GRAB_OFFSET_X;
-							else
-								x = this->x + width + MARIO_GRAB_OFFSET_X - 5.0f;
-						}
-						else
-							x = this->x - widthObject - MARIO_GRAB_OFFSET_X;
-					}
-
-					if (global->level != 1100)
-						y = this->y + MARIO_GRAB_OFFSET_Y;
-					else
-						y = this->y - 1.0f;
-
-					ani_walk_time = MARIO_SWITCHING_TIME;
-				}
-
-				grabObject->SetPosition(x, y);
-				grabObject->SetSpeed(0, 0);
-			}
-		}
-		else
-			DebugOut(L"[ERROR] Nothing to grab!!!\n");
-	}
-
 	//Jumping
 	if (jump_allow)
 	{
@@ -846,9 +761,95 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		jumpCrouch = true;
 	else if (touchGround)
 		jumpCrouch = false;
+
+	//Grabbing
+	if (grabbing)
+	{
+		if (grabObject != NULL)
+		{
+			if (grabTurtlePress == false)
+			{
+				grabObject->SetDirection(direction);
+				grabObject->SetState(ENEMY_STATE_KICK);
+				grabObject = NULL;
+				grabbing = false;
+				directionGrab = 0;
+
+				SetState(MARIO_STATE_KICK);
+			}
+			else
+			{
+				float x, y;
+				int widthObject;
+				grabObject->GetWidth(widthObject);
+
+				if (switching == false)
+				{
+					if (direction > 0)
+					{
+						if (global->level != MARIO_LEVEL_FROG)
+							x = this->x + width + MARIO_GRAB_OFFSET_X;
+						else
+							x = this->x + width + MARIO_GRAB_OFFSET_X - 5.0f;
+					}
+					else
+						x = this->x - widthObject - MARIO_GRAB_OFFSET_X;
+
+					if (global->level != 1100)
+						y = this->y + MARIO_GRAB_OFFSET_Y;
+					else
+						y = this->y - 1.0f;
+
+				}
+				else //Switching
+				{
+					if (GetTickCount() - startSwitching >= MARIO_SWITCHING_DURATION * 2 / 3)
+					{
+						if (direction > 0)
+						{
+							if (global->level != MARIO_LEVEL_FROG)
+								x = this->x + widthObject + MARIO_GRAB_OFFSET_X;
+							else
+								x = this->x + width + MARIO_GRAB_OFFSET_X - 5.0f;
+						}
+						else
+							x = this->x - widthObject - MARIO_GRAB_OFFSET_X;
+						switching = false;
+					}
+					else if (GetTickCount() - startSwitching >= MARIO_SWITCHING_DURATION * 1 / 3)
+						x = this->x + (widthObject - width) / 2;
+					else
+					{
+						if (direction < 0)
+						{
+							if (global->level != MARIO_LEVEL_FROG)
+								x = this->x + widthObject + MARIO_GRAB_OFFSET_X;
+							else
+								x = this->x + width + MARIO_GRAB_OFFSET_X - 5.0f;
+						}
+						else
+							x = this->x - widthObject - MARIO_GRAB_OFFSET_X;
+					}
+
+					if (global->level != 1100)
+						y = this->y + MARIO_GRAB_OFFSET_Y;
+					else
+						y = this->y - 1.0f;
+
+					ani_walk_time = MARIO_SWITCHING_TIME;
+				}
+
+				grabObject->SetPosition(x, y);
+				grabObject->SetSpeed(vx, vy);
+			}
+		}
+		else
+			DebugOut(L"[ERROR] Nothing to grab!!!\n");
+	}
 	
 	// Update camera to follow mario
-	GameEngine::GetInstance()->UpdateCamPos(x, y);
+	if (PAUSE == false)
+		GameEngine::GetInstance()->UpdateCamPos(x, y);
 }
 
 void Mario::Render()
@@ -1067,12 +1068,6 @@ void Mario::SetState(int state)
 	case MARIO_STATE_WALKING_RIGHT:
 		if (!touchRight)
 		{
-			if (grabbing)
-			{
-				SetState(MARIO_STATE_RUNNING_RIGHT);
-				break;
-			}
-
 			if (global->level != MARIO_LEVEL_FROG)
 			{
 				tempVx = abs(vx);
@@ -1113,7 +1108,7 @@ void Mario::SetState(int state)
 
 		break;
 	case MARIO_STATE_RUNNING_RIGHT:
-		if (!touchGround)
+		if (!touchGround && !isMax)
 		{
 			SetState(MARIO_STATE_WALKING_RIGHT);
 		}
@@ -1137,12 +1132,6 @@ void Mario::SetState(int state)
 	case MARIO_STATE_WALKING_LEFT:
 		if (!touchLeft)
 		{
-			if (grabbing)
-			{
-				SetState(MARIO_STATE_RUNNING_LEFT);
-				break;
-			}
-
 			if (global->level != MARIO_LEVEL_FROG)
 			{
 				tempVx = abs(vx);
@@ -1184,7 +1173,7 @@ void Mario::SetState(int state)
 
 		break;
 	case MARIO_STATE_RUNNING_LEFT:
-		if (!touchGround)
+		if (!touchGround && !isMax)
 		{
 			SetState(MARIO_STATE_WALKING_LEFT);
 		}
@@ -1410,6 +1399,7 @@ void Mario::SetState(int state)
 				flapAni = false;
 				flapping = false;
 				allowFlapJump = false;
+				jumpButtonPressed - false;
 				
 				if (grabbing)
 				{
@@ -1463,7 +1453,7 @@ void Mario::SetState(int state)
 			grabbing = false;
 			grabTurtlePress = false;
 			allowFlapJump = false;
-			
+			jumpButtonPressed = false;
 
 		}
 
@@ -1505,6 +1495,7 @@ void Mario::SetState(int state)
 		flapAni = false;
 		flapping = false;
 		isMax = false;
+		jumpButtonPressed = false;
 		state = MARIO_STATE_IDLE;
 
 		if (grabbing)
@@ -1535,6 +1526,7 @@ void Mario::SetState(int state)
 		flapAni = false;
 		flapping = false;
 		allowFlapJump = false;
+		jumpButtonPressed = false;
 
 		if (grabbing)
 		{
