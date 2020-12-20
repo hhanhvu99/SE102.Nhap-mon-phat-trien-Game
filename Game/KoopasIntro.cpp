@@ -196,6 +196,7 @@ void KoopasIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				SetState(ENEMY_STATE_STOMP);
 		}
 
+		//DebugOut(L"size: %d\n", coEventsResult.size());
 
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{

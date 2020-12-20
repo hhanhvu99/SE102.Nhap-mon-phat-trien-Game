@@ -5,8 +5,8 @@ P_Block::P_Block(float x, float y) : GameObject()
 {
 	this->x = this->currentX = x;
 	this->y = this->currentY = y;
-	this->width = STANDARD_SIZE;
-	this->height = STANDARD_SIZE;
+	this->width = int(STANDARD_SIZE);
+	this->height = int(STANDARD_SIZE);
 
 	this->state = P_BLOCK_STATE_IDLE;
 	this->listOfObject.clear();

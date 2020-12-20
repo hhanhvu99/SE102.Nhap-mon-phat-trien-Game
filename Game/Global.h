@@ -7,7 +7,7 @@
 #define SCREEN_WIDTH 256
 #define SCREEN_HEIGHT 224 
 #define MAX_FRAME_RATE 120
-#define STANDARD_SIZE 16
+#define STANDARD_SIZE 16.0f
 
 //Define Draw Order
 #define BACKGROUND_DRAW_ORDER			0
@@ -534,6 +534,9 @@ class Global
 	static Global* __instance;
 
 public:
+	//Debug
+	int debugPoint = 0;
+
 	//Screen width and height
 	float screenWidth, screenHeight;
 

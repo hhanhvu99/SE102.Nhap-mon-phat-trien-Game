@@ -6,7 +6,7 @@ BrickShiny::BrickShiny(float x, float y, LPSPRITE sprite) : ActiveBlock(x, y, sp
 	this->x = oldX = x;
 	this->y = oldY = y;
 	this->hp = 1;
-	this->width = this->height = STANDARD_SIZE;
+	this->width = this->height = int(STANDARD_SIZE);
 
 	this->moving = false;
 	this->type = eType::BRICK;

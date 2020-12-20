@@ -77,7 +77,7 @@ public:
 	void Add();
 	void Destroy();
 	void Setup();
-	static string numberToString(int number, int n);
+	static string numberToString(int number, unsigned int n);
 
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom) {};
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL);

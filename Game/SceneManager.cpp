@@ -39,7 +39,7 @@ void SceneManager::_ParseSection_SCENES(string line, int id, int lineNumber)
 	if (tokens.size() < 2) 
 		return;
 
-	int value, i, j;
+	int value, i;
 	int width = scenes[id]->width;
 	int height = scenes[id]->height;
 

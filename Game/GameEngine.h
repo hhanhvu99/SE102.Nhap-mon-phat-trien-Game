@@ -81,7 +81,12 @@ public:
 		float sb,
 		float& t,
 		float& nx,
-		float& ny);
+		float& ny,
+		float& dx_entry, float& dx_exit, float& tx_entry, float& tx_exit,
+		float& dy_entry, float& dy_exit, float& ty_entry, float& ty_exit,
+		float& t_entry,
+		float& t_exit
+	);
 
 	LPDIRECT3DDEVICE9 GetDirect3DDevice() { return this->d3ddv; }
 	LPDIRECT3DSURFACE9 GetBackBuffer() { return backBuffer; }

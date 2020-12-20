@@ -263,14 +263,17 @@ void GameEngine::SweptAABB(
 	float ml, float mt, float mr, float mb,
 	float dx, float dy,
 	float sl, float st, float sr, float sb,
-	float& t, float& nx, float& ny)
+	float& t, float& nx, float& ny,
+	float& dx_entry, float& dx_exit, float& tx_entry, float& tx_exit,
+	float& dy_entry, float& dy_exit, float& ty_entry, float& ty_exit,
+	float& t_entry, float& t_exit)
 {
 
-	float dx_entry, dx_exit, tx_entry, tx_exit;
-	float dy_entry, dy_exit, ty_entry, ty_exit;
+	//float dx_entry, dx_exit, tx_entry, tx_exit;
+	//float dy_entry, dy_exit, ty_entry, ty_exit;
 
-	float t_entry;
-	float t_exit;
+	//float t_entry;
+	//float t_exit;
 
 	t = -1.0f;			// no collision
 	nx = ny = 0;
@@ -333,7 +336,6 @@ void GameEngine::SweptAABB(
 		ty_entry = dy_entry / dy;
 		ty_exit = dy_exit / dy;
 	}
-
 
 	if ((tx_entry < 0.0f && ty_entry < 0.0f) || tx_entry > 1.0f || ty_entry > 1.0f) return;
 

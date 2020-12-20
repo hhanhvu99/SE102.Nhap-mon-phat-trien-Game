@@ -38,8 +38,6 @@ void SpriteManager::Load(LPCWSTR gameFile, LPDIRECT3DTEXTURE9 tex)
 
 	char str[MAX_GAME_LINE];
 	int lineNumber = -1;
-	int level;
-	int state;
 
 	while (f.getline(str, MAX_GAME_LINE))
 	{
@@ -84,16 +82,16 @@ void SpriteManager::ParseCommon(string line, LPDIRECT3DTEXTURE9 tex)
 
 	data.clear();
 
-	for (int i = 0; i < tokens.size(); ++i)
+	for (unsigned int i = 0; i < tokens.size(); ++i)
 		data.push_back(atoi(tokens[i].c_str()));
 
 	if (data.size() <= 5)
 		this->Add(data[0], data[1], data[2], data[3], data[4], tex);
 	else if (data.size() == 6)
-		this->Add(data[0], data[1], data[2], data[3], data[4], tex, data[5]);
+		this->Add(data[0], data[1], data[2], data[3], data[4], tex, float(data[5]));
 	else if (data.size() == 7)
-		this->Add(data[0], data[1], data[2], data[3], data[4], tex, data[5], data[6]);
+		this->Add(data[0], data[1], data[2], data[3], data[4], tex, float(data[5]), float(data[6]));
 	else
-		this->Add(data[0], data[1], data[2], data[3], data[4], tex, data[5], data[6], data[7]);
+		this->Add(data[0], data[1], data[2], data[3], data[4], tex, float(data[5]), float(data[6]), float(data[7]));
 }
 

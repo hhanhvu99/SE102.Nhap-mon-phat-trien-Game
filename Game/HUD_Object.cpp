@@ -44,7 +44,7 @@ void HUD_Object::GetToken(string text)
 
 	//Setup string
 	string temp;
-	int tempLength = limit;
+	unsigned int tempLength = limit;
 
 	for (string token : tokens)
 	{
@@ -70,7 +70,7 @@ void HUD_Object::Render()
 	}
 	else
 	{
-		int i = 0, j = 0;
+		float i = 0.0f, j = 0.0f;
 
 		for (string token : tokens)
 		{

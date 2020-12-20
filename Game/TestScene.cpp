@@ -122,10 +122,10 @@ void TestScene::FloatTextCustom(float x, float y, int point)
 
 void TestScene::SortGameObject()
 {
-	for (int j = 1; j < gameObjects.size(); ++j)
+	for (unsigned int j = 1; j < gameObjects.size(); ++j)
 	{
 		LPGAMEOBJECT key = gameObjects[j];
-		int i = j - 1;
+		unsigned int i = j - 1;
 
 		while (i >= 0 && gameObjects[i]->GetDrawOrder() > key->GetDrawOrder())
 		{

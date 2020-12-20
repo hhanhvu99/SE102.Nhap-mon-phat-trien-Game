@@ -1050,7 +1050,7 @@ void Mario::Render()
 	//this->sprite->Draw(x, y);
 
 	//DebugOut(L"Direction: %d\n", direction);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void Mario::SetState(int state)
@@ -1399,7 +1399,7 @@ void Mario::SetState(int state)
 				flapAni = false;
 				flapping = false;
 				allowFlapJump = false;
-				jumpButtonPressed - false;
+				jumpButtonPressed = false;
 				
 				if (grabbing)
 				{
@@ -1625,7 +1625,6 @@ void Mario::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 bool Mario::PointCollision(vector<LPGAMEOBJECT>& coObjects, float pointX, float pointY)
 {
 	float left, top, right, bottom;
-	int i, j;
 
 	for (LPGAMEOBJECT object : coObjects)
 	{

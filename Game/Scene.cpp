@@ -63,67 +63,67 @@ void Scene::LoadBlock(LPCWSTR gameFile)
 		if (option == 1)
 		{
 			vector<string> tokens = split(line, ",");
-			for (int i = 0; i < tokens.size(); ++i)
+			for (unsigned int i = 0; i < tokens.size(); ++i)
 				BLOCKS.push_back(atoi(tokens[i].c_str()));
 		}
 		else if (option == 2)
 		{
 			vector<string> tokens = split(line, ",");
-			for (int i = 0; i < tokens.size(); ++i)
+			for (unsigned int i = 0; i < tokens.size(); ++i)
 				ACTIVE_BLOCKS.push_back(atoi(tokens[i].c_str()));
 		}
 		else if (option == 3)
 		{
 			vector<string> tokens = split(line, ",");
-			for (int i = 0; i < tokens.size(); ++i)
+			for (unsigned int i = 0; i < tokens.size(); ++i)
 				GROUP.push_back(atoi(tokens[i].c_str()));
 		}
 		else if (option == 4)
 		{
 			vector<string> tokens = split(line, ",");
-			for (int i = 0; i < tokens.size(); ++i)
+			for (unsigned int i = 0; i < tokens.size(); ++i)
 				ENEMY.push_back(atoi(tokens[i].c_str()));
 		}
 		else if (option == 5)
 		{
 			vector<string> tokens = split(line, ",");
-			for (int i = 0; i < tokens.size(); ++i)
+			for (unsigned int i = 0; i < tokens.size(); ++i)
 				PLATFORM.push_back(atoi(tokens[i].c_str()));
 		}
 		else if (option == 6)
 		{
 			vector<string> tokens = split(line, ",");
-			for (int i = 0; i < tokens.size(); ++i)
+			for (unsigned int i = 0; i < tokens.size(); ++i)
 				ITEM.push_back(atoi(tokens[i].c_str()));
 		}
 		else if (option == 7)
 		{
 			vector<string> tokens = split(line, ",");
-			for (int i = 0; i < tokens.size(); ++i)
+			for (unsigned int i = 0; i < tokens.size(); ++i)
 				PATH.push_back(atoi(tokens[i].c_str()));
 		}
 		else if (option == 8)
 		{
 			vector<string> tokens = split(line, ",");
-			for (int i = 0; i < tokens.size(); ++i)
+			for (unsigned int i = 0; i < tokens.size(); ++i)
 				START.push_back(atoi(tokens[i].c_str()));
 		}
 		else if (option == 9)
 		{
 			vector<string> tokens = split(line, ",");
-			for (int i = 0; i < tokens.size(); ++i)
+			for (unsigned int i = 0; i < tokens.size(); ++i)
 				GATE.push_back(atoi(tokens[i].c_str()));
 		}
 		else if (option == 10)
 		{
 			vector<string> tokens = split(line, ",");
-			for (int i = 0; i < tokens.size(); ++i)
+			for (unsigned int i = 0; i < tokens.size(); ++i)
 				COLOR.push_back(atoi(tokens[i].c_str()));
 		}
 		else if (option == 11)
 		{
 			vector<string> tokens = split(line, ",");
-			for (int i = 0; i < tokens.size(); ++i)
+			for (unsigned int i = 0; i < tokens.size(); ++i)
 				P_BLOCK_HOLDER.push_back(atoi(tokens[i].c_str()));
 		}
 		else

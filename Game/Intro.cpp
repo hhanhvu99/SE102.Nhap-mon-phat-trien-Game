@@ -53,7 +53,7 @@ void Intro::Load()
 	timeEntity = 0;
 
 	stageTwoFirst = true;
-	allowCreateTurtleShell = true;
+	allowCreateTurtleShell = false;
 
 	allowPartOne = true;
 
@@ -272,6 +272,7 @@ void Intro::Update(DWORD dt)
 					number->SetPosition(xNum, MENU_NUMBER_Y);
 
 					allowTranform = true;
+					allowCreateTurtleShell = true;
 				}
 			}
 
@@ -311,6 +312,7 @@ void Intro::Update(DWORD dt)
 
 				allowCreateTurtleShell = false;
 			}
+
 		}
 	
 	}
@@ -599,6 +601,7 @@ void Intro::Update(DWORD dt)
 					mario->SetState(MARIO_MENU_STATE_WALKING_LEFT);
 					luigi->SetState(MARIO_MENU_STATE_RELEASE);
 					luigi->SetState(MARIO_MENU_STATE_IDLE);
+					turtleShell->SetSpeed(-ENEMY_MENU_KOOPAS_ROLL_SPEED_CUSTOM, 0);
 				}
 				else if (timePass > MENU_MARIO_SECOND_4)
 				{

@@ -197,7 +197,7 @@ void HUD::Setup()
 
 }
 
-string HUD::numberToString(int number, int n)
+string HUD::numberToString(int number, unsigned int n)
 {
 	vector<int> listNumber;
 

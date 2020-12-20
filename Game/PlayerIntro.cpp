@@ -312,6 +312,9 @@ void PlayerIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				else
 					y = this->y - 1.0f;
 
+				x = trunc(x);
+				y = trunc(y);
+
 				grabObject->SetPosition(x, y);
 				grabObject->SetSpeed(0, 0);
 			}
@@ -914,7 +917,6 @@ void PlayerIntro::GetBoundingBox(float& left, float& top, float& right, float& b
 bool PlayerIntro::PointCollision(vector<LPGAMEOBJECT>& coObjects, float pointX, float pointY)
 {
 	float left, top, right, bottom;
-	int i, j;
 
 	for (LPGAMEOBJECT object : coObjects)
 	{

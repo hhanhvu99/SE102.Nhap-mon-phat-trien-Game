@@ -8,8 +8,8 @@ MarioMap::MarioMap(float x, float y) : GameObject()
 	global = Global::GetInstance();
 	this->x = x;
 	this->y = y;
-	this->width = STANDARD_SIZE;
-	this->height = STANDARD_SIZE;
+	this->width = int(STANDARD_SIZE);
+	this->height = int(STANDARD_SIZE);
 }
 
 void MarioMap::MoveTo(float x, float y)

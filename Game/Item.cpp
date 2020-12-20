@@ -5,7 +5,7 @@ Item::Item(float x, float y, int itemType)
 {
 	this->x = x;
 	this->y = y;
-	this->width = this->height = STANDARD_SIZE;
+	this->width = this->height = int(STANDARD_SIZE);
 	this->direction = 1;
 
 	this->type = eType::ENEMY_MOB_DIE;

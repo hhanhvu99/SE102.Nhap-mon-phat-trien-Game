@@ -28,6 +28,10 @@ LPCOLLISIONEVENT GameObject::SweptAABBEx(LPGAMEOBJECT coO)
 	float ml, mt, mr, mb;		// moving object bbox
 	float t, nx, ny;
 
+	float dx_entry, dx_exit, tx_entry, tx_exit;
+	float dy_entry, dy_exit, ty_entry, ty_exit;
+	float t_entry, t_exit;
+
 	coO->GetBoundingBox(sl, st, sr, sb);
 
 	// deal with moving object: m speed = original m speed - collide object speed
@@ -47,7 +51,10 @@ LPCOLLISIONEVENT GameObject::SweptAABBEx(LPGAMEOBJECT coO)
 		ml, mt, mr, mb,
 		rdx, rdy,
 		sl, st, sr, sb,
-		t, nx, ny
+		t, nx, ny, 
+		dx_entry, dx_exit, tx_entry, tx_exit,
+		dy_entry, dy_exit, ty_entry, ty_exit,
+		t_entry, t_exit
 	);
 
 	/*
@@ -59,9 +66,14 @@ LPCOLLISIONEVENT GameObject::SweptAABBEx(LPGAMEOBJECT coO)
 			DebugOut(L"ml: %f - mt: %f - mr: %f - mb: %f\n", ml, mt, mr, mb);
 			DebugOut(L"sl: %f - st: %f - sr: %f - sb: %f\n", sl, st, sr, sb);
 			DebugOut(L"t: %f - nx: %f - ny: %f\n", t, nx, ny);
+			DebugOut(L"dx_entry: %f - dx_exit: %f - tx_entry: %f - tx_exit: %f\n", dx_entry, dx_exit, tx_entry, tx_exit);
+			DebugOut(L"dy_entry: %f - dy_exit: %f - ty_entry: %f - ty_exit: %f\n", dy_entry, dy_exit, ty_entry, ty_exit);
+			DebugOut(L"t_entry: %f - t_exit: %f\n", t_entry, t_exit);
+			DebugOut(L"Enemy dx: %f - Enemy dy: %f - Player dx: %f - Player dy: %f\n", dx, dy, sdx, sdy);
+			DebugOut(L"rdx: %f - rdy: %f\n", rdx, rdy);
 		}
-	}
-	*/
+	}*/
+	
 		
 
 	CollisionEvent* e = new CollisionEvent(t, nx, ny, rdx, rdy, coO);
@@ -108,13 +120,12 @@ void GameObject::CalcPotentialCollisions(
 			}
 		}
 
-			
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
-		
 
 		if (e->t > 0 && e->t <= 1.0f)
 		{
-			coEvents.push_back(e);
+			coEvents.push_back(e);		
+			
 		}
 		else
 			delete e;

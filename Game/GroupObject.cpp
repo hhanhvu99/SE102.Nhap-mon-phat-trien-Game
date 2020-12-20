@@ -19,8 +19,8 @@ void GroupObject::Add(LPGAMEOBJECT& gameObject)
 	this->x = left;
 	this->y = top;
 
-	this->width = right - left;
-	this->height = bottom - top;
+	this->width = int(right - left);
+	this->height = int(bottom - top);
 
 }
 

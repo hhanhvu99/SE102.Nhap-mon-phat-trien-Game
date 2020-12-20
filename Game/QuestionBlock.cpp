@@ -5,7 +5,7 @@ QuestionBlock::QuestionBlock(float x, float y, LPSPRITE sprite) : ActiveBlock(x,
 {
 	this->x = oldX = x;
 	this->y = oldY = y;
-	this->width = this->height = STANDARD_SIZE;
+	this->width = this->height = int(STANDARD_SIZE);
 
 	this->hit = false;
 	this->moving = false;

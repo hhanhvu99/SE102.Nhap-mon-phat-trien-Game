@@ -351,9 +351,13 @@ void Groomba::SetState(int state)
 		timeLeft = now;
 		this->type = eType::ENEMY_MOB_DIE;
 
-		LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
-		LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
-		current->FloatText(x, y);
+		if (CHOOSE != 2)
+		{
+			LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
+			LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
+			current->FloatText(x, y);
+		}
+		
 	}	
 
 		break;

@@ -4,8 +4,8 @@ EndGoal::EndGoal(float x, float y) : GameObject()
 {
 	this->x = x;
 	this->y = y;
-	this->width = STANDARD_SIZE;
-	this->height = STANDARD_SIZE;
+	this->width = int(STANDARD_SIZE);
+	this->height = int(STANDARD_SIZE);
 	this->state = GOAL_STATE_NORMAL;
 
 	this->type = eType::GOAL;
