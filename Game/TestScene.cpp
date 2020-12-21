@@ -125,7 +125,7 @@ void TestScene::SortGameObject()
 	for (unsigned int j = 1; j < gameObjects.size(); ++j)
 	{
 		LPGAMEOBJECT key = gameObjects[j];
-		unsigned int i = j - 1;
+		int i = int(j) - 1;
 
 		while (i >= 0 && gameObjects[i]->GetDrawOrder() > key->GetDrawOrder())
 		{
