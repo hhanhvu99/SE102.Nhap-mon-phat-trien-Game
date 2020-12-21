@@ -307,7 +307,7 @@ int Run()
 	MSG msg;
 	int done = 0;
 	DWORD frameStart = GetTickCount();
-	//DWORD accumulator = 0;
+	DWORD accumulator = 0;
 	const DWORD timeStep = 16;
 	float tickPerFrame = 1000.0f / MAX_FRAME_RATE;
 
@@ -333,18 +333,18 @@ int Run()
 		if (dt >= tickPerFrame)
 		{
 			frameStart = now;
-			//accumulator += dt;
+			accumulator += dt;
 
-			/*
+			
 			while (accumulator >= timeStep)
 			{
 				gameEngine->ProcessKeyboard();
 				Update(timeStep);
 				accumulator -= timeStep;
-			}*/
+			}
 			
-			gameEngine->ProcessKeyboard();
-			Update(dt);
+			//gameEngine->ProcessKeyboard();
+			//Update(dt);
 			Render();
 		}
 		else

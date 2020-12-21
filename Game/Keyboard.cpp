@@ -185,10 +185,11 @@ void Keyboard::OnKeyDown(int KeyCode)
 			//Jump high
 			if (PAUSE == false)
 			{
-				if (mario->isTouchGround() == false)
-					mario->SetState(MARIO_STATE_JUMP_FLAP_HOLD);
-				else
+				if (mario->isTouchGround() == true)
 					mario->SetState(MARIO_STATE_JUMP);
+				else 
+					mario->SetState(MARIO_STATE_JUMP_FLAP_HOLD);
+				
 			}
 			break;
 		case DIK_1:

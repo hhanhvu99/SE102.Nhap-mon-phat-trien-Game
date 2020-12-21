@@ -112,6 +112,7 @@ void WorldMap::Load()
 
 	PAUSE = true;
 	allowResetStart = false;
+	Global::GetInstance()->inWorldMap = true;
 	Global::GetInstance()->time = 0;
 }
 

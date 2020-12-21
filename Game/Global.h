@@ -460,7 +460,7 @@ extern int CHOOSE;
 #define CAMERA_POSITION_LEFT			96.0f
 #define CAMERA_POSITION_TOP				32.0f
 #define CAMERA_POSITION_RIGHT			144.0f
-#define CAMERA_POSITION_BOTTOM			128.0f
+#define CAMERA_POSITION_BOTTOM			64.0f
 
 enum eType
 {
@@ -556,6 +556,9 @@ public:
 
 	//Switch Scene
 	bool allowSwitch;
+
+	//In World Map
+	bool inWorldMap = true;
 
 	D3DCOLOR background_color = D3DCOLOR_XRGB(255, 255, 255);
 

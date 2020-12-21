@@ -305,7 +305,7 @@ void Groomba::Render()
 			}
 			animation_set->Get(ani)->SetTime(ani_walk_speed);
 		}
-		else if (state == ENEMY_STATE_HIT)
+		else if (state == ENEMY_STATE_HIT || state == ENEMY_STATE_HIT_TAIL)
 		{
 			if (direction > 0) ani = mobType + ENEMY_ANI_DIE_HIT_RIGHT;
 			else ani = mobType + ENEMY_ANI_DIE_HIT_LEFT;

@@ -34,7 +34,13 @@ void World1_1::Load()
 	global->allowCountTime = true;
 	
 	GameEngine::GetInstance()->UpdateCamPos(startPosX, startPosY);
-	Global::GetInstance()->time = 300;
+
+	if (Global::GetInstance()->inWorldMap)
+	{
+		Global::GetInstance()->time = 300;
+		Global::GetInstance()->inWorldMap = false;
+	}
+	
 }
 
 void World1_1::Update(DWORD dt)
@@ -75,7 +81,7 @@ void World1_1::Update(DWORD dt)
 		}
 	}
 
-	if (global->allowCountTime)
+	if (PAUSE == false && Global::GetInstance()->allowCountTime)
 	{
 		if (Global::GetInstance()->time > 0)
 		{

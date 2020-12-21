@@ -37,6 +37,8 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	if (transporting)
 	{
+		GameEngine::GetInstance()->UpdateCamPos(x, y);
+
 		if (state == MARIO_STATE_TRANSPORT_UP && y <= targetY)
 		{
 			PAUSE = false;
@@ -347,15 +349,18 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					else
 						global->level = oldLevel;
 
+					Global::GetInstance()->point += 1000;
 					item->Destroy();
 					break;
 
 				case ITEM_MUSHROOM_GREEN:
+					Global::GetInstance()->point += 1000;
 					item->Destroy();
 					break;
 
 				case ITEM_SUPER_STAR:
 					SetState(MARIO_STATE_INVINCIBLE);
+					Global::GetInstance()->point += 1000;
 					item->Destroy();
 					break;
 
@@ -368,6 +373,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					else
 						global->level = oldLevel;
 
+					Global::GetInstance()->point += 1000;
 					item->Destroy();
 					break;
 				case ITEM_COIN:
@@ -734,6 +740,8 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			flapJump = false;
 		else
 			vy = -MARIO_JUMP_SPEED_FLAP;
+
+
 
 		global->speed = 7;
 
@@ -1216,6 +1224,25 @@ void Mario::SetState(int state)
 		break;
 	case MARIO_STATE_JUMP:
 		jumpButtonPressed = true;
+
+		if (global->level == MARIO_LEVEL_RACC || global->level == MARIO_LEVEL_TANU)
+		{
+			if (!allowFlapJump)
+			{
+				if (global->speed == 7)
+				{
+					allowFlapJump = true;
+					flapJump = true;
+					touchGround = false;
+
+					startFlapJump = now;
+					flapDuration = now;
+					
+					break;
+				}
+			}
+		}
+
 		if (startJumping == false)
 		{
 			jump_start = now;
@@ -1255,6 +1282,13 @@ void Mario::SetState(int state)
 		break;
 	case MARIO_STATE_JUMP_FLAP_HOLD:
 		jumpButtonPressed = true;
+
+		if (allowFlapJump)
+		{
+			SetState(MARIO_STATE_JUMP_FLAP);
+			break;
+		}
+
 		if (jump_allow == true)
 			break;
 		if (vy < 0)

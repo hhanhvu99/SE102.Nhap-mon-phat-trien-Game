@@ -26,8 +26,6 @@ void Mushroom::Destroy()
 	else if (Global::GetInstance()->level > MARIO_LEVEL_SMALL)
 		current->FloatTextCustom(x, y, HUD_BONUS_POINT_1000);
 
-	Global::GetInstance()->point += 1000;
-
 	current->Destroy(this);
 
 }

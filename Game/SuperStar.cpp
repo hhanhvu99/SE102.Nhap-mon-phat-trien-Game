@@ -21,7 +21,6 @@ void SuperStar::Destroy()
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
 	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
 
-	Global::GetInstance()->point += 1000;
 
 	current->Destroy(this);
 

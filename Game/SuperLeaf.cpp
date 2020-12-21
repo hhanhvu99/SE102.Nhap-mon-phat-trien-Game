@@ -26,8 +26,6 @@ void SuperLeaf::Destroy()
 	if (Global::GetInstance()->level == MARIO_LEVEL_RACC)
 		current->FloatTextCustom(x, y, HUD_BONUS_POINT_1000);
 
-	Global::GetInstance()->point += 1000;
-
 	current->Destroy(this);
 
 }
@@ -123,6 +121,8 @@ void SuperLeaf::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				showUp = false;
 				state = ITEM_STATE_MOVING;
 				type = eType::ITEM;
+
+				SetDrawOrder(BULLET_DRAW_ORDER);
 			}
 			else
 				vy += ITEM_GRAVITY * dt;
@@ -165,7 +165,7 @@ void SuperLeaf::Render()
 		else ani = itemType + ITEM_ANI_LEFT;
 
 		animation_set->Get(ani)->Render(x, y);
-		RenderBoundingBox();
+		//RenderBoundingBox();
 	}
 }
 
