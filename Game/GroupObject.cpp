@@ -16,9 +16,42 @@ void GroupObject::Add(LPGAMEOBJECT& gameObject)
 	if (bottom < tempB)
 		bottom = tempB;
 
-	this->indexX = left;
-	this->indexY = top;
+	this->x = left;
+	this->y = top;
 
+	this->width = int(right - left);
+	this->height = int(bottom - top);
+
+}
+
+void GroupObject::Move(float x, float y)
+{
+	float currentX, currentY;
+	this->x += x;
+	this->y += y;
+
+
+	for (LPGAMEOBJECT object : group)
+	{
+		object->GetPosition(currentX, currentY);
+		object->SetPosition(currentX + x, currentY + y);
+	}
+}
+
+void GroupObject::SetGroupPos(float x, float y)
+{
+	float currentX, currentY;
+	float dx = this->x - x;
+	float dy = this->y - y;
+	this->x = x;
+	this->y = y;
+
+
+	for (LPGAMEOBJECT object : group)
+	{
+		object->GetPosition(currentX, currentY);
+		object->SetPosition(currentX + dx, currentY + dy);
+	}
 }
 
 GroupObject::GroupObject()
@@ -31,10 +64,10 @@ GroupObject::GroupObject()
 
 void GroupObject::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
-	left = this->left;
-	top = this->top;
-	right = this->right;
-	bottom = this->bottom;
+	left = this->x;
+	top = this->y;
+	right = left + width;
+	bottom = top + height;
 
 }
 
@@ -42,7 +75,6 @@ void GroupObject::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	for (LPGAMEOBJECT object : group)
 	{
-		object->SetSpeed(vx, vy);
 		object->Update(dt);
 	}
 

@@ -1,9 +1,10 @@
 #pragma once
 #include "GameObject.h"
 
+#define BULLET_SAFE_DELETE_RANGE		50.0f
+
 class Bullet : public GameObject
 {
-#pragma message ("Bullet added")
 protected:
 	float nx, ny;
 	float offsetX, offsetY;

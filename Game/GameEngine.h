@@ -6,6 +6,7 @@
 #include <unordered_map>
 
 #include "SceneManager.h"
+#include "Global.h"
 
 #define KEYBOARD_BUFFER_SIZE 1024
 #define DIRECTINPUT_VERSION 0x0800
@@ -33,6 +34,9 @@ class GameEngine
 
 	LPKEYEVENTHANDLER keyHandler;  
 
+	D3DCOLOR color;
+	bool allowColor = false;;
+
 	float cam_x = 0.0f;
 	float cam_y = 0.0f;
 
@@ -50,7 +54,7 @@ public:
 				LPDIRECT3DTEXTURE9 texture, 
 				int left, int top, int right, int bottom, 
 				D3DCOLOR color = D3DCOLOR_ARGB(255,255,255,255),
-				int angle = 0,
+				float angle = 0,
 				float offset_X = 0,
 				float offset_Y = 0
 	);
@@ -77,7 +81,12 @@ public:
 		float sb,
 		float& t,
 		float& nx,
-		float& ny);
+		float& ny,
+		float& dx_entry, float& dx_exit, float& tx_entry, float& tx_exit,
+		float& dy_entry, float& dy_exit, float& ty_entry, float& ty_exit,
+		float& t_entry,
+		float& t_exit
+	);
 
 	LPDIRECT3DDEVICE9 GetDirect3DDevice() { return this->d3ddv; }
 	LPDIRECT3DSURFACE9 GetBackBuffer() { return backBuffer; }
@@ -85,6 +94,11 @@ public:
 
 	void SetCamPos(float x, float y) { cam_x = x; cam_y = y; }
 	void GetCamPos(float &x, float &y) { x = cam_x ; y = cam_y ; }
+	void UpdateCamPos(float marioX, float marioY);
+
+	void SetColor(D3DCOLOR color) { this->color = color; }
+	void EnableColor() { this->allowColor = true; }
+	void DisableColor() { this->allowColor = false; }
 
 	static GameEngine* GetInstance();
 

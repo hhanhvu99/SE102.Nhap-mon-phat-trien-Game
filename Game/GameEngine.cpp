@@ -63,7 +63,7 @@ void GameEngine::Init(HWND hWnd)
 	Utility function to wrap LPD3DXSPRITE::Draw
 */
 
-void GameEngine::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, int top, int right, int bottom, D3DCOLOR color, int angle, float offsetX, float offsetY)
+void GameEngine::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, int top, int right, int bottom, D3DCOLOR color, float angle, float offsetX, float offsetY)
 {
 	D3DXVECTOR3 p(trunc(x - cam_x + offsetX), trunc(y - cam_y + offsetY), 0);
 	//D3DXVECTOR3 p(x - cam_x, y - cam_y, 0);
@@ -77,9 +77,16 @@ void GameEngine::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, in
 	r.right = right;
 	r.bottom = bottom;
 
+	if (allowColor == false)
+		this->color = color;
+
 	//DebugOut(L"Direction: %d\n", angle);
 
-	if (angle == 180)
+	if (angle == 0.0f)
+	{
+		spriteHandler->Draw(texture, &r, NULL, &p, this->color);
+	}
+	else if (angle == 180.0f)
 	{
 		spriteHandler->GetTransform(&anhGoc);
 		D3DXVECTOR2 center(p.x + (right-left)/2 , p.y);
@@ -87,10 +94,10 @@ void GameEngine::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, in
 		anhCuoi = anhGoc * scale;
 
 		spriteHandler->SetTransform(&anhCuoi);
-		spriteHandler->Draw(texture, &r, NULL, &p, color);
+		spriteHandler->Draw(texture, &r, NULL, &p, this->color);
 		spriteHandler->SetTransform(&anhGoc);
 	}
-	else if (angle == 90)
+	else if (angle == 90.0f)
 	{
 		spriteHandler->GetTransform(&anhGoc);
 		D3DXVECTOR2 center(p.x + (right - left) / 2, p.y + (right - left) / 2);
@@ -98,13 +105,21 @@ void GameEngine::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, in
 		anhCuoi = anhGoc * scale;
 
 		spriteHandler->SetTransform(&anhCuoi);
-		spriteHandler->Draw(texture, &r, NULL, &p, color);
+		spriteHandler->Draw(texture, &r, NULL, &p, this->color);
 		spriteHandler->SetTransform(&anhGoc);
 	}
-	else
+	else if (angle != 0.0f)
 	{
-		spriteHandler->Draw(texture, &r, NULL, &p, color);
+		spriteHandler->GetTransform(&anhGoc);
+		D3DXVECTOR2 center(p.x + (right - left) / 2, p.y + (right - left) / 2);
+		D3DXMatrixTransformation2D(&scale, NULL, 0.0f, NULL, &center, D3DXToRadian(angle), NULL);
+		anhCuoi = anhGoc * scale;
+
+		spriteHandler->SetTransform(&anhCuoi);
+		spriteHandler->Draw(texture, &r, NULL, &p, this->color);
+		spriteHandler->SetTransform(&anhGoc);
 	}
+	
 }
 
 int GameEngine::IsKeyDown(int KeyCode)
@@ -248,14 +263,17 @@ void GameEngine::SweptAABB(
 	float ml, float mt, float mr, float mb,
 	float dx, float dy,
 	float sl, float st, float sr, float sb,
-	float& t, float& nx, float& ny)
+	float& t, float& nx, float& ny,
+	float& dx_entry, float& dx_exit, float& tx_entry, float& tx_exit,
+	float& dy_entry, float& dy_exit, float& ty_entry, float& ty_exit,
+	float& t_entry, float& t_exit)
 {
 
-	float dx_entry, dx_exit, tx_entry, tx_exit;
-	float dy_entry, dy_exit, ty_entry, ty_exit;
+	//float dx_entry, dx_exit, tx_entry, tx_exit;
+	//float dy_entry, dy_exit, ty_entry, ty_exit;
 
-	float t_entry;
-	float t_exit;
+	//float t_entry;
+	//float t_exit;
 
 	t = -1.0f;			// no collision
 	nx = ny = 0;
@@ -319,7 +337,6 @@ void GameEngine::SweptAABB(
 		ty_exit = dy_exit / dy;
 	}
 
-
 	if ((tx_entry < 0.0f && ty_entry < 0.0f) || tx_entry > 1.0f || ty_entry > 1.0f) return;
 
 	t_entry = max(tx_entry, ty_entry);
@@ -342,7 +359,60 @@ void GameEngine::SweptAABB(
 
 }
 
-GameEngine* GameEngine::GetInstance()
+void GameEngine::UpdateCamPos(float marioX, float marioY)
+{
+	//Check inside
+	float left = cam_x + CAMERA_POSITION_LEFT;
+	float top = cam_y + CAMERA_POSITION_TOP;
+	float right = cam_x + CAMERA_POSITION_RIGHT;
+	float bottom = cam_y + CAMERA_POSITION_BOTTOM;
+
+	if (marioX < left)
+	{
+		cam_x = marioX - CAMERA_POSITION_LEFT;
+	}
+	else if (marioX > right)
+	{
+		cam_x = marioX - CAMERA_POSITION_RIGHT;
+	}
+	
+	if (marioY < top)
+	{
+		cam_y = marioY - CAMERA_POSITION_TOP;
+	}
+	else if (marioY > bottom)
+	{
+		cam_y = marioY - CAMERA_POSITION_BOTTOM;
+	}
+
+	//Check outside
+	float outSideRight = cam_x + SCREEN_WIDTH;
+	float outSideBottom = cam_y + SCREEN_HEIGHT;
+
+	if (cam_x < 0.0f)
+	{
+		cam_x = 0.0f;
+	}
+	else if (outSideRight > Global::GetInstance()->screenWidth)
+	{
+		cam_x = Global::GetInstance()->screenWidth - SCREEN_WIDTH;
+	}
+
+	if (cam_y < 0.0f)
+	{
+		cam_y = 0.0f;
+	}
+	else if (outSideBottom > Global::GetInstance()->screenHeight + 35.0f)
+	{
+		cam_y = Global::GetInstance()->screenHeight - SCREEN_HEIGHT + 35.0f;
+	}
+
+
+	cam_x = trunc(cam_x);
+	cam_y = trunc(cam_y);
+}
+
+	GameEngine* GameEngine::GetInstance()
 {
 	if (__instance == NULL) __instance = new GameEngine();
 	return __instance;

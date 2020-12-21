@@ -60,7 +60,7 @@ void Hammer::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		vy += BULLET_HAMMER_GRAVITY * dt;
 		vx = direction * BULLET_HAMMER_SPEED_X;
-		CalcPotentialCollisions(coObjects, coEvents, { eType::PLAYER });
+		CalcPotentialCollisions(coObjects, coEvents, {}, eType::ENEMY);
 	}
 	else
 	{
@@ -122,8 +122,8 @@ void Hammer::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		coEvents[i] = NULL;
 	}
 
-	if (x < camPosX - BULLET_SAFE_DELETE_RANGE || x > camPosX + BULLET_SAFE_DELETE_RANGE ||
-		y < camPosY - BULLET_SAFE_DELETE_RANGE || y > camPosY + BULLET_SAFE_DELETE_RANGE)
+	if (x < camPosX - BULLET_SAFE_DELETE_RANGE || x > camPosX + SCREEN_WIDTH + BULLET_SAFE_DELETE_RANGE ||
+		y < camPosY - BULLET_SAFE_DELETE_RANGE || y > camPosY + SCREEN_HEIGHT + BULLET_SAFE_DELETE_RANGE)
 	{
 		this->Destroy();
 		return;

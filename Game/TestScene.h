@@ -1,37 +1,76 @@
 #pragma once
 
 #include "Scene.h"
-
 #include "Keyboard.h"
 
 #include "Block.h"
 #include "BackGround.h"
-#include "Mario.h"
 #include "GroupObject.h"
+
 #include "BrickShiny.h"
 #include "QuestionBlock.h"
+#include "P_Block.h"
+
 #include "Groomba.h"
 #include "Koopas.h"
+#include "Plant.h"
+
+#include "SuperLeaf.h"
+#include "SuperStar.h"
+#include "Mushroom.h"
+#include "Coin.h"
+
+#include "EnemyTroop.h"
+#include "Teleport.h"
+#include "EndGoal.h"
+
+#include "HUD.h"
 
 #include "Global.h"
 
+#define FLOAT_TEXT_HEIGHT		8.0f
+#define SWITCH_TIME				200
+
+
 using namespace std;
 
-class Mario;
 class TestScene: public Scene
 {
 protected:
-	Mario* mario;
+	GLOBAL global;
+	LPGAMEOBJECT mario;
+	LPGAMEOBJECT p_Block_Temp;
+
 	vector<LPGAMEOBJECT> gameObjects;
 	vector<LPGAMEOBJECT> collideObjects;
+	vector<LPGAMEOBJECT> deleteList;
+
+	vector<LPGAMEOBJECT> teleport;
+	LPGAMEOBJECT currentGate;
+
+	int combo = 0;
+	int soLanUpdate = 0;
+	int currentWorld;
+	bool allowResetStart = true;
+
+	bool startTimerSwitch = true;
+	DWORD timeSwitch = 0;
 
 public:
-
 	TestScene(int id, LPCWSTR filePath);
+
 	void Add(LPGAMEOBJECT gameObject);
 	void Destroy(LPGAMEOBJECT gameObject);
 	void Remove(LPGAMEOBJECT gameObject);
-	Mario* GetMario() { return this->mario; }
+	void Add_Visual(LPGAMEOBJECT gameObject);
+	void Destroy_Visual(LPGAMEOBJECT gameObject);
+
+	LPGAMEOBJECT GetMario() { return this->mario; }
+	void GetMarioPos(float& x, float& y);
+	void FloatText(float x, float y);
+	void FloatTextCoin(float x, float y);
+	void FloatTextCustom(float x, float y, int point);
+	void SortGameObject();
 
 	virtual void Load();
 	virtual void Update(DWORD dt);

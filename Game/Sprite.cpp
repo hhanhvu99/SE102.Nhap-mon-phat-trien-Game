@@ -13,6 +13,8 @@ Sprite::Sprite(int id, int left, int top, int right, int bottom, LPDIRECT3DTEXTU
 	this->offsetX = offsetX;
 	this->offsetY = offsetY;
 	this->texture = tex;
+	this->width = right - left;
+	this->height = bottom - top;
 }
 
 void Sprite::SetDirection(int direction)
@@ -29,9 +31,33 @@ void Sprite::SetOffset(float x, float y)
 	this->offsetY = y;
 }
 
-void Sprite::Draw(float x, float y, D3DCOLOR color, float angle, float offsetX, float offsetY)
+void Sprite::SetAngle(float angle)
+{
+	this->angle = angle;
+}
+
+void Sprite::SetRegion(int left, int top, int right, int bottom)
+{
+	this->left = left;
+	this->top = top;
+	this->right = right;
+	this->bottom = bottom;
+}
+
+void Sprite::SetTexture(LPDIRECT3DTEXTURE9 tex)
+{
+	this->texture = tex;
+}
+
+void Sprite::Draw(float x, float y, D3DCOLOR color)
 {
 	GameEngine* game = GameEngine::GetInstance();
 	game->Draw(x, y, texture, left, top, right, bottom, color, this->angle, this->offsetX, this->offsetY);
 	
+}
+
+void Sprite::Draw(float x, float y, float angle, D3DCOLOR color)
+{
+	GameEngine* game = GameEngine::GetInstance();
+	game->Draw(x, y, texture, left, top, right, bottom, color, angle, this->offsetX, this->offsetY);
 }

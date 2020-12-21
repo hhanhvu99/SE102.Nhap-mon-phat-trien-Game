@@ -1,21 +1,31 @@
 ﻿#include "Groomba.h"
 #include "debug.h"
 
-Groomba::Groomba(int placeX, int placeY, int mobType)
+Groomba::Groomba(int placeX, int placeY, int mobType, bool hasWing)
 {
 	this->x = placeX * STANDARD_SIZE;
-	this->y = placeY * STANDARD_SIZE - ENEMY_GROOMBA_HEIGHT;
+	this->y = placeY * STANDARD_SIZE - 1.0f;
 
 	this->hitByStomp = false;
 	this->hitByBullet = false;
 	this->pause = false;
+	this->touchGround = true;
+	this->countOffGround = 0;
 	this->width = ENEMY_GROOMBA_WIDTH;
 	this->height = ENEMY_GROOMBA_HEIGHT;
 	this->type = eType::ENEMY;
+	this->ani_walk_speed = 100;
 
 	this->state = ENEMY_STATE_MOVING;
-	this->direction = 1;
+	this->direction = -1;
 	this->mobType = mobType;
+	this->hasWing = hasWing;
+
+	if (hasWing)
+	{
+		numberOfJump = 3;
+		allowJump = false;
+	}	
 
 	this->offsetX = ENEMY_GROOMBA_DRAW_OFFSET_X;
 	this->offsetY = ENEMY_GROOMBA_DRAW_OFFSET_Y;
@@ -27,7 +37,7 @@ Groomba::Groomba(int placeX, int placeY, int mobType)
 void Groomba::Add()
 {
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
-	LPTESTSCENE current = dynamic_cast<LPTESTSCENE>(scene);
+	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
 	current->Add(this);
 
 }
@@ -35,7 +45,7 @@ void Groomba::Add()
 void Groomba::Destroy()
 {
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
-	LPTESTSCENE current = dynamic_cast<LPTESTSCENE>(scene);
+	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
 	current->Destroy(this);
 
 }
@@ -43,7 +53,7 @@ void Groomba::Destroy()
 void Groomba::Remove()
 {
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
-	LPTESTSCENE current = dynamic_cast<LPTESTSCENE>(scene);
+	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
 	current->Remove(this);
 }
 
@@ -58,6 +68,42 @@ void Groomba::GetBoundingBox(float& left, float& top, float& right, float& botto
 
 void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	//Check outside camera
+	GameEngine::GetInstance()->GetCamPos(camPosX, camPosY);
+	if (x < camPosX - ENTITY_SAFE_DELETE_RANGE || x > camPosX + SCREEN_WIDTH + ENTITY_SAFE_DELETE_RANGE ||
+		y < camPosY - ENTITY_SAFE_DELETE_RANGE || y > camPosY + SCREEN_HEIGHT + ENTITY_SAFE_DELETE_RANGE)
+	{
+		if (firstRun)
+		{
+			lastState = state;
+			state = ENEMY_STATE_IDLE;
+
+			timeLeft_dt = GetTickCount() - timeLeft;
+			timeJump_dt = GetTickCount() - timeJump;
+
+			firstRun = false;
+		}
+	}
+	else
+	{
+		if (firstRun == false)
+		{
+			state = lastState;
+			firstRun = true;
+		}
+	}
+
+	if (state == ENEMY_STATE_IDLE)
+	{
+		vx = 0;
+		vy = 0;
+
+		timeLeft = GetTickCount() - timeLeft_dt;
+		timeJump = GetTickCount() - timeJump_dt;
+
+		return;
+	}
+
 	// Calculate dx, dy 
 	GameObject::Update(dt);
 
@@ -71,11 +117,25 @@ void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		vy += ENEMY_GROMMBA_GRAVITY * dt;
 		vx = direction * ENEMY_GROOMBA_MOVE_SPEED_X;
 
-		pointX = this->x + width/2;
-		pointY = this->y;
+		if (hasWing)
+		{
+			if (allowJump == false)
+			{
+				if (numberOfJump == ENEMY_GROOMBA_MAX_JUMP)
+				{
+					timeJump = GetTickCount();
+					numberOfJump = 0;
+
+				}
+				else if (GetTickCount() - timeJump > ENEMY_GROOMBA_TIME_JUMP)
+					allowJump = true;
+			}
+
+		}	
 
 		if (type == eType::ENEMY)
-			CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY, eType::ENEMY_MOB_DIE, eType::PLAYER_UNTOUCHABLE });
+			CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY, eType::ENEMY_BULLET , 
+				eType::ENEMY_MOB_DIE, eType::PLAYER_UNTOUCHABLE, eType::ITEM });
 	}
 	else
 	{
@@ -84,11 +144,9 @@ void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		return;
 	}
 
-	GameEngine::GetInstance()->GetCamPos(camPosX, camPosY);
-	if (state == ENEMY_STATE_IDLE)
+	if (state == ENEMY_STATE_DROP)
 	{
 		vx = 0;
-		vy = 0;
 	}
 	else if (state == ENEMY_STATE_STOMP)
 	{
@@ -111,6 +169,14 @@ void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		x += dx;
 		y += dy;
+
+		if (++countOffGround > 3)
+		{
+			touchGround = false;
+		}
+
+		if (vy >= 0)
+			ani_walk_speed = 100;
 	}
 	else
 	{
@@ -129,8 +195,40 @@ void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		this->y += min_ty * dy + ny * 0.4f;
 
 
-		if (vy != 0)
+		if (ny != 0)
+		{
 			vy = 0;
+
+			if (ny < 0)
+			{
+				countOffGround = 0;
+				touchGround = true;
+
+				if (hasWing)
+				{
+					if (allowJump)
+					{
+						if (numberOfJump == ENEMY_GROOMBA_MAX_JUMP - 1)
+						{
+							ani_walk_speed = 40;
+							vy = -ENEMY_GROOMBA_JUMP_LONG;
+						}
+						else
+						{
+							vy = -ENEMY_GROOMBA_JUMP_SHORT;
+						}
+
+						numberOfJump += 1;
+
+						if (numberOfJump == ENEMY_GROOMBA_MAX_JUMP)
+							allowJump = false;
+					}
+
+				}
+			}
+
+		}
+			
 
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
@@ -143,23 +241,32 @@ void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				
 				if (e->ny > 0)
 				{
-					SetState(ENEMY_STATE_STOMP);
+					if (hasWing)
+					{
+						hasWing = false;
+
+						LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
+						LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
+						current->FloatText(x, y);
+					}
+					else
+						SetState(ENEMY_STATE_STOMP);
 					e->obj->SetSpeed(vx, -MARIO_JUMP_DEFLECT_SPEED);
+
+					this->y -= min_ty * dy + ny * 0.4f;
 				}
 				else
 				{
 					e->obj->SetState(MARIO_STATE_HIT);
 				}
 
-				break;
 			}
 			else
 			{
-				if (nx != 0)
-				{	
-					direction = -direction;
-					break;
-				}
+				if (nx > 0)
+					direction = 1;
+				else if (nx < 0)
+					direction = -1;
 			}
 		}
 		
@@ -174,31 +281,56 @@ void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		coEvents[i] = NULL;
 	}
 
-	if (x < camPosX - ENTITY_SAFE_DELETE_RANGE * 2 || x > camPosX + ENTITY_SAFE_DELETE_RANGE * 2 ||
-		y < camPosY - ENTITY_SAFE_DELETE_RANGE || y > camPosY + ENTITY_SAFE_DELETE_RANGE)
-	{
-		this->Destroy();
-		return;
-	}
 }
 
 void Groomba::Render()
 {
+	if (firstRun == false)
+		return;
+
 	int ani = -1;
 	
-	if (state == ENEMY_STATE_MOVING)
+	if (hasWing)
 	{
-		if (direction > 0) ani = mobType + ENEMY_ANI_RIGHT;
-		else ani = mobType + ENEMY_ANI_LEFT;
+		if (state == ENEMY_STATE_MOVING)
+		{
+			if (touchGround == false)
+			{
+				ani = mobType + ENEMY_ANI_WING_JUMP;
+			}
+			else
+			{
+				if (direction > 0) ani = mobType + ENEMY_ANI_RIGHT_WING;
+				else ani = mobType + ENEMY_ANI_LEFT_WING;
+			}
+			animation_set->Get(ani)->SetTime(ani_walk_speed);
+		}
+		else if (state == ENEMY_STATE_HIT)
+		{
+			if (direction > 0) ani = mobType + ENEMY_ANI_DIE_HIT_RIGHT;
+			else ani = mobType + ENEMY_ANI_DIE_HIT_LEFT;
+		}
 	}
-	else if (state == ENEMY_STATE_STOMP)
+	else
 	{
-		ani = mobType + ENEMY_ANI_DIE_STOMP;
-	}
-	else if (state == ENEMY_STATE_HIT)
-	{
-		if (direction > 0) ani = mobType + ENEMY_ANI_DIE_HIT_RIGHT;
-		else ani = mobType + ENEMY_ANI_DIE_HIT_LEFT;
+		if (state == ENEMY_STATE_DROP)
+		{
+			ani = mobType + ENEMY_ANI_IDLE;
+		}
+		else if (state == ENEMY_STATE_MOVING)
+		{
+			if (direction > 0) ani = mobType + ENEMY_ANI_RIGHT;
+			else ani = mobType + ENEMY_ANI_LEFT;
+		}
+		else if (state == ENEMY_STATE_STOMP)
+		{
+			ani = mobType + ENEMY_ANI_DIE_STOMP;
+		}
+		else if (state == ENEMY_STATE_HIT || state == ENEMY_STATE_HIT_TAIL)
+		{
+			if (direction > 0) ani = mobType + ENEMY_ANI_DIE_HIT_RIGHT;
+			else ani = mobType + ENEMY_ANI_DIE_HIT_LEFT;
+		}
 	}
 
 	
@@ -214,15 +346,34 @@ void Groomba::SetState(int state)
 	switch (state)
 	{
 	case ENEMY_STATE_STOMP:
+	{
 		pause = true;
 		timeLeft = now;
 		this->type = eType::ENEMY_MOB_DIE;
+
+		if (CHOOSE != 2)
+		{
+			LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
+			LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
+			current->FloatText(x, y);
+		}
+		
+	}	
+
 		break;
 	case ENEMY_STATE_HIT:
+	case ENEMY_STATE_HIT_TAIL:
+	{
 		vy = -ENEMY_GROOMBA_DEFLECT_Y;
 
 		this->type = eType::ENEMY_MOB_DIE;
 		this->Remove();
+
+		LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
+		LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
+		current->FloatText(x, y);
+	}	
+
 		break;
 	}
 }

@@ -39,7 +39,7 @@ void SceneManager::_ParseSection_SCENES(string line, int id, int lineNumber)
 	if (tokens.size() < 2) 
 		return;
 
-	int value, i, j;
+	int value, i;
 	int width = scenes[id]->width;
 	int height = scenes[id]->height;
 
@@ -93,24 +93,21 @@ void SceneManager::Load(LPSCENE scene)
 	f.close();
 
 	DebugOut(L"[INFO] Loading game file : %s has been loaded successfully\n", gameFile);
-
-	SwitchScene(current_scene);
 }
 
 void SceneManager::SwitchScene(int scene_id)
 {
 	DebugOut(L"[INFO] Switching to scene %d\n", scene_id);
 
-	scenes[current_scene]->Unload();;
-
-	//Texture::GetInstance()->Clear();
-	//SpriteManager::GetInstance()->Clear();
-	//AnimationManager::GetInstance()->Clear();
+	scenes[current_scene]->Unload();
 
 	current_scene = scene_id;
 	LPSCENE s = scenes[scene_id];
-	//SceneManager::GetInstance()->SetKeyHandler(s->GetKeyEventHandler());
+
 	s->Load();
+
+	if (s->GetID() != SCENE_INTRO)
+		s->SetSwitch();
 }
 
 SceneManager* SceneManager::GetInstance()

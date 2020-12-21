@@ -9,9 +9,16 @@
 #define ENEMY_KOOPAS_HEIGHT				16
 
 #define ENEMY_KOOPAS_GRAVITY			0.0005f
+#define ENEMY_KOOPAS_FRICTION			0.0001f
+#define ENEMY_KOOPAS_THRESHOLD			0.0005f
 #define ENEMY_KOOPAS_MOVE_SPEED_X		0.02f
 #define ENEMY_KOOPAS_ROLL_SPEED_X		0.17f
 #define ENEMY_KOOPAS_DEFLECT_Y			0.1f
+#define ENEMY_KOOPAS_JUMP_SPEED			0.15f
+
+#define ENEMY_KOOPAS_WHIP_SPEED			0.08f
+#define ENEMY_KOOPAS_DEFLECT_TAIL		0.2f
+#define ENEMY_KOOPAS_BOUNDING			0.05f
 
 #define ENEMY_KOOPAS_TIME_LEFT			8000
 #define ENEMY_KOOPAS_TIME_COMEBACK		7000
@@ -32,6 +39,8 @@
 #define ENEMY_STATE_HIT					3
 #define ENEMY_STATE_ROLLING				4
 #define ENEMY_STATE_KICK				5
+#define ENEMY_STATE_HIT_TAIL			7
+#define ENEMY_STATE_RELEASE				8
 
 class Mario;
 class Koopas : public GameObject
@@ -47,10 +56,12 @@ class Koopas : public GameObject
 	float camPosX, camPosY;
 	float shakeX;
 
+	bool hasWing;
 	bool immobilize;
 	bool rolling;
 	bool comeBack;
 	bool beingGrab;
+	bool upSideDown;
 
 	bool startShaking;
 	bool shaking;
@@ -58,8 +69,14 @@ class Koopas : public GameObject
 
 	DWORD timeLeft;
 
+	//Pausing outside camera
+	bool firstRun = true;
+	int lastState;
+	DWORD shakeTime_dt;
+	DWORD timeLeft_dt;
+
 public:
-	Koopas(int placeX, int placeY, int mobType);
+	Koopas(int placeX, int placeY, int mobType, bool hasWing);
 
 	void Add();
 	void Destroy();

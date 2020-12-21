@@ -41,12 +41,6 @@
     <Filter Include="GameObject\ActiveBlock">
       <UniqueIdentifier>{1df4e83b-39d8-41bb-8780-5e1a452c8073}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameObject\Brick">
-      <UniqueIdentifier>{42a15de3-1417-4c84-b167-458153430c88}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameObject\QuestionBlock">
-      <UniqueIdentifier>{36a5c75c-d928-4a90-b6c3-a6f47a88add7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameObject\Bullet">
       <UniqueIdentifier>{c7a41fd8-ee91-4f42-a1cb-b0f57adbc5d4}</UniqueIdentifier>
     </Filter>
@@ -64,6 +58,60 @@
     </Filter>
     <Filter Include="GameObject\Mob\Turtle">
       <UniqueIdentifier>{aabed23f-e95f-462b-886d-130fe7cb072a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Mob\Plant">
+      <UniqueIdentifier>{33e10f19-6669-4544-aadb-df9aa10364fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Item">
+      <UniqueIdentifier>{e3743ff6-fdbf-4322-9461-0cf811fa8c57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\ActiveBlock\Brick">
+      <UniqueIdentifier>{42a15de3-1417-4c84-b167-458153430c88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\ActiveBlock\QuestionBlock">
+      <UniqueIdentifier>{36a5c75c-d928-4a90-b6c3-a6f47a88add7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\ActiveBlock\Effect">
+      <UniqueIdentifier>{ee04e947-e073-488d-8836-db8be41b95d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Item\SuperLeaf">
+      <UniqueIdentifier>{a1094414-11e1-44d0-b280-457a933a237e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Item\RedMushroom">
+      <UniqueIdentifier>{36a4df03-e40e-438b-8d16-a22cb381450c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Item\SuperStar">
+      <UniqueIdentifier>{d0611f8f-db75-444e-be09-59561fb06f7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Item\Coin">
+      <UniqueIdentifier>{dd3a6468-348b-4fa1-a678-5ad24f376500}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\HUD">
+      <UniqueIdentifier>{999b5618-2d1e-40c3-b229-4e0002a81299}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\Scene\Intro">
+      <UniqueIdentifier>{f1c99e0a-c5c4-4d32-aaf1-8a0978e9c162}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Intro">
+      <UniqueIdentifier>{8fa03c70-a5f4-4b64-a2b9-2bdb4c5da334}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\Scene\WorldMap">
+      <UniqueIdentifier>{57e94420-5996-4c75-9994-67864363f66f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Mob\Map">
+      <UniqueIdentifier>{0f1c4539-62a0-42f0-951a-ea6eeba9b75d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Teleport">
+      <UniqueIdentifier>{511d4b9a-866d-4734-a102-f29926ca565f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\Scene\World1Scene">
+      <UniqueIdentifier>{6daa85b7-8ccb-4a16-821c-73ef38bc2f68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\ActiveBlock\End Goal">
+      <UniqueIdentifier>{c986fb96-01f8-4935-bfdf-48b881a6a813}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\ActiveBlock\P-Block">
+      <UniqueIdentifier>{993d2655-d50f-4697-934e-16902382802b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -125,10 +173,10 @@
       <Filter>GameObject\ActiveBlock</Filter>
     </ClCompile>
     <ClCompile Include="QuestionBlock.cpp">
-      <Filter>GameObject\QuestionBlock</Filter>
+      <Filter>GameObject\ActiveBlock\QuestionBlock</Filter>
     </ClCompile>
     <ClCompile Include="BrickShiny.cpp">
-      <Filter>GameObject\Brick</Filter>
+      <Filter>GameObject\ActiveBlock\Brick</Filter>
     </ClCompile>
     <ClCompile Include="Fireball.cpp">
       <Filter>GameObject\Bullet\Fireball</Filter>
@@ -144,6 +192,63 @@
     </ClCompile>
     <ClCompile Include="Koopas.cpp">
       <Filter>GameObject\Mob\Turtle</Filter>
+    </ClCompile>
+    <ClCompile Include="Plant.cpp">
+      <Filter>GameObject\Mob\Plant</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>GameObject\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Rubbish.cpp">
+      <Filter>GameObject\ActiveBlock\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Coin.cpp">
+      <Filter>GameObject\Item\Coin</Filter>
+    </ClCompile>
+    <ClCompile Include="SuperLeaf.cpp">
+      <Filter>GameObject\Item\SuperLeaf</Filter>
+    </ClCompile>
+    <ClCompile Include="SuperStar.cpp">
+      <Filter>GameObject\Item\SuperStar</Filter>
+    </ClCompile>
+    <ClCompile Include="Mushroom.cpp">
+      <Filter>GameObject\Item\RedMushroom</Filter>
+    </ClCompile>
+    <ClCompile Include="HUD.cpp">
+      <Filter>GameObject\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="HUD_Object.cpp">
+      <Filter>GameObject\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="Intro.cpp">
+      <Filter>GameEngine\Scene\Intro</Filter>
+    </ClCompile>
+    <ClCompile Include="KoopasIntro.cpp">
+      <Filter>GameObject\Intro</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerIntro.cpp">
+      <Filter>GameObject\Intro</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldMap.cpp">
+      <Filter>GameEngine\Scene\WorldMap</Filter>
+    </ClCompile>
+    <ClCompile Include="MarioMap.cpp">
+      <Filter>GameObject\Mario</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyTroop.cpp">
+      <Filter>GameObject\Mob\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Teleport.cpp">
+      <Filter>GameObject\Teleport</Filter>
+    </ClCompile>
+    <ClCompile Include="World1_1.cpp">
+      <Filter>GameEngine\Scene\World1Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="EndGoal.cpp">
+      <Filter>GameObject\ActiveBlock\End Goal</Filter>
+    </ClCompile>
+    <ClCompile Include="P_Block.cpp">
+      <Filter>GameObject\ActiveBlock\P-Block</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -205,10 +310,10 @@
       <Filter>GameObject\ActiveBlock</Filter>
     </ClInclude>
     <ClInclude Include="QuestionBlock.h">
-      <Filter>GameObject\QuestionBlock</Filter>
+      <Filter>GameObject\ActiveBlock\QuestionBlock</Filter>
     </ClInclude>
     <ClInclude Include="BrickShiny.h">
-      <Filter>GameObject\Brick</Filter>
+      <Filter>GameObject\ActiveBlock\Brick</Filter>
     </ClInclude>
     <ClInclude Include="Fireball.h">
       <Filter>GameObject\Bullet\Fireball</Filter>
@@ -224,6 +329,63 @@
     </ClInclude>
     <ClInclude Include="Koopas.h">
       <Filter>GameObject\Mob\Turtle</Filter>
+    </ClInclude>
+    <ClInclude Include="Plant.h">
+      <Filter>GameObject\Mob\Plant</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>GameObject\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Rubbish.h">
+      <Filter>GameObject\ActiveBlock\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Coin.h">
+      <Filter>GameObject\Item\Coin</Filter>
+    </ClInclude>
+    <ClInclude Include="SuperLeaf.h">
+      <Filter>GameObject\Item\SuperLeaf</Filter>
+    </ClInclude>
+    <ClInclude Include="SuperStar.h">
+      <Filter>GameObject\Item\SuperStar</Filter>
+    </ClInclude>
+    <ClInclude Include="Mushroom.h">
+      <Filter>GameObject\Item\RedMushroom</Filter>
+    </ClInclude>
+    <ClInclude Include="HUD.h">
+      <Filter>GameObject\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="HUD_Object.h">
+      <Filter>GameObject\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="Intro.h">
+      <Filter>GameEngine\Scene\Intro</Filter>
+    </ClInclude>
+    <ClInclude Include="KoopasIntro.h">
+      <Filter>GameObject\Intro</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerIntro.h">
+      <Filter>GameObject\Intro</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldMap.h">
+      <Filter>GameEngine\Scene\WorldMap</Filter>
+    </ClInclude>
+    <ClInclude Include="MarioMap.h">
+      <Filter>GameObject\Mario</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyTroop.h">
+      <Filter>GameObject\Mob\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Teleport.h">
+      <Filter>GameObject\Teleport</Filter>
+    </ClInclude>
+    <ClInclude Include="World1_1.h">
+      <Filter>GameEngine\Scene\World1Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="EndGoal.h">
+      <Filter>GameObject\ActiveBlock\End Goal</Filter>
+    </ClInclude>
+    <ClInclude Include="P_Block.h">
+      <Filter>GameObject\ActiveBlock\P-Block</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

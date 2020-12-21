@@ -1,19 +1,21 @@
 #pragma once
 
 #include "GameObject.h"
+#include "Item.h"
 
 class ActiveBlock : public GameObject
 {
-	LPANIMATION animationSet;
+protected:
 	int hp;
+	Item* item;
 
 public:
-	ActiveBlock(float x, float y, int id, LPSPRITE sprite = NULL);
+	ActiveBlock() {};
+	ActiveBlock(float x, float y, LPSPRITE sprite = NULL);
 
-	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom) {};
-	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL) {};
-	virtual void Render() {};
-	virtual void SetState(int state) { this->state = state; }
+	void SetItem(Item* item) { this->item = item; }
+	Item* GetItem() { return this->item; }
+	bool hasItem() { return item; }
 
 	~ActiveBlock();
 };

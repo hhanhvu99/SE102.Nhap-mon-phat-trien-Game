@@ -7,11 +7,16 @@
 #define ENEMY_GROOMBA_WIDTH				14
 #define ENEMY_GROOMBA_HEIGHT			16
 
-#define ENEMY_GROMMBA_GRAVITY			0.0005f
+#define ENEMY_GROMMBA_GRAVITY			0.0007f
 #define ENEMY_GROOMBA_MOVE_SPEED_X		0.02f
 #define ENEMY_GROOMBA_DEFLECT_Y			0.1f
+#define ENEMY_GROOMBA_JUMP_SHORT		0.1f
+#define ENEMY_GROOMBA_JUMP_LONG			0.2f
 
 #define ENEMY_GROOMBA_TIME_LEFT			2000
+#define ENEMY_GROOMBA_TIME_JUMP			1500
+
+#define ENEMY_GROOMBA_MAX_JUMP			4
 
 //Offset
 #define ENEMY_GROOMBA_BBOX_OFFSET_X		1.0f
@@ -23,24 +28,36 @@
 #define ENEMY_STATE_MOVING				1
 #define ENEMY_STATE_STOMP				2
 #define ENEMY_STATE_HIT					3
+#define ENEMY_STATE_DROP				9
 
 class Groomba : public GameObject
 {
 	int mobType;
+	int numberOfJump;
+	int ani_walk_speed;
+	int countOffGround;
 
 	float nx, ny;
-	float pointX, pointY;
 	float offsetX=0, offsetY=0;
 	float camPosX, camPosY;
 
+	bool hasWing;
+	bool allowJump;
 	bool hitByStomp;
 	bool hitByBullet;
 	bool pause;
 
 	DWORD timeLeft;
+	DWORD timeJump;
+
+	//Pausing outside camera
+	bool firstRun = true;
+	int lastState;
+	DWORD timeLeft_dt;
+	DWORD timeJump_dt;
 
 public:
-	Groomba(int placeX, int placeY, int mobType);
+	Groomba(int placeX, int placeY, int mobType, bool hasWing);
 
 	void Add();
 	void Destroy();

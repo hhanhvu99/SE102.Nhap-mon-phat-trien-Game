@@ -7,6 +7,7 @@
 #define BULLET_FIREBALL_HEIGHT			8
 
 #define BULLET_FIREBALL_SPEED_X			0.15f
+#define BULLET_FIREBALL_SPEED_ENEMY		0.05f
 #define BULLET_FIREBALL_GRAVITY			0.001f
 #define BULLET_FIREBALL_DEFLECT_SPEED	0.2f
 
@@ -15,14 +16,16 @@
 #define BULLET_FIREBALL_DRAW_OFFSET_Y	-4.0f
 #define BULLET_EFFECT_DRAW_OFFSET_X		-4.0f
 #define BULLET_EFFECT_DRAW_OFFSET_Y		-4.0f
-#define BULLET_SAFE_DELETE_RANGE		300.0f
 
 //Time left
 #define BULLET_FIREBALL_TIME_LEFT		200
 class Fireball : public Bullet
 {
+	float unitVectorX, unitVectorY;
+
 public:
 	Fireball(float x, float y, int direction);
+	Fireball(float x, float y, int direction, float unitVectorX, float unitVectorY);
 
 	void SetBulletType(int type) { this->bulletType = type; }
 	void Add();

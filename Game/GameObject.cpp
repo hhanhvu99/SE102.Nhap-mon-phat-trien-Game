@@ -28,6 +28,10 @@ LPCOLLISIONEVENT GameObject::SweptAABBEx(LPGAMEOBJECT coO)
 	float ml, mt, mr, mb;		// moving object bbox
 	float t, nx, ny;
 
+	float dx_entry, dx_exit, tx_entry, tx_exit;
+	float dy_entry, dy_exit, ty_entry, ty_exit;
+	float t_entry, t_exit;
+
 	coO->GetBoundingBox(sl, st, sr, sb);
 
 	// deal with moving object: m speed = original m speed - collide object speed
@@ -47,18 +51,30 @@ LPCOLLISIONEVENT GameObject::SweptAABBEx(LPGAMEOBJECT coO)
 		ml, mt, mr, mb,
 		rdx, rdy,
 		sl, st, sr, sb,
-		t, nx, ny
+		t, nx, ny, 
+		dx_entry, dx_exit, tx_entry, tx_exit,
+		dy_entry, dy_exit, ty_entry, ty_exit,
+		t_entry, t_exit
 	);
 
 	/*
 	if (coO->GetType() == eType::PLAYER && this->type == eType::ENEMY)
 	{
-		DebugOut(L"-------------\n");
-		DebugOut(L"ml: %f - mt: %f - mr: %f - mb: %f\n", ml, mt, mr, mb);
-		DebugOut(L"rdx: %f - rdy: %f\n", rdx, rdy);
-		DebugOut(L"sl: %f - st: %f - sr: %f - sb: %f\n", sl, st, sr, sb);
-		DebugOut(L"t: %f - nx: %f - ny: %f\n", t, nx, ny);
+		if (mt - sb < 3.0f && ml - sr < 3.0f && sl - mr < 3.0f)
+		{
+			DebugOut(L"-------------\n");
+			DebugOut(L"ml: %f - mt: %f - mr: %f - mb: %f\n", ml, mt, mr, mb);
+			DebugOut(L"sl: %f - st: %f - sr: %f - sb: %f\n", sl, st, sr, sb);
+			DebugOut(L"t: %f - nx: %f - ny: %f\n", t, nx, ny);
+			DebugOut(L"dx_entry: %f - dx_exit: %f - tx_entry: %f - tx_exit: %f\n", dx_entry, dx_exit, tx_entry, tx_exit);
+			DebugOut(L"dy_entry: %f - dy_exit: %f - ty_entry: %f - ty_exit: %f\n", dy_entry, dy_exit, ty_entry, ty_exit);
+			DebugOut(L"t_entry: %f - t_exit: %f\n", t_entry, t_exit);
+			DebugOut(L"Enemy dx: %f - Enemy dy: %f - Player dx: %f - Player dy: %f\n", dx, dy, sdx, sdy);
+			DebugOut(L"rdx: %f - rdy: %f\n", rdx, rdy);
+		}
 	}*/
+	
+		
 
 	CollisionEvent* e = new CollisionEvent(t, nx, ny, rdx, rdy, coO);
 	return e;
@@ -73,35 +89,43 @@ LPCOLLISIONEVENT GameObject::SweptAABBEx(LPGAMEOBJECT coO)
 void GameObject::CalcPotentialCollisions(
 	vector<LPGAMEOBJECT>* coObjects,
 	vector<LPCOLLISIONEVENT>& coEvents,
-	vector<eType> exclude)
+	vector<eType> excludeType,
+	eType excludeObject)
 {
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
 		if (this == coObjects->at(i))
 			continue;
 
-		if (exclude.size() != 0)
+		if (excludeObject != eType::NONE)
 		{
-			for (eType type : exclude)
+			if (excludeObject != coObjects->at(i)->GetType())
+				continue;
+		}
+		else
+		{
+			if (excludeType.size() != 0)
 			{
-				if (type == coObjects->at(i)->GetType())
-					goto continueLoop;
-					
-			}	
+				for (eType type : excludeType)
+				{
+					if (type == coObjects->at(i)->GetType())
+						goto continueLoop;
+				}
+			}
+
+			if (false)
+			{
+			continueLoop:
+				continue;
+			}
 		}
 
-		if (false)
-		{
-		continueLoop:
-			continue;
-		}
-			
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
-		
 
 		if (e->t > 0 && e->t <= 1.0f)
 		{
-			coEvents.push_back(e);
+			coEvents.push_back(e);		
+			
 		}
 		else
 			delete e;
@@ -131,17 +155,65 @@ void GameObject::FilterCollision(
 	{
 		LPCOLLISIONEVENT c = coEvents[i];
 
-		if (c->t < min_tx && c->nx != 0) {
-			min_tx = c->t; nx = c->nx; min_ix = i; rdx = c->dx;
+		if (c->nx != 0) {
+			if (c->obj->GetType() == eType::PLATFORM)
+			{
+				min_tx = c->t; nx = 0; min_ix = i; rdx = c->dx;
+			}
+			else if (c->obj->GetType() == eType::ITEM)
+			{
+				min_tx = nx = rdx = 0; min_ix = i;
+			}
+			else
+			{
+				min_tx = c->t; nx = c->nx; min_ix = i; rdx = c->dx;
+			}
+			coEventsResult.push_back(coEvents[min_ix]);
 		}
 
-		if (c->t < min_ty && c->ny != 0) {
-			min_ty = c->t; ny = c->ny; min_iy = i; rdy = c->dy;
+		if (c->ny != 0) {
+			if (c->obj->GetType() == eType::PLATFORM)
+			{
+				min_ty = c->t; min_iy = i; rdy = c->dy;
+
+				if (c->ny > 0)
+					ny = 0;
+				else
+					ny = c->ny;
+			}
+			else if (c->obj->GetType() == eType::ITEM)
+			{
+				min_ty = ny = rdy = 0; min_iy = i;
+			}
+			else if (c->obj->GetType() == eType::PLAYER)
+			{
+				min_ty = ny = rdy = 0; min_iy = i;
+			}
+			else
+			{
+				min_ty = c->t; ny = c->ny; min_iy = i; rdy = c->dy;
+			}
+			coEventsResult.push_back(coEvents[min_iy]);
 		}
 	}
 
-	if (min_ix >= 0) coEventsResult.push_back(coEvents[min_ix]);
-	if (min_iy >= 0) coEventsResult.push_back(coEvents[min_iy]);
+	sort(coEventsResult.begin(), coEventsResult.end(),
+		[](const LPCOLLISIONEVENT& lhs, const LPCOLLISIONEVENT& rhs)
+		{
+			return lhs->obj->GetDrawOrder() > rhs->obj->GetDrawOrder();
+		}
+	);
+
+	//if (min_ix >= 0) coEventsResult.push_back(coEvents[min_ix]);
+	//if (min_iy >= 0) coEventsResult.push_back(coEvents[min_iy]);
+
+	/*
+	if (this->type == eType::ENEMY)
+	{
+		DebugOut(L"size: %d\n", coEvents.size());
+
+	}
+	*/
 }
 
 

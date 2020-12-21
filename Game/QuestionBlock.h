@@ -1,8 +1,9 @@
 #pragma once
 
-#include "GameObject.h"
+#include "ActiveBlock.h"
+#include "Mushroom.h"
 
-class QuestionBlock : public GameObject
+class QuestionBlock : public ActiveBlock
 {
 	bool hit;
 	bool moving;

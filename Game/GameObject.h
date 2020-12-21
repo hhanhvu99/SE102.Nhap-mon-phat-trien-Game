@@ -84,10 +84,13 @@ public:
 
 	void GetPosition(float& x, float& y) { x = this->x; y = this->y; }
 	void GetSpeed(float& vx, float& vy) { vx = this->vx; vy = this->vy; }
+	void GetChange(float& dx, float& dy) { dx = this->dx; dy = this->dy; }
 	void GetIndex(int& x, int& y) { x = this->indexX; y = this->indexY; }
 	void GetDirection(int& direction) { direction = this->direction; }
 	void GetWidth(int& width) { width = this->width; }
 	void GetHeight(int& height) { height = this->height; }
+	int GetWidth() { return this->width; }
+	int GetHeight() { return this->height; }
 	int GetDrawOrder() { return this->draw_order; }
 
 	int GetState() { return this->state; }
@@ -100,7 +103,7 @@ public:
 
 
 	LPCOLLISIONEVENT SweptAABBEx(LPGAMEOBJECT coO);
-	void CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LPCOLLISIONEVENT>& coEvents, vector<eType> exclude = {});
+	void CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LPCOLLISIONEVENT>& coEvents, vector<eType> exclude = {}, eType excludeObject = eType::NONE);
 	void FilterCollision(
 		vector<LPCOLLISIONEVENT>& coEvents,
 		vector<LPCOLLISIONEVENT>& coEventsResult,
