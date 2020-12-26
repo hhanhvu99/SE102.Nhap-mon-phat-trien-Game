@@ -44,6 +44,7 @@ class WorldMap : public TestScene
 	//Temp
 	BackGround* startScene;
 	BackGround* world;
+	BackGround* marioIcon;
 	BackGround* numberOne;
 	BackGround* numberTwo;
 

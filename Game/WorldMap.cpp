@@ -187,6 +187,11 @@ void WorldMap::Update(DWORD dt)
 		startScene->SetDrawOrder(HUD_FRAME_DRAW_ORDER);
 		this->gameObjects.push_back(startScene);
 
+		marioIcon = new BackGround(133.0f, 64.0f, SpriteManager::GetInstance()->Get(MARIO_MAP_LEVEL + global->level));
+		marioIcon->SetType(eType::MAP_START);
+		marioIcon->SetDrawOrder(HUD_FRAME_DRAW_ORDER);
+		this->gameObjects.push_back(marioIcon);
+
 		world = new BackGround(145.0f, 48.0f, SpriteManager::GetInstance()->Get(HUD_ID + ('0' + global->world)));
 		world->SetType(eType::MAP_START);
 		world->SetDrawOrder(HUD_TEXT_DRAW_ORDER);
@@ -209,6 +214,7 @@ void WorldMap::Update(DWORD dt)
 		{
 			Destroy(startScene);
 			Destroy(world);
+			Destroy(marioIcon);
 			Destroy(numberOne);
 			Destroy(numberTwo);
 			PAUSE = false;

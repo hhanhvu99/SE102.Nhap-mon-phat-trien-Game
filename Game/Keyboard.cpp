@@ -153,14 +153,6 @@ void Keyboard::OnKeyDown(int KeyCode)
 			}
 				
 			break;
-		case DIK_I:
-			//Transport Up
-			mario->SetState(MARIO_STATE_TRANSPORT_UP);
-			break;
-		case DIK_K:
-			//Transport Down
-			mario->SetState(MARIO_STATE_TRANSPORT_DOWN);
-			break;
 		case DIK_UP:
 		case DIK_DOWN:
 			if (PAUSE == false && Global::GetInstance()->allowSwitch == true)
@@ -176,11 +168,6 @@ void Keyboard::OnKeyDown(int KeyCode)
 					mario->SetState(MARIO_STATE_SHORT_JUMP);
 			}
 			break;
-		case DIK_Q:
-			//Invincible
-			if (PAUSE == false)
-				mario->SetState(MARIO_STATE_INVINCIBLE);
-			break;
 		case DIK_X:
 			//Jump high
 			if (PAUSE == false)
@@ -191,6 +178,27 @@ void Keyboard::OnKeyDown(int KeyCode)
 					mario->SetState(MARIO_STATE_JUMP_FLAP_HOLD);
 				
 			}
+			break;
+		//Debug
+		case DIK_M:
+			SceneManager::GetInstance()->GetCurrentScene()->SetState(SCENE_STATE_STAGE_TO_MAP);
+			break;
+		case DIK_Q:
+			//Invincible
+			if (PAUSE == false)
+				mario->SetState(MARIO_STATE_INVINCIBLE);
+			break;
+		case DIK_I:
+			//Transport Up
+			mario->SetState(MARIO_STATE_TRANSPORT_UP);
+			break;
+		case DIK_K:
+			//Transport Down
+			mario->SetState(MARIO_STATE_TRANSPORT_DOWN);
+			break;
+		case DIK_H:
+			mario->SetPosition(141 * STANDARD_SIZE, 5 * STANDARD_SIZE);
+			mario->Reset();
 			break;
 		case DIK_1:
 			mario->SetLevel(MARIO_LEVEL_SMALL);
