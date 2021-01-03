@@ -185,6 +185,12 @@ void LoadResources()
 	LPSCENE sceneBonus = new World1_1(SCENE_WORLD_1_1_BONUS, L"Script\\Map\\World1_1_Bonus.txt");
 	sceneBonus->LoadBlock(L"Script\\Assets\\Block\\World1_1_Bonus.txt");
 
+	LPSCENE sceneTwo = new World1_1(SCENE_WORLD_1_4, L"Script\\Map\\World1_4.txt");
+	sceneTwo->LoadBlock(L"Script\\Assets\\Block\\World1_4.txt");
+
+	LPSCENE sceneTwoBonus = new World1_1(SCENE_WORLD_1_4_GOAL, L"Script\\Map\\World1_4_Goal.txt");
+	sceneTwoBonus->LoadBlock(L"Script\\Assets\\Block\\World1_4_Goal.txt");
+
 	LPSCENE intro = new Intro(SCENE_INTRO, L"Script\\Map\\Intro.txt");
 	intro->LoadBlock(L"Script\\Assets\\Block\\Intro.txt");
 
@@ -195,6 +201,8 @@ void LoadResources()
 	
 	sceneManager->Load(scene);
 	sceneManager->Load(sceneBonus);
+	sceneManager->Load(sceneTwo);
+	sceneManager->Load(sceneTwoBonus);
 	sceneManager->Load(intro);
 	sceneManager->Load(world);
 	sceneManager->SwitchScene(SCENE_INTRO);

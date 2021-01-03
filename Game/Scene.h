@@ -11,6 +11,7 @@ protected:
 	std::vector<int> PLATFORM;
 	std::vector<int> ACTIVE_BLOCKS;
 	std::vector<int> GROUP;
+	std::vector<int> GROUP_MOVING;
 	std::vector<int> ENEMY;
 	std::vector<int> ITEM;
 	std::vector<int> PATH;

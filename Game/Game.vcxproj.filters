@@ -98,9 +98,6 @@
     <Filter Include="GameEngine\Scene\WorldMap">
       <UniqueIdentifier>{57e94420-5996-4c75-9994-67864363f66f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameObject\Mob\Map">
-      <UniqueIdentifier>{0f1c4539-62a0-42f0-951a-ea6eeba9b75d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameObject\Teleport">
       <UniqueIdentifier>{511d4b9a-866d-4734-a102-f29926ca565f}</UniqueIdentifier>
     </Filter>
@@ -112,6 +109,9 @@
     </Filter>
     <Filter Include="GameObject\ActiveBlock\P-Block">
       <UniqueIdentifier>{993d2655-d50f-4697-934e-16902382802b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Mob\Groomba\Map">
+      <UniqueIdentifier>{0f1c4539-62a0-42f0-951a-ea6eeba9b75d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -236,7 +236,7 @@
       <Filter>GameObject\Mario</Filter>
     </ClCompile>
     <ClCompile Include="EnemyTroop.cpp">
-      <Filter>GameObject\Mob\Map</Filter>
+      <Filter>GameObject\Mob\Groomba\Map</Filter>
     </ClCompile>
     <ClCompile Include="Teleport.cpp">
       <Filter>GameObject\Teleport</Filter>
@@ -373,7 +373,7 @@
       <Filter>GameObject\Mario</Filter>
     </ClInclude>
     <ClInclude Include="EnemyTroop.h">
-      <Filter>GameObject\Mob\Map</Filter>
+      <Filter>GameObject\Mob\Groomba\Map</Filter>
     </ClInclude>
     <ClInclude Include="Teleport.h">
       <Filter>GameObject\Teleport</Filter>

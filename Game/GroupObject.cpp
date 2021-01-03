@@ -1,4 +1,5 @@
 #include "GroupObject.h"
+#include "debug.h"
 
 void GroupObject::Add(LPGAMEOBJECT& gameObject)
 {
@@ -26,31 +27,24 @@ void GroupObject::Add(LPGAMEOBJECT& gameObject)
 
 void GroupObject::Move(float x, float y)
 {
-	float currentX, currentY;
-	this->x += x;
-	this->y += y;
+	this->x = this->x + x;
+	this->y = this->y + y;
 
-
+	float currentOffsetX = 0.0f;
 	for (LPGAMEOBJECT object : group)
 	{
-		object->GetPosition(currentX, currentY);
-		object->SetPosition(currentX + x, currentY + y);
+		object->SetPosition(this->x + currentOffsetX, this->y);
+		currentOffsetX += STANDARD_SIZE;
 	}
 }
 
 void GroupObject::SetGroupPos(float x, float y)
 {
-	float currentX, currentY;
-	float dx = this->x - x;
-	float dy = this->y - y;
-	this->x = x;
-	this->y = y;
-
-
+	float currentOffsetX = 0.0f;
 	for (LPGAMEOBJECT object : group)
 	{
-		object->GetPosition(currentX, currentY);
-		object->SetPosition(currentX + dx, currentY + dy);
+		object->SetPosition(x + currentOffsetX, y);
+		currentOffsetX += STANDARD_SIZE;
 	}
 }
 
@@ -73,11 +67,43 @@ void GroupObject::GetBoundingBox(float& left, float& top, float& right, float& b
 
 void GroupObject::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	for (LPGAMEOBJECT object : group)
+	//Check outside camera
+	GameEngine::GetInstance()->GetCamPos(camPosX, camPosY);
+	if (x < camPosX - ENTITY_SAFE_DELETE_RANGE || x > camPosX + SCREEN_WIDTH + ENTITY_SAFE_DELETE_RANGE ||
+		y < camPosY - ENTITY_SAFE_DELETE_RANGE || y > camPosY + SCREEN_HEIGHT + ENTITY_SAFE_DELETE_RANGE)
 	{
-		object->Update(dt);
+		vx = 0;
+		vy = 0;
+		return;
 	}
 
+	if (PAUSE == true)
+	{
+		return;
+	}
+
+	if (type == eType::GROUP_MOVING)
+	{
+		GameObject::Update(dt);
+		x += dx;
+		y += dy;
+
+		if (dropping)
+		{
+			if (vy < GROUP_MAX_FALLING)
+				vy += GROUP_MOVING_Y * dt;
+			else
+				vy = GROUP_MAX_FALLING;
+			vx = 0;
+		}
+		else
+		{
+			vx = -GROUP_MOVING_X;
+			vy = 0;
+		}
+
+		SetGroupPos(x, y);
+	}
 }
 
 void GroupObject::Render()
@@ -88,6 +114,15 @@ void GroupObject::Render()
 	}
 
 	//RenderBoundingBox();
+}
+
+void GroupObject::SetState(int state)
+{
+	GameObject::SetState(state);
+
+	if (state == GROUP_MOVING_STATE_STOMP)
+		dropping = true;
+
 }
 
 GroupObject::~GroupObject()

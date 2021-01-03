@@ -142,6 +142,13 @@ void World1_1::SetState(int state)
 				castMario->SetTargetY(cy + STANDARD_SIZE);
 				castMario->SetState(MARIO_STATE_TRANSPORT_DOWN);
 			}
+			else if (direction == 3 && GameEngine::GetInstance()->IsKeyDown(DIK_DOWN))
+			{
+				castMario->GetPosition(x, y);
+				castMario->SetPosition(cx - 6.0f, y);
+				castMario->SetTargetY(cy + STANDARD_SIZE);
+				castMario->SetState(MARIO_STATE_TRANSPORT_DOWN);
+			}
 				
 		}
 			
@@ -177,6 +184,12 @@ void World1_1::SetState(int state)
 			castMario->SetPosition(tx - 6.0f, ty - height);
 			castMario->SetTargetY(ty);
 			castMario->SetState(MARIO_STATE_TRANSPORT_DOWN);
+		}
+		else if (direction == 3)
+		{
+			castMario->SetPosition(tx - 6.0f, ty + height);
+			castMario->SetTargetY(ty - (castMario->GetHeight() - STANDARD_SIZE));
+			castMario->SetState(MARIO_STATE_TRANSPORT_UP);
 		}
 
 	}

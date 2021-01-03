@@ -313,7 +313,6 @@ void TestScene::Load()
 			
 	}
 
-	
 
 	//Group object
 	int left, top, right, bottom;
@@ -357,6 +356,50 @@ void TestScene::Load()
 			}
 		group->SetType(eType::GROUP);
 		group->SetDrawOrder(BLOCK_DRAW_ORDER);
+		gameObjects.push_back(group);
+		collideObjects.push_back(group);
+	}
+
+	//Group moving
+	length = GROUP_MOVING.size();
+	for (int x = 0; x < length; x += 4)
+	{
+		left = GROUP_MOVING[x];
+		top = GROUP_MOVING[x + 1];
+		right = GROUP_MOVING[x + 2];
+		bottom = GROUP_MOVING[x + 3];
+		group = new GroupObject();
+
+		//DebugOut(L"Left: %d -- Top: %d -- Right: %d -- Bottom: %d \n", left,top,right,bottom);
+
+		for (int j = top; j <= bottom; ++j)
+			for (int i = left; i <= right; ++i)
+			{
+				for (LPGAMEOBJECT object : gameObjects)
+				{
+					object->GetIndex(indexX, indexY);
+
+					if (i == indexX && j == indexY)
+					{
+						group->Add(object);
+
+						pos = find(gameObjects.begin(), gameObjects.end() - 1, object);
+						gameObjects.erase(pos);
+						gameObjects.shrink_to_fit();
+
+						pos = find(collideObjects.begin(), collideObjects.end() - 1, object);
+						collideObjects.erase(pos);
+						collideObjects.shrink_to_fit();
+
+						//DebugOut(L"Found\n");
+
+						break;
+					}
+				}
+			}
+
+		group->SetType(eType::GROUP_MOVING);
+		group->SetDrawOrder(ENEMY_ENTITY_DRAW_ORDER);
 		gameObjects.push_back(group);
 		collideObjects.push_back(group);
 	}
@@ -524,6 +567,7 @@ void TestScene::Load()
 		if (currentX + currentY < 0)
 		{
 			currentWorld = currentScene;
+			global->allowSwitch = false;
 			continue;
 		}		
 		else if (targetX + targetY < 0)
@@ -659,6 +703,12 @@ void TestScene::Update(DWORD dt)
 
 	}
 	deleteList.clear();
+
+	/*
+	if (this->id == SCENE_WORLD_1_1)
+	{
+		DebugOut(L"here\n");
+	}*/
 
 	//Check teleport
 	for (auto teleportObject : teleport)

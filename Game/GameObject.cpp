@@ -99,6 +99,8 @@ void GameObject::CalcPotentialCollisions(
 
 		if (excludeObject != eType::NONE)
 		{
+			if (coObjects->at(i)->GetType() == eType::PLAYER)
+				DebugOut(L"Here\n");
 			if (excludeObject != coObjects->at(i)->GetType())
 				continue;
 		}
@@ -185,7 +187,7 @@ void GameObject::FilterCollision(
 			{
 				min_ty = ny = rdy = 0; min_iy = i;
 			}
-			else if (c->obj->GetType() == eType::PLAYER)
+			else if (c->obj->GetType() == eType::PLAYER && this->type != eType::GROUP_MOVING)
 			{
 				min_ty = ny = rdy = 0; min_iy = i;
 			}

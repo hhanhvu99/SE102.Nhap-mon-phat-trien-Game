@@ -14,8 +14,8 @@
 #define ENEMY_ENTITY_PLANT_DRAW_ORDER	1
 #define BLOCK_DRAW_ORDER				2
 #define ACTIVE_BLOCK_DRAW_ORDER			3
-#define PLAYER_DRAW_ORDER				4
-#define ENEMY_ENTITY_DRAW_ORDER			5
+#define ENEMY_ENTITY_DRAW_ORDER			4
+#define PLAYER_DRAW_ORDER				5
 #define BULLET_DRAW_ORDER				6
 #define HUD_FRAME_DRAW_ORDER			7
 #define HUD_TEXT_DRAW_ORDER				8
@@ -25,6 +25,8 @@
 #define SCENE_WORLD_1					2
 #define SCENE_WORLD_1_1					3
 #define SCENE_WORLD_1_1_BONUS			4
+#define SCENE_WORLD_1_4					5
+#define SCENE_WORLD_1_4_GOAL			6
 
 /*Define Active Block*/
 //Animation
@@ -61,6 +63,8 @@
 #define P_BLOCK_STATE_MOVING			2
 #define P_BLOCK_STATE_HIT				3
 #define P_BLOCK_STATE_STOMP				4
+
+#define GROUP_MOVING_STATE_STOMP		4
 
 #define MOVING_SPEED					0.3f
 #define DEFLECT_SPEED					0.05f
@@ -472,6 +476,7 @@ enum eType
 	BACKGROUND = 02,
 	GROUP = 03,
 	PLATFORM = 12,
+	GROUP_MOVING = 16,
 
 	//Mario 
 	PLAYER = 04,

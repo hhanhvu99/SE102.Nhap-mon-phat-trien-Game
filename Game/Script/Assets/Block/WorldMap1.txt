@@ -29,4 +29,6 @@
 [COLOR]
 248, 236, 160
 [GATE]
+//Current Scene - Current X - Current Y - Target Scene - Target X - Target Y - Direction
 2, 4, 1, 3, -1, -1, 0
+2, 10, 3, 5, -1, -1, 0

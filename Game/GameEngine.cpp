@@ -412,6 +412,16 @@ void GameEngine::UpdateCamPos(float marioX, float marioY)
 	cam_y = trunc(cam_y);
 }
 
+void GameEngine::SlideCamPos(float speed, DWORD dt)
+{
+	if (cam_x + SCREEN_WIDTH < Global::GetInstance()->screenWidth)
+		cam_x += speed * dt;
+
+	cam_x = trunc(cam_x);
+	cam_y = trunc(cam_y);
+
+}
+
 	GameEngine* GameEngine::GetInstance()
 {
 	if (__instance == NULL) __instance = new GameEngine();

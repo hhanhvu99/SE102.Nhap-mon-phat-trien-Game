@@ -60,6 +60,7 @@ void Scene::LoadBlock(LPCWSTR gameFile)
 		if (line == "[GATE]") { option = 9; continue; }
 		if (line == "[COLOR]") { option = 10; continue; }
 		if (line == "[P-BLOCK]") { option = 11; continue; }
+		if (line == "[GROUP_MOVING]") { option = 12; continue; }
 		if (option == 1)
 		{
 			vector<string> tokens = split(line, ",");
@@ -125,6 +126,12 @@ void Scene::LoadBlock(LPCWSTR gameFile)
 			vector<string> tokens = split(line, ",");
 			for (unsigned int i = 0; i < tokens.size(); ++i)
 				P_BLOCK_HOLDER.push_back(atoi(tokens[i].c_str()));
+		}
+		else if (option == 12)
+		{
+			vector<string> tokens = split(line, ",");
+			for (unsigned int i = 0; i < tokens.size(); ++i)
+				GROUP_MOVING.push_back(atoi(tokens[i].c_str()));
 		}
 		else
 		{

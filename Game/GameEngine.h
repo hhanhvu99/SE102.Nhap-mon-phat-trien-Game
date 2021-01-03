@@ -95,6 +95,7 @@ public:
 	void SetCamPos(float x, float y) { cam_x = x; cam_y = y; }
 	void GetCamPos(float &x, float &y) { x = cam_x ; y = cam_y ; }
 	void UpdateCamPos(float marioX, float marioY);
+	void SlideCamPos(float speed, DWORD dt);
 
 	void SetColor(D3DCOLOR color) { this->color = color; }
 	void EnableColor() { this->allowColor = true; }

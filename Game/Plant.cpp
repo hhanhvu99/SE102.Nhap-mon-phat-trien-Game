@@ -191,7 +191,7 @@ void Plant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 
 		CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY, eType::ENEMY_MOB_DIE, eType::PLAYER_UNTOUCHABLE, eType::GROUP, 
-			eType::ENEMY_BULLET, eType::ITEM});
+			eType::ENEMY_BULLET, eType::GROUP_MOVING, eType::ITEM});
 	}
 	else
 	{

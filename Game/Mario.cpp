@@ -386,7 +386,8 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 				continue;
 			}
-			else if (obj->GetType() == eType::GOAL)
+
+			if (obj->GetType() == eType::GOAL)
 			{
 				obj->SetState(GOAL_STATE_HIT);
 				SetState(MARIO_STATE_FINISH);
@@ -402,6 +403,22 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					}
 				}	
 			}
+			else if (obj->GetType() == eType::GROUP_MOVING)
+			{
+				float tempX, tempY, tempVx;
+				obj->GetPosition(tempX, tempY);
+
+				if (obj->GetState() == GROUP_MOVING_STATE_STOMP)
+				{
+					obj->GetSpeed(tempVx, this->vy);
+					//DebugOut(L"Inside: vx: %f -- vy:%f\n", vx, vy);
+				}
+				else if (this->y + height <= tempY && ny < 0)
+				{
+					obj->SetState(GROUP_MOVING_STATE_STOMP);
+				}
+
+			}
 			if (ny > 0)
 			{
 				if (obj->GetType() == eType::BRICK || obj->GetType() == eType::QUESTION)
@@ -409,7 +426,6 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					obj->SetState(ACTIVE_BLOCK_STATE_HIT);
 				}
 			}
-
 			if (startInvincible)
 			{
 				if (obj->GetType() == eType::ENEMY)
@@ -424,6 +440,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	}
 
+	//DebugOut(L"Outside: vx: %f -- vy:%f\n", vx, vy);
 	//DebugOut(L"x: %f -- y:%f\n", x, y);
 	//DebugOut(L"Is holding: %d\n", grabTurtlePress);
 
@@ -854,7 +871,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		else
 			DebugOut(L"[ERROR] Nothing to grab!!!\n");
 	}
-	
+
 	// Update camera to follow mario
 	if (PAUSE == false)
 		GameEngine::GetInstance()->UpdateCamPos(x, y);
@@ -862,6 +879,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void Mario::Render()
 {
+	//DebugOut(L"vx: %f - vy: %f\n", vx, vy);
 	//DebugOut(L"State: %d\n", state);
 	//DebugOut(L"Running: %d\n", isRunning);
 	ani = -1;
@@ -1279,6 +1297,19 @@ void Mario::SetState(int state)
 
 		}
 		//DebugOut(L"dt: %d\n", dt);
+		break;
+	case MARIO_STATE_DEBUG_FLAP:
+		if (global->level == MARIO_LEVEL_RACC || global->level == MARIO_LEVEL_TANU)
+		{
+			if (!allowFlapJump)
+			{
+				allowFlapJump = true;
+				flapJump = true;
+				startFlapJump = now;
+				flapDuration = now;
+
+			}
+		}
 		break;
 	case MARIO_STATE_JUMP_FLAP_HOLD:
 		jumpButtonPressed = true;
