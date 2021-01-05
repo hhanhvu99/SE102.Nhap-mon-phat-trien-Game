@@ -152,6 +152,7 @@
     <ClCompile Include="AnimationManager.cpp" />
     <ClCompile Include="BackGround.cpp" />
     <ClCompile Include="Block.cpp" />
+    <ClCompile Include="Boomerang.cpp" />
     <ClCompile Include="BoomerangBro.cpp" />
     <ClCompile Include="BrickShiny.cpp" />
     <ClCompile Include="Bullet.cpp" />
@@ -200,6 +201,7 @@
     <ClInclude Include="AnimationManager.h" />
     <ClInclude Include="BackGround.h" />
     <ClInclude Include="Block.h" />
+    <ClInclude Include="Boomerang.h" />
     <ClInclude Include="BoomerangBro.h" />
     <ClInclude Include="BrickShiny.h" />
     <ClInclude Include="Bullet.h" />

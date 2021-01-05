@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameObject.h"
+#include "Boomerang.h"
 #include "TestScene.h"
 
 //Basic info
@@ -13,7 +14,8 @@
 #define ENEMY_BRO_JUMP					0.1f
 
 #define ENEMY_BRO_TIME_SWITCH			2000
-#define ENEMY_BRO_TIME_THROW			2000
+#define ENEMY_BRO_TIME_THROW_READY		2000
+#define ENEMY_BRO_TIME_THROW_WAIT		8000
 #define ENEMY_BRO_TIME_JUMP				5000
 
 #define ENEMY_BRO_THROW_RANGE			96.0f
@@ -43,7 +45,7 @@ class BoomerangBro : public GameObject
 	int lastState;
 	DWORD timeLeft_dt;
 	DWORD timeJump_dt;
-
+	DWORD timeThrow_dt;
 public:
 	BoomerangBro(int placeX, int placeY, int mobType);
 

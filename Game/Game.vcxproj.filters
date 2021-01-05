@@ -116,6 +116,9 @@
     <Filter Include="GameObject\Mob\Boomerang">
       <UniqueIdentifier>{327721c0-5140-4bca-b869-489ac80f4b05}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Bullet\Boomerang">
+      <UniqueIdentifier>{4fc1a9a8-0428-48ab-9f0c-75a27f956e9c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -256,6 +259,9 @@
     <ClCompile Include="BoomerangBro.cpp">
       <Filter>GameObject\Mob\Boomerang</Filter>
     </ClCompile>
+    <ClCompile Include="Boomerang.cpp">
+      <Filter>GameObject\Bullet\Boomerang</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine.h">
@@ -395,6 +401,9 @@
     </ClInclude>
     <ClInclude Include="BoomerangBro.h">
       <Filter>GameObject\Mob\Boomerang</Filter>
+    </ClInclude>
+    <ClInclude Include="Boomerang.h">
+      <Filter>GameObject\Bullet\Boomerang</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

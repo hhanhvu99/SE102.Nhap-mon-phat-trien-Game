@@ -75,6 +75,7 @@ void BoomerangBro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 			timeLeft_dt = GetTickCount() - timeLeft;
 			timeJump_dt = GetTickCount() - timeJump;
+			timeThrow_dt = GetTickCount() - timeThrow_dt;
 
 			firstRun = false;
 		}
@@ -100,6 +101,7 @@ void BoomerangBro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		timeLeft = GetTickCount() - timeLeft_dt;
 		timeJump = GetTickCount() - timeJump_dt;
+		timeThrow = GetTickCount() - timeThrow_dt;
 
 		return;
 	}
@@ -133,11 +135,29 @@ void BoomerangBro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					timeJump = GetTickCount();
 				}
 
-				if (GetTickCount() - timeThrow > ENEMY_BRO_TIME_THROW)
+				if (steady)
 				{
-					steady = !steady;
-					timeThrow = GetTickCount();
+					if (GetTickCount() - timeThrow > ENEMY_BRO_TIME_THROW_READY)
+					{
+						steady = false;
+						timeThrow = GetTickCount();
+
+						if (direction > 0)
+							Boomerang* boomerang = new Boomerang(x + width / 2, y, facing, this);
+						else
+							Boomerang* boomerang = new Boomerang(x, y, facing, this);
+
+					}
 				}
+				else
+				{
+					if (GetTickCount() - timeThrow > ENEMY_BRO_TIME_THROW_WAIT)
+					{
+						steady = true;
+						timeThrow = GetTickCount();
+					}
+				}
+				
 
 				if (this->x < tempX)
 					facing = 1;
