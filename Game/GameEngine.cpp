@@ -108,6 +108,18 @@ void GameEngine::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, in
 		spriteHandler->Draw(texture, &r, NULL, &p, this->color);
 		spriteHandler->SetTransform(&anhGoc);
 	}
+	else if (angle == 90.1f)
+	{
+		spriteHandler->GetTransform(&anhGoc);
+		D3DXVECTOR2 center(p.x + (right - left) / 2, p.y);
+		D3DXVECTOR2 center2(p.x + (right - left) / 2, p.y + (right - left) / 2);
+		D3DXMatrixTransformation2D(&scale, &center, 0.0f, &D3DXVECTOR2(-1.0f, 1.0f), &center2, D3DXToRadian(180.0f), NULL);
+		anhCuoi = anhGoc * scale;
+
+		spriteHandler->SetTransform(&anhCuoi);
+		spriteHandler->Draw(texture, &r, NULL, &p, this->color);
+		spriteHandler->SetTransform(&anhGoc);
+	}
 	else if (angle != 0.0f)
 	{
 		spriteHandler->GetTransform(&anhGoc);

@@ -14,6 +14,7 @@
 #include "Groomba.h"
 #include "Koopas.h"
 #include "Plant.h"
+#include "BoomerangBro.h"
 
 #include "SuperLeaf.h"
 #include "SuperStar.h"

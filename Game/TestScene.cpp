@@ -480,11 +480,14 @@ void TestScene::Load()
 		case ENEMY_TROOP:
 			enemy = new EnemyTroop(placeX, placeY, mobType);
 			break;
+		case ENEMY_BOOMERANG_BRO:
+			enemy = new BoomerangBro(placeX, placeY, mobType);
+			break;
 		default:
 			DebugOut(L"[ERROR] Unknown mob type: %d\n", mobType);
 		}
 		
-		if (mobType >= ENEMY_PIRANHA_GREEN)
+		if (mobType >= ENEMY_PIRANHA_GREEN && mobType < ENEMY_BOOMERANG_BRO)
 			enemy->SetDrawOrder(ENEMY_ENTITY_PLANT_DRAW_ORDER);
 		else
 			enemy->SetDrawOrder(ENEMY_ENTITY_DRAW_ORDER);

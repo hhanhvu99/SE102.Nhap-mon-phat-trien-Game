@@ -113,6 +113,9 @@
     <Filter Include="GameObject\Mob\Groomba\Map">
       <UniqueIdentifier>{0f1c4539-62a0-42f0-951a-ea6eeba9b75d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Mob\Boomerang">
+      <UniqueIdentifier>{327721c0-5140-4bca-b869-489ac80f4b05}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -250,6 +253,9 @@
     <ClCompile Include="P_Block.cpp">
       <Filter>GameObject\ActiveBlock\P-Block</Filter>
     </ClCompile>
+    <ClCompile Include="BoomerangBro.cpp">
+      <Filter>GameObject\Mob\Boomerang</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine.h">
@@ -386,6 +392,9 @@
     </ClInclude>
     <ClInclude Include="P_Block.h">
       <Filter>GameObject\ActiveBlock\P-Block</Filter>
+    </ClInclude>
+    <ClInclude Include="BoomerangBro.h">
+      <Filter>GameObject\Mob\Boomerang</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

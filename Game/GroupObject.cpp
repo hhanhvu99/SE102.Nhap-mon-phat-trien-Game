@@ -69,8 +69,8 @@ void GroupObject::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	//Check outside camera
 	GameEngine::GetInstance()->GetCamPos(camPosX, camPosY);
-	if (x < camPosX - ENTITY_SAFE_DELETE_RANGE || x > camPosX + SCREEN_WIDTH + ENTITY_SAFE_DELETE_RANGE ||
-		y < camPosY - ENTITY_SAFE_DELETE_RANGE || y > camPosY + SCREEN_HEIGHT + ENTITY_SAFE_DELETE_RANGE)
+	if (x < camPosX - ENTITY_SAFE_MOVING_RANGE || x > camPosX + SCREEN_WIDTH + ENTITY_SAFE_MOVING_RANGE ||
+		y < camPosY - ENTITY_SAFE_MOVING_RANGE || y > camPosY + SCREEN_HEIGHT + ENTITY_SAFE_MOVING_RANGE)
 	{
 		vx = 0;
 		vy = 0;

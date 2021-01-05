@@ -3,9 +3,11 @@
 #include "GameObject.h"
 #include "Mario.h"
 
-#define GROUP_MOVING_X		0.02f
-#define GROUP_MOVING_Y		0.0001f
-#define GROUP_MAX_FALLING	0.15f
+#define GROUP_MOVING_X				0.02f
+#define GROUP_MOVING_Y				0.0001f
+#define GROUP_MAX_FALLING			0.15f
+
+#define ENTITY_SAFE_MOVING_RANGE	60.0f
 
 class GroupObject : public GameObject
 {

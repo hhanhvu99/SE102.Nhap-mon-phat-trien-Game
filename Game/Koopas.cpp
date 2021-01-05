@@ -70,6 +70,11 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (x < camPosX - ENTITY_SAFE_DELETE_RANGE || x > camPosX + SCREEN_WIDTH + ENTITY_SAFE_DELETE_RANGE ||
 		y < camPosY - ENTITY_SAFE_DELETE_RANGE || y > camPosY + SCREEN_HEIGHT + ENTITY_SAFE_DELETE_RANGE)
 	{
+		if (y > Global::GetInstance()->screenHeight)
+		{
+			Destroy();
+			return;
+		}
 		if (firstRun)
 		{
 			lastState = state;
