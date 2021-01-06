@@ -23,6 +23,9 @@ Koopas::Koopas(int placeX, int placeY, int mobType, bool hasWing)
 	this->mobType = mobType;
 	this->hasWing = hasWing;
 
+	this->pointUp = this->y + ENEMY_KOOPAS_FLY_BOUNDARY_UP;
+	this->pointDown = this->y + ENEMY_KOOPAS_FLY_BOUNDARY_DOWN;
+
 	this->shakeX = ENEMY_KOOPAS_ANI_SHAKE_X;
 	this->offsetX = ENEMY_KOOPAS_DRAW_OFFSET_X;
 	this->offsetY = ENEMY_KOOPAS_DRAW_OFFSET_Y;
@@ -123,26 +126,50 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// Simple fall down
 	if (PAUSE == false)
 	{
-		vy += ENEMY_KOOPAS_GRAVITY * dt;
-
-		if (upSideDown)
+		if (hasWing && mobType == ENEMY_KOOPAS_RED)
 		{
-			if (immobilize)
+			vy += direction * ENEMY_KOOPAS_GRAVITY;
+			vx = 0;
+
+			if (this->y < pointUp)
+				direction = 1;
+			else if (this->y > pointDown)
+				direction = -1;
+				
+			if (direction > 0)
 			{
-				if (abs(vx) < ENEMY_KOOPAS_THRESHOLD)
-					vx = 0;
-				else
-					vx -= Global::Sign(vx) * ENEMY_KOOPAS_FRICTION * dt;
+				if (vy > ENEMY_KOOPAS_MAX_FLY)
+					vy = ENEMY_KOOPAS_MAX_FLY;
 			}
+			else
+			{
+				if (vy < -ENEMY_KOOPAS_MAX_FLY)
+					vy = -ENEMY_KOOPAS_MAX_FLY;
+			}
+
 		}
 		else
 		{
-			if (!immobilize)
-				vx = direction * ENEMY_KOOPAS_MOVE_SPEED_X;
-		}
+			vy += ENEMY_KOOPAS_GRAVITY * dt;
 
-		pointX = this->x + width / 2;
-		pointY = this->y;
+			if (upSideDown)
+			{
+				if (immobilize)
+				{
+					if (abs(vx) < ENEMY_KOOPAS_THRESHOLD)
+						vx = 0;
+					else
+						vx -= Global::Sign(vx) * ENEMY_KOOPAS_FRICTION * dt;
+				}
+			}
+			else
+			{
+				if (!immobilize)
+					vx = direction * ENEMY_KOOPAS_MOVE_SPEED_X;
+			}
+
+		}
+		
 		//DebugOut(L"Grab: %d \n", beingGrab);
 		if (type == eType::ENEMY)
 		{
@@ -234,7 +261,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			vy = 0;
 
-			if (hasWing)
+			if (hasWing && mobType != ENEMY_KOOPAS_RED)
 			{
 				if (ny < 0)
 					vy = -ENEMY_KOOPAS_JUMP_SPEED;
@@ -375,16 +402,33 @@ void Koopas::Render()
 
 	if (hasWing)
 	{
-		if (state == ENEMY_STATE_MOVING)
+		if (mobType == ENEMY_KOOPAS_RED)
 		{
-			if (direction > 0) ani = mobType + ENEMY_ANI_RIGHT_WING;
-			else ani = mobType + ENEMY_ANI_LEFT_WING;
+			if (state == ENEMY_STATE_MOVING)
+			{
+				if (direction > 0) ani = ENEMY_KOOPAS_GREEN + ENEMY_ANI_RIGHT_WING;
+				else ani = ENEMY_KOOPAS_GREEN + ENEMY_ANI_LEFT_WING;
+			}
+			else if (state == ENEMY_STATE_HIT || upSideDown)
+			{
+				if (direction > 0) ani = ENEMY_KOOPAS_GREEN + ENEMY_ANI_DIE_HIT_RIGHT;
+				else ani = ENEMY_KOOPAS_GREEN + ENEMY_ANI_DIE_HIT_LEFT;
+			}
 		}
-		else if (state == ENEMY_STATE_HIT || upSideDown)
+		else
 		{
-			if (direction > 0) ani = mobType + ENEMY_ANI_DIE_HIT_RIGHT;
-			else ani = mobType + ENEMY_ANI_DIE_HIT_LEFT;
+			if (state == ENEMY_STATE_MOVING)
+			{
+				if (direction > 0) ani = mobType + ENEMY_ANI_RIGHT_WING;
+				else ani = mobType + ENEMY_ANI_LEFT_WING;
+			}
+			else if (state == ENEMY_STATE_HIT || upSideDown)
+			{
+				if (direction > 0) ani = mobType + ENEMY_ANI_DIE_HIT_RIGHT;
+				else ani = mobType + ENEMY_ANI_DIE_HIT_LEFT;
+			}
 		}
+		
 	}
 	else 
 	{

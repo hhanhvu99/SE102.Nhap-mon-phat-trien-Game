@@ -8,6 +8,10 @@
 #define ENEMY_KOOPAS_WIDTH				14
 #define ENEMY_KOOPAS_HEIGHT				16
 
+#define ENEMY_KOOPAS_FLY_BOUNDARY_UP	-32.0f
+#define ENEMY_KOOPAS_FLY_BOUNDARY_DOWN	16.0f
+
+#define ENEMY_KOOPAS_MAX_FLY			0.05f
 #define ENEMY_KOOPAS_GRAVITY			0.0005f
 #define ENEMY_KOOPAS_FRICTION			0.0001f
 #define ENEMY_KOOPAS_THRESHOLD			0.0005f
@@ -51,7 +55,7 @@ class Koopas : public GameObject
 
 	float nx, ny;
 	float min_tx, min_ty;
-	float pointX, pointY;
+	float pointUp, pointDown;
 	float offsetX = 0, offsetY = 0;
 	float camPosX, camPosY;
 	float shakeX;

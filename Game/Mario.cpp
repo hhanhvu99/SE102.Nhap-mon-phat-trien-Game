@@ -875,6 +875,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// Update camera to follow mario
 	if (PAUSE == false)
 		GameEngine::GetInstance()->UpdateCamPos(x, y);
+
 }
 
 void Mario::Render()
