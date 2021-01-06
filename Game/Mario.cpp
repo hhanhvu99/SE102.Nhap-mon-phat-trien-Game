@@ -874,8 +874,32 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	// Update camera to follow mario
 	if (PAUSE == false)
-		GameEngine::GetInstance()->UpdateCamPos(x, y);
+	{
+		if (global->cameraMode == 1)
+		{
+			GameEngine::GetInstance()->UpdateCamPos(x, y);
 
+			if (this->x < 0.0f)
+				this->x = 0.0f;
+			else if (this->x + width > global->screenWidth)
+				this->x = global->screenWidth - width;
+		}
+		else if (global->cameraMode == 2)
+		{
+			GameEngine::GetInstance()->SlideCamPos(CAMERA_SLIDE_SPEED, dt);
+
+			float camX, camY;
+			GameEngine::GetInstance()->GetCamPos(camX, camY);
+
+			if (this->x < camX)
+				this->x = camX;
+			else if (this->x + width > camX + SCREEN_WIDTH)
+				this->x = camX + SCREEN_WIDTH - width;
+
+			DebugOut(L"camX: %f - camY: %f\n", camX, camY);
+		}
+	}	
+	
 }
 
 void Mario::Render()
@@ -1400,10 +1424,13 @@ void Mario::SetState(int state)
 		}
 		break;
 	case MARIO_STATE_IDLE:
-		if (vx != 0)
+		if (touchGround)
 		{
-			vx -= Global::Sign(vx) * MARIO_SLIDE_SPEED * dt;
-			if (abs(vx) < MARIO_BREAK_THRESHOLD) vx = 0;
+			if (vx != 0)
+			{
+				vx -= Global::Sign(vx) * MARIO_SLIDE_SPEED * dt;
+				if (abs(vx) < MARIO_BREAK_THRESHOLD) vx = 0;
+			}
 		}
 		break;
 	case MARIO_STATE_HOLD:

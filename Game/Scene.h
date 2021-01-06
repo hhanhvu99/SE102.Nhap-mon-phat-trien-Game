@@ -23,6 +23,7 @@ protected:
 
 	KeyEventHandler* key_handler;
 
+	int cameraMode;
 	int id;
 	int state;
 	int type;
@@ -44,6 +45,8 @@ public:
 	int GetID();
 
 	int GetState() { return this->state; }
+	int GetCameraMode() { return this->cameraMode; }
+
 	void SetSwitch() { startSwitch = true; }
 	void DisableSwitch() { startSwitch = false; }
 	void LoadBlock(LPCWSTR gameFile);

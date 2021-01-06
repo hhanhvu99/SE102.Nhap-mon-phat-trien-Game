@@ -52,6 +52,7 @@ class Koopas : public GameObject
 	Mario* mario = NULL;
 
 	int mobType;
+	int directionFly;
 
 	float nx, ny;
 	float min_tx, min_ty;

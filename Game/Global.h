@@ -472,6 +472,8 @@ extern int CHOOSE;
 #define CAMERA_POSITION_RIGHT			144.0f
 #define CAMERA_POSITION_BOTTOM			64.0f
 
+#define CAMERA_SLIDE_SPEED				0.04f
+
 enum eType
 {
 	//None
@@ -564,6 +566,7 @@ public:
 	float frameHUD_x, frameHUD_y;
 	int speed;
 	int currentCardEmpty;
+	int cameraMode;
 
 	//Switch Scene
 	bool allowSwitch;

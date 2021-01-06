@@ -20,6 +20,7 @@ Koopas::Koopas(int placeX, int placeY, int mobType, bool hasWing)
 
 	this->state = ENEMY_STATE_MOVING;
 	this->direction = -1;
+	this->directionFly = -1;
 	this->mobType = mobType;
 	this->hasWing = hasWing;
 
@@ -128,15 +129,15 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		if (hasWing && mobType == ENEMY_KOOPAS_RED)
 		{
-			vy += direction * ENEMY_KOOPAS_GRAVITY;
+			vy += directionFly * ENEMY_KOOPAS_GRAVITY;
 			vx = 0;
 
 			if (this->y < pointUp)
-				direction = 1;
+				directionFly = 1;
 			else if (this->y > pointDown)
-				direction = -1;
+				directionFly = -1;
 				
-			if (direction > 0)
+			if (directionFly > 0)
 			{
 				if (vy > ENEMY_KOOPAS_MAX_FLY)
 					vy = ENEMY_KOOPAS_MAX_FLY;
@@ -402,31 +403,15 @@ void Koopas::Render()
 
 	if (hasWing)
 	{
-		if (mobType == ENEMY_KOOPAS_RED)
+		if (state == ENEMY_STATE_MOVING)
 		{
-			if (state == ENEMY_STATE_MOVING)
-			{
-				if (direction > 0) ani = ENEMY_KOOPAS_GREEN + ENEMY_ANI_RIGHT_WING;
-				else ani = ENEMY_KOOPAS_GREEN + ENEMY_ANI_LEFT_WING;
-			}
-			else if (state == ENEMY_STATE_HIT || upSideDown)
-			{
-				if (direction > 0) ani = ENEMY_KOOPAS_GREEN + ENEMY_ANI_DIE_HIT_RIGHT;
-				else ani = ENEMY_KOOPAS_GREEN + ENEMY_ANI_DIE_HIT_LEFT;
-			}
+			if (direction > 0) ani = mobType + ENEMY_ANI_RIGHT_WING;
+			else ani = mobType + ENEMY_ANI_LEFT_WING;
 		}
-		else
+		else if (state == ENEMY_STATE_HIT || upSideDown)
 		{
-			if (state == ENEMY_STATE_MOVING)
-			{
-				if (direction > 0) ani = mobType + ENEMY_ANI_RIGHT_WING;
-				else ani = mobType + ENEMY_ANI_LEFT_WING;
-			}
-			else if (state == ENEMY_STATE_HIT || upSideDown)
-			{
-				if (direction > 0) ani = mobType + ENEMY_ANI_DIE_HIT_RIGHT;
-				else ani = mobType + ENEMY_ANI_DIE_HIT_LEFT;
-			}
+			if (direction > 0) ani = mobType + ENEMY_ANI_DIE_HIT_RIGHT;
+			else ani = mobType + ENEMY_ANI_DIE_HIT_LEFT;
 		}
 		
 	}

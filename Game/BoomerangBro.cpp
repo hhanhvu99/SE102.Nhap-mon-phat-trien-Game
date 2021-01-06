@@ -4,12 +4,12 @@
 BoomerangBro::BoomerangBro(int placeX, int placeY, int mobType)
 {
 	this->x = placeX * STANDARD_SIZE;
-	this->y = placeY * STANDARD_SIZE - 1.0f;
+	this->y = placeY * STANDARD_SIZE - (ENEMY_BRO_HEIGHT - STANDARD_SIZE) - 1.0f;
 
 	this->touchGround = true;
 	this->steady = true;
-	this->width = ENEMY_GROOMBA_WIDTH;
-	this->height = ENEMY_GROOMBA_HEIGHT;
+	this->width = ENEMY_BRO_WIDTH;
+	this->height = ENEMY_BRO_HEIGHT;
 	this->type = eType::ENEMY;
 
 	this->state = ENEMY_STATE_MOVING;

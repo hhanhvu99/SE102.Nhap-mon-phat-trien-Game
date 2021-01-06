@@ -387,7 +387,7 @@ void GameEngine::UpdateCamPos(float marioX, float marioY)
 	{
 		cam_x = marioX - CAMERA_POSITION_RIGHT;
 	}
-	
+
 	if (marioY < top)
 	{
 		cam_y = marioY - CAMERA_POSITION_TOP;
@@ -427,9 +427,9 @@ void GameEngine::UpdateCamPos(float marioX, float marioY)
 void GameEngine::SlideCamPos(float speed, DWORD dt)
 {
 	if (cam_x + SCREEN_WIDTH < Global::GetInstance()->screenWidth)
-		cam_x += speed * dt;
+		camTemp_x += speed * dt;
 
-	cam_x = trunc(cam_x);
+	cam_x = trunc(camTemp_x);
 	cam_y = trunc(cam_y);
 
 }

@@ -624,9 +624,10 @@ void TestScene::Load()
 		HUD* cardThree = new HUD(eType::HUD_CARD_THREE);
 	}
 
-	//Set screen width and height
+	//Set screen width and height and camera mode
 	global->screenWidth = this->width * STANDARD_SIZE;
 	global->screenHeight = this->height * STANDARD_SIZE;
+	global->cameraMode = SceneManager::GetInstance()->GetCurrentScene()->GetCameraMode();
 
 	sort(gameObjects.begin(), gameObjects.end(), 
 		[](const LPGAMEOBJECT& lhs, const LPGAMEOBJECT& rhs)

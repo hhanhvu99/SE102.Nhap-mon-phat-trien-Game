@@ -40,6 +40,8 @@ class GameEngine
 	float cam_x = 0.0f;
 	float cam_y = 0.0f;
 
+	float camTemp_x = 0.0f;
+
 	int screen_width;
 	int screen_height;
 
