@@ -23,6 +23,7 @@
 #define MARIO_RUNNING_BREAK_SPEED		0.001f
 #define MARIO_TRANSPORT_SPEED			0.03f
 
+#define MARIO_BLOCK_DEFLECT				0.05f
 #define MARIO_JUMP_SPEED_Y				0.3f
 #define MARIO_JUMP_SPEED_FLAP			0.1f
 #define MARIO_JUMP_DEFLECT_SPEED		0.15f
@@ -254,6 +255,7 @@ public:
 	Mario(float x = 0.0f, float y = 0.0f);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects = NULL);
 	virtual void Render();
+	virtual void Destroy() {};
 
 	void SetGrabObject(LPGAMEOBJECT object) { grabObject = object; }
 	void SetState(int state);

@@ -10,6 +10,17 @@ SuperLeaf::SuperLeaf(float x, float y, int itemType) : Item(x, y, itemType)
 	this->Add();
 }
 
+void SuperLeaf::DestroyTouch()
+{
+	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
+	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
+
+	current->FloatTextCustom(x, y, HUD_BONUS_POINT_1000);
+
+	current->Destroy(this);
+
+}
+
 void SuperLeaf::Add()
 {
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
@@ -22,9 +33,6 @@ void SuperLeaf::Destroy()
 {
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
 	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
-
-	if (Global::GetInstance()->level == MARIO_LEVEL_RACC)
-		current->FloatTextCustom(x, y, HUD_BONUS_POINT_1000);
 
 	current->Destroy(this);
 
@@ -180,7 +188,7 @@ void SuperLeaf::SetState(int state)
 		vy = -ITEM_JUMP_SPEED;
 		break;
 	case ITEM_STATE_HIT:
-		this->Destroy();
+		this->DestroyTouch();
 		break;
 	default:
 		break;

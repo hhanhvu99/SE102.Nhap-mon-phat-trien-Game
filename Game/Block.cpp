@@ -17,6 +17,14 @@ void Block::Render()
 
 }
 
+void Block::Destroy()
+{
+	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
+	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
+
+	current->Destroy(this);
+}
+
 void Block::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
 	left = x;

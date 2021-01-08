@@ -48,6 +48,23 @@ void GroupObject::SetGroupPos(float x, float y)
 	}
 }
 
+void GroupObject::Destroy_Group()
+{
+	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
+	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
+
+	for (int cell : inCell)
+	{
+		if (Global::GetInstance()->cells.find(cell) != Global::GetInstance()->cells.end())
+		{
+			current->AddToCell(cell, this);
+			return;
+		}
+	}
+
+	current->Destroy(this);
+}
+
 GroupObject::GroupObject()
 {
 	left = top = 70000;
@@ -113,7 +130,24 @@ void GroupObject::Render()
 		object->Render();
 	}
 
-	//RenderBoundingBox();
+	RenderBoundingBox();
+}
+
+void GroupObject::Destroy()
+{
+	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
+	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
+
+	for (int cell : inCell)
+	{
+		if (Global::GetInstance()->cells.find(cell) != Global::GetInstance()->cells.end())
+		{
+			current->AddToCell(cell, this);
+			return;
+		}
+	}
+
+	current->Destroy(this);
 }
 
 void GroupObject::SetState(int state)
@@ -127,8 +161,14 @@ void GroupObject::SetState(int state)
 
 GroupObject::~GroupObject()
 {
+	int i, j;
+	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
+	GLOBAL global = Global::GetInstance();
+
 	for (LPGAMEOBJECT object : group)
 	{
+		object->GetIndex(i, j);
+		global->occupiedGroup.erase(global->TwoDimension_To_OneDimension(i, j, scene->width));
 		delete object;
 		object = NULL;
 	}

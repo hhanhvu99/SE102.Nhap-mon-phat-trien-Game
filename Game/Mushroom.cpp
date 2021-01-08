@@ -8,6 +8,19 @@ Mushroom::Mushroom(float x, float y, int itemType) : Item(x, y, itemType)
 	this->Add();
 }
 
+void Mushroom::DestroyTouch()
+{
+	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
+	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
+
+	if (itemType == ITEM_MUSHROOM_GREEN)
+		current->FloatTextCustom(x, y, HUD_BONUS_POINT_UP);
+	else if (Global::GetInstance()->level > MARIO_LEVEL_SMALL)
+		current->FloatTextCustom(x, y, HUD_BONUS_POINT_1000);
+
+	current->Destroy(this);
+}
+
 void Mushroom::Add()
 {
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
@@ -20,11 +33,6 @@ void Mushroom::Destroy()
 {
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
 	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
-
-	if (itemType == ITEM_MUSHROOM_GREEN)
-		current->FloatTextCustom(x, y, HUD_BONUS_POINT_UP);
-	else if (Global::GetInstance()->level > MARIO_LEVEL_SMALL)
-		current->FloatTextCustom(x, y, HUD_BONUS_POINT_1000);
 
 	current->Destroy(this);
 
@@ -168,7 +176,7 @@ void Mushroom::SetState(int state)
 		showUp = true;
 		break;
 	case ITEM_STATE_HIT:
-		this->Destroy();
+		this->DestroyTouch();
 		break;
 	default:
 		break;

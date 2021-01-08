@@ -2,6 +2,7 @@
 
 #include <d3d9.h>
 #include <d3dx9.h>
+#include <unordered_set>
 
 //Basic Info
 #define SCREEN_WIDTH 256
@@ -80,7 +81,7 @@
 #define ITEM_STATE_DROP					4
 
 //Entity
-#define ENTITY_SAFE_DELETE_RANGE		300.0f
+#define ENTITY_SAFE_DELETE_RANGE		60.0f
 
 //Animation
 #define MARIO							1412
@@ -552,6 +553,10 @@ public:
 
 	//Screen width and height
 	float screenWidth, screenHeight;
+
+	//Active Cells
+	std::unordered_set<int> cells;
+	std::unordered_set<int> occupiedGroup;
 
 	//Mario 
 	int level;

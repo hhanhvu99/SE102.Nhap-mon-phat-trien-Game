@@ -122,6 +122,7 @@ public:
 	PlayerIntro(float x = 0.0f, float y = 0.0f);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects = NULL);
 	virtual void Render();
+	virtual void Destroy() {};
 
 	void SetGrabObject(LPGAMEOBJECT object) { grabObject = object; }
 	void SetState(int state);

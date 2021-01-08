@@ -18,7 +18,7 @@ BrickShiny::BrickShiny(float x, float y, LPSPRITE sprite) : ActiveBlock(x, y, sp
 void BrickShiny::Destroy()
 {
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
-	LPTESTSCENE current = dynamic_cast<LPTESTSCENE>(scene);
+	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
 	
 	if (master != NULL)
 		static_cast<P_Block*>(master)->RemoveObject(this);

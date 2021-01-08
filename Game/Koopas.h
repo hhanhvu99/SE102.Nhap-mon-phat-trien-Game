@@ -45,6 +45,7 @@
 #define ENEMY_STATE_KICK				5
 #define ENEMY_STATE_HIT_TAIL			7
 #define ENEMY_STATE_RELEASE				8
+#define ENEMY_STATE_FLY_STOMP			9
 
 class Mario;
 class Koopas : public GameObject
@@ -91,4 +92,5 @@ public:
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL);
 	void Render();
 	void SetState(int state);
+
 };

@@ -22,10 +22,12 @@ public:
 	void Add(LPGAMEOBJECT& gameObject);
 	void Move(float x, float y);
 	void SetGroupPos(float x, float y);
+	void Destroy_Group();
 
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL);
 	virtual void Render();
+	virtual void Destroy();
 	virtual void SetState(int state);
 
 	~GroupObject();

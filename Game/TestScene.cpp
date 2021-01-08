@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <fstream>
 #include <algorithm>
 
@@ -8,6 +8,39 @@
 TestScene::TestScene(int id, LPCWSTR filePath) : Scene(id, filePath)
 {
 	global = Global::GetInstance();
+}
+
+void TestScene::CheckCell()
+{
+	int id;
+	float camX, camY, endCamX, endCamY;
+	float startX, startY, endX, endY;
+	float startCellX, startCellY, endCellX, endCellY;
+	GameEngine::GetInstance()->GetCamPos(camX, camY);
+
+	endCamX = camX + SCREEN_WIDTH + ENTITY_SAFE_DELETE_RANGE;
+	endCamY = camY + SCREEN_HEIGHT + ENTITY_SAFE_DELETE_RANGE;
+	camX -= ENTITY_SAFE_DELETE_RANGE;
+	camY -= ENTITY_SAFE_DELETE_RANGE;
+
+	for (auto cell : cells)
+	{
+		LPGRID cell_cast = static_cast<LPGRID>(cell);
+		cell_cast->GetCellPos(startCellX, startCellY, endCellX, endCellY);
+		if (camX < endCellX && endCamX > startCellX && camY < endCellY && endCamY > startCellY)
+		{
+			if (global->cells.find(cell_cast->GetID()) == global->cells.end())
+				cell_cast->Load(gameObjects, collideObjects);
+		}
+		else
+		{
+			if (global->cells.find(cell_cast->GetID()) != global->cells.end())
+				cell_cast->Unload();
+				
+		}
+		
+	}
+
 }
 
 void TestScene::Add(LPGAMEOBJECT gameObject)
@@ -22,8 +55,12 @@ void TestScene::Destroy(LPGAMEOBJECT gameObject)
 	auto objectDelete = std::find(collideObjects.begin(), collideObjects.end(), gameObject);
 	if (objectDelete != collideObjects.end())
 		collideObjects.erase(objectDelete);
+		
 
 	deleteList.push_back(gameObject);
+
+	if (gameObject->GetCurrentCell() != -1)
+		RemoveFromCell(gameObject->GetCurrentCell(), gameObject);
 }
 
 void TestScene::Remove(LPGAMEOBJECT gameObject)
@@ -41,6 +78,19 @@ void TestScene::Add_Visual(LPGAMEOBJECT gameObject)
 void TestScene::Destroy_Visual(LPGAMEOBJECT gameObject)
 {
 	deleteList.push_back(gameObject);
+
+	if (gameObject->GetCurrentCell() != -1)
+		RemoveFromCell(gameObject->GetCurrentCell(), gameObject);
+}
+
+void TestScene::AddToCell(int cell, LPGAMEOBJECT gameObject)
+{
+	static_cast<LPGRID>(cells[cell])->Insert(gameObject);
+}
+
+void TestScene::RemoveFromCell(int cell, LPGAMEOBJECT gameObject)
+{
+	static_cast<LPGRID>(cells[cell])->Delete(gameObject);
 }
 
 void TestScene::GetMarioPos(float& x, float& y)
@@ -140,423 +190,29 @@ void TestScene::Load()
 {
 	DebugOut(L"[INFO] Start loading scene resources from : %s \n", sceneFilePath);
 
-	ifstream f;
-	f.open(sceneFilePath);
-	f.close();
-
-	int id;
-	LPGAMEOBJECT gameObject;
-	LPSPRITEMANAGER sprites = SpriteManager::GetInstance();
-
 	gameObjects.clear();
 	collideObjects.clear();
 
-	//gameObjects.push_back(mario);
-	//collideObjects.push_back(mario);
+	/*-----------------------Chia trong Grid----------------------*/
 
-	if (type == 3)
+	for (int i = 0; i < numberOfCell; ++i)
 	{
-		for (int j = 0; j < height; ++j)
-		{
-			for (int i = 0; i < width; ++i)
-			{
-				id = map[i][j];
-				if (id == -1)
-					continue;
-
-				id += MAP_ID;
-
-				gameObject = new BackGround(STANDARD_SIZE * i, STANDARD_SIZE * j, sprites->Get(id));
-				gameObject->SetIndex(i, j);
-				gameObject->SetDrawOrder(MAP_DRAW_ORDER_BACKGROUND);
-				this->gameObjects.push_back(gameObject);
-
-				if (id == MAP_TREE_ID)
-				{
-					gameObject->SetAnimationSet(AnimationManager::GetInstance()->Get(MAP_ANI_ID));
-					gameObject->SetType(eType::MAP_TREE);
-				}
-				else if (id == MAP_POPUP_ID)
-				{
-					gameObject->SetDrawOrder(MAP_DRAW_ORDER_POPUP);
-					gameObject->SetType(eType::MAP_POPUP);
-				}
-				
-			}
-		}
-	}
-	else
-	{
-		for (int j = 0; j < height; ++j)
-		{
-			for (int i = 0; i < width; ++i)
-			{
-				id = map[i][j];
-				if (id == -1)
-					continue;
-				if (find(begin(BLOCKS), end(BLOCKS), id) != end(BLOCKS))
-				{
-					gameObject = new Block(STANDARD_SIZE * i, STANDARD_SIZE * j, sprites->Get(id));
-					gameObject->SetIndex(i, j);
-					gameObject->SetDrawOrder(BLOCK_DRAW_ORDER);
-					this->gameObjects.push_back(gameObject);
-					this->collideObjects.push_back(gameObject);
-
-				}
-				else if (find(begin(ACTIVE_BLOCKS), end(ACTIVE_BLOCKS), id) != end(ACTIVE_BLOCKS))
-				{
-					switch (id)
-					{
-					case BRICK_SHINY_ANI:
-						gameObject = new BrickShiny(STANDARD_SIZE * i, STANDARD_SIZE * j);
-						gameObject->SetIndex(i, j);
-						gameObject->SetDrawOrder(ACTIVE_BLOCK_DRAW_ORDER);
-						gameObject->SetAnimationSet(AnimationManager::GetInstance()->Get(ACTIVE_BLOCK));
-
-						this->gameObjects.push_back(gameObject);
-						this->collideObjects.push_back(gameObject);
-						break;
-
-					case QUESTION_BLOCK_ANI:
-					{
-						gameObject = new QuestionBlock(STANDARD_SIZE * i, STANDARD_SIZE * j, sprites->Get(QUESTION_BLOCK_ANI_HIT));
-						gameObject->SetIndex(i, j);
-						gameObject->SetDrawOrder(ACTIVE_BLOCK_DRAW_ORDER);
-						gameObject->SetAnimationSet(AnimationManager::GetInstance()->Get(ACTIVE_BLOCK));
-						Item* coin = new Coin(STANDARD_SIZE * i, STANDARD_SIZE * j, ITEM_COIN, false);
-						coin->SetDrawOrder(BLOCK_DRAW_ORDER);
-						coin->SetAnimationSet(AnimationManager::GetInstance()->Get(ITEM_ID));
-						static_cast<QuestionBlock*>(gameObject)->SetItem(coin);
-
-						this->gameObjects.push_back(gameObject);
-						this->collideObjects.push_back(gameObject);
-					}
-
-					break;
-					
-					case P_BLOCK_ANI:
-					{
-						gameObject = new P_Block(STANDARD_SIZE * i, STANDARD_SIZE * j);
-						gameObject->SetIndex(i, j);
-						gameObject->SetDrawOrder(ACTIVE_BLOCK_DRAW_ORDER);
-						gameObject->SetAnimationSet(AnimationManager::GetInstance()->Get(ACTIVE_BLOCK));
-
-						this->gameObjects.push_back(gameObject);
-						this->collideObjects.push_back(gameObject);
-
-						p_Block_Temp = gameObject;
-					}
-					break;
-
-					default:
-						DebugOut(L"[ERROR] Cannot find the active block at loading scene. \n");
-						break;
-					}
-
-				}
-				else if (id == ITEM_COIN_ID)
-				{
-					gameObject = new Coin(STANDARD_SIZE * i, STANDARD_SIZE * j, ITEM_COIN, true);
-					gameObject->SetDrawOrder(BLOCK_DRAW_ORDER);
-					gameObject->SetAnimationSet(AnimationManager::GetInstance()->Get(ITEM_ID));
-
-				}
-				else if (id == END_GOAL_SPRITE_ID)
-				{
-					gameObject = new BackGround(STANDARD_SIZE * i, STANDARD_SIZE * j, sprites->Get(END_GOAL_SQUARE));
-					gameObject->SetIndex(i, j);
-					gameObject->SetDrawOrder(BLOCK_DRAW_ORDER);
-					this->gameObjects.push_back(gameObject);
-
-					gameObject = new EndGoal(STANDARD_SIZE * i, STANDARD_SIZE * j);
-					gameObject->SetIndex(i, j);
-					gameObject->SetDrawOrder(ACTIVE_BLOCK_DRAW_ORDER);
-					gameObject->SetAnimationSet(AnimationManager::GetInstance()->Get(END_GOAL_ID));
-					this->gameObjects.push_back(gameObject);
-					this->collideObjects.push_back(gameObject);
-				}
-				else
-				{
-					gameObject = new BackGround(STANDARD_SIZE * i, STANDARD_SIZE * j, sprites->Get(id));
-					gameObject->SetIndex(i, j);
-					gameObject->SetDrawOrder(BACKGROUND_DRAW_ORDER);
-					this->gameObjects.push_back(gameObject);
-				}
-			}
-		}
+		LPGAMEOBJECT grid = new Grid(i, sceneFileBlock);
+		cells.push_back(grid);
 	}
 	
 
-	//Add P_Block object
-	int objectX, objectY;
-	int indexX, indexY;
-	int length = P_BLOCK_HOLDER.size();
-	P_Block* tempBlock = static_cast<P_Block*>(p_Block_Temp);
-	for (int x = 0; x < length; x += 2)
-	{
-		objectX = P_BLOCK_HOLDER[x];
-		objectY = P_BLOCK_HOLDER[x + 1];
-
-		//DebugOut(L"Left: %d -- Top: %d -- Right: %d -- Bottom: %d \n", left,top,right,bottom);
-		
-		for (LPGAMEOBJECT object : gameObjects)
-		{
-			object->GetIndex(indexX, indexY);
-
-			if (objectX == indexX && objectY == indexY)
-			{
-				tempBlock->AddObject(object);
-				static_cast<BrickShiny*>(object)->SetMaster(tempBlock);
-			}	
-		
-		}
-			
-	}
-
-
-	//Group object
-	int left, top, right, bottom;
-	GroupObject* group;
-	vector<LPGAMEOBJECT>::iterator pos;
-	length = GROUP.size();
-	for (int x = 0; x < length; x+=4)
-	{
-		left = GROUP[x];
-		top = GROUP[x + 1];
-		right = GROUP[x + 2];
-		bottom = GROUP[x + 3];
-		group = new GroupObject();
-
-		//DebugOut(L"Left: %d -- Top: %d -- Right: %d -- Bottom: %d \n", left,top,right,bottom);
-
-		for(int j = top; j <= bottom; ++j)
-			for (int i = left; i <= right; ++i)
-			{
-				for (LPGAMEOBJECT object : gameObjects)
-				{
-					object->GetIndex(indexX, indexY);
-					
-					if (i == indexX && j == indexY)
-					{
-						group->Add(object);
-
-						pos = find(gameObjects.begin(), gameObjects.end()-1, object);
-						gameObjects.erase(pos);
-						gameObjects.shrink_to_fit();
-
-						pos = find(collideObjects.begin(), collideObjects.end()-1, object);
-						collideObjects.erase(pos);
-						collideObjects.shrink_to_fit();
-						
-						//DebugOut(L"Found\n");
-
-						break;
-					}
-				}
-			}
-		group->SetType(eType::GROUP);
-		group->SetDrawOrder(BLOCK_DRAW_ORDER);
-		gameObjects.push_back(group);
-		collideObjects.push_back(group);
-	}
-
-	//Group moving
-	length = GROUP_MOVING.size();
-	for (int x = 0; x < length; x += 4)
-	{
-		left = GROUP_MOVING[x];
-		top = GROUP_MOVING[x + 1];
-		right = GROUP_MOVING[x + 2];
-		bottom = GROUP_MOVING[x + 3];
-		group = new GroupObject();
-
-		//DebugOut(L"Left: %d -- Top: %d -- Right: %d -- Bottom: %d \n", left,top,right,bottom);
-
-		for (int j = top; j <= bottom; ++j)
-			for (int i = left; i <= right; ++i)
-			{
-				for (LPGAMEOBJECT object : gameObjects)
-				{
-					object->GetIndex(indexX, indexY);
-
-					if (i == indexX && j == indexY)
-					{
-						group->Add(object);
-
-						pos = find(gameObjects.begin(), gameObjects.end() - 1, object);
-						gameObjects.erase(pos);
-						gameObjects.shrink_to_fit();
-
-						pos = find(collideObjects.begin(), collideObjects.end() - 1, object);
-						collideObjects.erase(pos);
-						collideObjects.shrink_to_fit();
-
-						//DebugOut(L"Found\n");
-
-						break;
-					}
-				}
-			}
-
-		group->SetType(eType::GROUP_MOVING);
-		group->SetDrawOrder(ENEMY_ENTITY_DRAW_ORDER);
-		gameObjects.push_back(group);
-		collideObjects.push_back(group);
-	}
-
-	//Group platform object
-	length = PLATFORM.size();
-	for (int x = 0; x < length; x += 4)
-	{
-		left = PLATFORM[x];
-		top = PLATFORM[x + 1];
-		right = PLATFORM[x + 2];
-		bottom = PLATFORM[x + 3];
-		group = new GroupObject();
-
-		//DebugOut(L"Left: %d -- Top: %d -- Right: %d -- Bottom: %d \n", left,top,right,bottom);
-
-		for (int j = top; j <= bottom; ++j)
-			for (int i = left; i <= right; ++i)
-			{
-				for (LPGAMEOBJECT object : gameObjects)
-				{
-					object->GetIndex(indexX, indexY);
-
-					if (i == indexX && j == indexY)
-					{
-						group->Add(object);
-
-						pos = find(gameObjects.begin(), gameObjects.end() - 1, object);
-						gameObjects.erase(pos);
-						gameObjects.shrink_to_fit();
-
-						pos = find(collideObjects.begin(), collideObjects.end() - 1, object);
-						collideObjects.erase(pos);
-						collideObjects.shrink_to_fit();
-
-						//DebugOut(L"Found\n");
-
-						break;
-					}
-				}
-			}
-		group->SetType(eType::PLATFORM);
-		group->SetDrawOrder(BLOCK_DRAW_ORDER);
-		gameObjects.push_back(group);
-		collideObjects.push_back(group);
-	}
-
-	//Add Enemy Mob
-	int placeX;
-	int placeY;
-	int mobType;
-	bool hasWing;
-	LPGAMEOBJECT enemy = NULL;
-
-	length = ENEMY.size();
-	for (int x = 0; x < length; x += 4)
-	{
-		placeX = ENEMY[x];
-		placeY = ENEMY[x + 1];
-		mobType = ENEMY[x + 2];
-		hasWing = ENEMY[x + 3];
-
-		switch (mobType)
-		{
-		case ENEMY_GROOMBA_BROWN:
-		case ENEMY_GROOMBA_RED:
-			enemy = new Groomba(placeX, placeY, mobType, hasWing);
-			break;
-		case ENEMY_KOOPAS_GREEN:
-		case ENEMY_KOOPAS_RED:
-			enemy = new Koopas(placeX, placeY, mobType, hasWing);
-			break;
-		case ENEMY_PIRANHA_GREEN:
-		case ENEMY_VENUS_GREEN:
-		case ENEMY_VENUS_RED:
-			enemy = new Plant(placeX, placeY, mobType);
-			break;
-		case ENEMY_TROOP:
-			enemy = new EnemyTroop(placeX, placeY, mobType);
-			break;
-		case ENEMY_BOOMERANG_BRO:
-			enemy = new BoomerangBro(placeX, placeY, mobType);
-			break;
-		default:
-			DebugOut(L"[ERROR] Unknown mob type: %d\n", mobType);
-		}
-		
-		if (mobType >= ENEMY_PIRANHA_GREEN && mobType < ENEMY_BOOMERANG_BRO)
-			enemy->SetDrawOrder(ENEMY_ENTITY_PLANT_DRAW_ORDER);
-		else
-			enemy->SetDrawOrder(ENEMY_ENTITY_DRAW_ORDER);
-
-		if (CHOOSE == 3)
-		{
-			enemy->SetAnimationSet(AnimationManager::GetInstance()->Get(MAP_ANI_ID));
-			enemy->SetDrawOrder(MAP_DRAW_ORDER_ENEMY);
-		}	
-		else
-			enemy->SetAnimationSet(AnimationManager::GetInstance()->Get(ENEMY_MOB));
-
-	}
-
-	//Add Item
-	int itemType;
-	Item* item = NULL;
-	ActiveBlock* newObject;
-	int indexObj_x, indexObj_y;
-
-	length = ITEM.size();
-	for (int x = 0; x < length; x += 3)
-	{
-		indexX = ITEM[x];
-		indexY = ITEM[x + 1];
-		itemType = ITEM[x + 2];
-
-		switch (itemType)
-		{
-		case ITEM_MUSHROOM_RED:
-		case ITEM_MUSHROOM_GREEN:
-			item = new Mushroom(indexX * STANDARD_SIZE, indexY * STANDARD_SIZE, itemType);
-			break;
-		case ITEM_SUPER_LEAF:
-			item = new SuperLeaf(indexX * STANDARD_SIZE, indexY * STANDARD_SIZE, itemType);
-			break;
-		case ITEM_SUPER_STAR:
-			item = new SuperStar(indexX * STANDARD_SIZE, indexY * STANDARD_SIZE, itemType);
-			break;
-		default:
-			DebugOut(L"[ERROR] Unknown item type: %d\n", mobType);
-		}
-
-		for (auto object : collideObjects)
-		{
-			object->GetIndex(indexObj_x, indexObj_y);
-			if (indexObj_x == indexX && indexObj_y == indexY)
-			{
-				newObject = static_cast<ActiveBlock*>(object);
-
-				if (newObject->hasItem())
-					Destroy_Visual(newObject->GetItem());
-
-				newObject->SetItem(item);
-			}
-		}
-
-		item->SetDrawOrder(BLOCK_DRAW_ORDER);
-		item->SetAnimationSet(AnimationManager::GetInstance()->Get(ITEM_ID));
-
-	}
+	/*-----------------------Không chia trong Grid----------------------*/
 
 	//Add Gate
 	int currentScene, targetScene;
 	LPGAMEOBJECT gate = NULL;
 	float currentX, currentY;
 	float targetX, targetY;
+	int indexX, indexY;
+	int indexObj_x, indexObj_y;
 	int direction;
-	length = GATE.size();
+	int length = GATE.size();
 	for (int x = 0; x < length; x += 7)
 	{
 		currentScene = GATE[x];
@@ -629,6 +285,9 @@ void TestScene::Load()
 	global->screenHeight = this->height * STANDARD_SIZE;
 	global->cameraMode = SceneManager::GetInstance()->GetCurrentScene()->GetCameraMode();
 
+	//Always start at cell 0
+	static_cast<LPGRID>(cells[0])->Load(gameObjects, collideObjects);
+
 	sort(gameObjects.begin(), gameObjects.end(), 
 		[](const LPGAMEOBJECT& lhs, const LPGAMEOBJECT& rhs)
 		{
@@ -698,14 +357,33 @@ void TestScene::Update(DWORD dt)
 		if (x != nullptr)
 			x->Update(dt, &collideObjects);
 	}
+
 	
+	DebugOut(L"Size: %d\n", collideObjects.size());
+
+	//Check cell
+	if (type == 1)
+		CheckCell();
+
+	//float debugX, debugY;
+	/*
+	DebugOut(L"Cell: ");
+	for (auto i : global->cells)
+		DebugOut(L"%d ", i);
+	DebugOut(L"\n");*/
+
 	//Delete object
 	for (auto deleteObject : deleteList)
 	{
+		//if (std::find(gameObjects.begin(), gameObjects.end(), deleteObject) == gameObjects.end())
+			//DebugOut(L"Wrong!!!\n");
+
+		//deleteObject->GetPosition(debugX, debugY);
+
 		gameObjects.erase(std::remove(gameObjects.begin(), gameObjects.end(), deleteObject), gameObjects.end());
 		delete deleteObject;
-
 	}
+
 	deleteList.clear();
 
 	/*
@@ -748,14 +426,23 @@ void TestScene::Unload()
 	collideObjects.clear();
 	teleport.clear();
 
-	for (auto object : gameObjects)
-		Destroy(object);
+
+	for (auto grid : cells)
+	{
+		LPGRID temp = static_cast<LPGRID>(grid);
+		temp->Unload();
+	}	
 
 	for (auto deleteObject : deleteList)
 	{
 		gameObjects.erase(std::remove(gameObjects.begin(), gameObjects.end(), deleteObject), gameObjects.end());
 		delete deleteObject;	
 	}
+
+	for (auto object : gameObjects)
+		delete object;
+
+	cells.clear();
 	deleteList.clear();
 }
 

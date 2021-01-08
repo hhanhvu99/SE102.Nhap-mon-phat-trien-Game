@@ -25,16 +25,17 @@
 #include "Teleport.h"
 #include "EndGoal.h"
 
+#include "Grid.h"
 #include "HUD.h"
 
 #include "Global.h"
+
 
 #define FLOAT_TEXT_HEIGHT		8.0f
 #define SWITCH_TIME				200
 
 
 using namespace std;
-
 class TestScene: public Scene
 {
 protected:
@@ -49,6 +50,8 @@ protected:
 	vector<LPGAMEOBJECT> teleport;
 	LPGAMEOBJECT currentGate;
 
+	vector<LPGAMEOBJECT> cells;
+
 	int combo = 0;
 	int soLanUpdate = 0;
 	int currentWorld;
@@ -60,11 +63,15 @@ protected:
 public:
 	TestScene(int id, LPCWSTR filePath);
 
+	void CheckCell();
+
 	void Add(LPGAMEOBJECT gameObject);
 	void Destroy(LPGAMEOBJECT gameObject);
 	void Remove(LPGAMEOBJECT gameObject);
 	void Add_Visual(LPGAMEOBJECT gameObject);
 	void Destroy_Visual(LPGAMEOBJECT gameObject);
+	void AddToCell(int cell, LPGAMEOBJECT gameObject);
+	void RemoveFromCell(int cell, LPGAMEOBJECT gameObject);
 
 	LPGAMEOBJECT GetMario() { return this->mario; }
 	void GetMarioPos(float& x, float& y);

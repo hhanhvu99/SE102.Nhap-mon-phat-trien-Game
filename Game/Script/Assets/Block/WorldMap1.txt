@@ -1,4 +1,11 @@
-/*All path*/
+[START]
+2, 3
+[COLOR]
+248, 236, 160
+[GATE]
+//Current Scene - Current X - Current Y - Target Scene - Target X - Target Y - Direction
+2, 4, 1, 3, -1, -1, 0
+2, 10, 3, 5, -1, -1, 0
 [PATH]
 //Current - Up - Down - Left - Right - Type
 2, 3, 0, 0, 0, 0, 0, 0, 4, 3, 0
@@ -22,13 +29,9 @@
 6, 7, 0, 0, 0, 0, 0, 0, 8, 7, 10
 10, 7, 0, 0, 0, 0, 8, 7, 12, 7, 11
 12, 7, 0, 0, 0, 0, 10, 7, 0, 0, 12
+/*Begin Partition*/
+[CELL]
+0, 0, 0, 15, 11
+/*All path*/
 [ENEMY]
 10, 7, 515, 0
-[START]
-2, 3
-[COLOR]
-248, 236, 160
-[GATE]
-//Current Scene - Current X - Current Y - Target Scene - Target X - Target Y - Direction
-2, 4, 1, 3, -1, -1, 0
-2, 10, 3, 5, -1, -1, 0

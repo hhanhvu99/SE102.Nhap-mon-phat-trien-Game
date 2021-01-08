@@ -53,3 +53,11 @@ void BackGround::Render()
 	}
 }
 
+void BackGround::Destroy()
+{
+	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
+	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
+
+	current->Destroy_Visual(this);
+}
+

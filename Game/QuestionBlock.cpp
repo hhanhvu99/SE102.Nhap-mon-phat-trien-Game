@@ -120,3 +120,11 @@ void QuestionBlock::Render()
 
 }
 
+void QuestionBlock::Destroy()
+{
+	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
+	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
+
+	current->Destroy(this);
+}
+

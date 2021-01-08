@@ -17,14 +17,14 @@ Rubbish::Rubbish(float x, float y, float speedX, float speedY, float deflect, in
 void Rubbish::Add()
 {
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
-	LPTESTSCENE current = dynamic_cast<LPTESTSCENE>(scene);
+	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
 	current->Add_Visual(this);
 }
 
 void Rubbish::Destroy()
 {
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
-	LPTESTSCENE current = dynamic_cast<LPTESTSCENE>(scene);
+	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
 
 	current->Destroy_Visual(this);
 }

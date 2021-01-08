@@ -1,6 +1,9 @@
 #Width - Height Map
 [Size]
 20 14
+#Number of Cell
+[Cell]
+1
 #Grid
 [Grid]
 -1,-1,307,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1

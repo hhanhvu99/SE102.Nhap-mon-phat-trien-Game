@@ -10,7 +10,6 @@
 #include "GameEngine.h"
 #include "Global.h"
 
-
 using namespace std;
 
 #define ID_TEX_BBOX -100		// special texture to draw object bounding box
@@ -75,12 +74,18 @@ protected:
 	LPANIMATION_SET animation_set;
 	LPSPRITE sprite;
 
+	//Cell
+	int currentCell;
+	vector<int> inCell;
+
 public:
+	void SetOverLapCell(vector<int> cell) { inCell = cell; }
 	void SetPosition(float x, float y) { this->x = x, this->y = y; }
 	void SetSpeed(float vx, float vy) { this->vx = vx, this->vy = vy; }
 	void SetIndex(int x, int y) { this->indexX = x; this->indexY = y; }
 	void SetDrawOrder(int order) { this->draw_order = order; }
 	void SetDirection(int direction) { this->direction = direction; }
+	void SetCurrentCell(int cell) { this->currentCell = cell; }
 
 	void GetPosition(float& x, float& y) { x = this->x; y = this->y; }
 	void GetSpeed(float& vx, float& vy) { vx = this->vx; vy = this->vy; }
@@ -92,6 +97,7 @@ public:
 	int GetWidth() { return this->width; }
 	int GetHeight() { return this->height; }
 	int GetDrawOrder() { return this->draw_order; }
+	int GetCurrentCell() { return this->currentCell; }
 
 	int GetState() { return this->state; }
 	void SetType(eType type) { this->type = type; }
@@ -119,8 +125,9 @@ public:
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom) = 0;
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL);
 	virtual void Render() = 0;
+	virtual void Destroy() = 0;
 	virtual void SetState(int state) { this->state = state; }
 
 
-	~GameObject();
+	virtual ~GameObject();
 };

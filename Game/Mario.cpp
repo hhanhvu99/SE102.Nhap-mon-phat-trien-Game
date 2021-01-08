@@ -350,18 +350,18 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						global->level = oldLevel;
 
 					Global::GetInstance()->point += 1000;
-					item->Destroy();
+					item->DestroyTouch();
 					break;
 
 				case ITEM_MUSHROOM_GREEN:
 					Global::GetInstance()->point += 1000;
-					item->Destroy();
+					item->DestroyTouch();
 					break;
 
 				case ITEM_SUPER_STAR:
 					SetState(MARIO_STATE_INVINCIBLE);
 					Global::GetInstance()->point += 1000;
-					item->Destroy();
+					item->DestroyTouch();
 					break;
 
 				case ITEM_SUPER_LEAF:
@@ -374,10 +374,10 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						global->level = oldLevel;
 
 					Global::GetInstance()->point += 1000;
-					item->Destroy();
+					item->DestroyTouch();
 					break;
 				case ITEM_COIN:
-					item->Destroy();
+					item->DestroyTouch();
 					break;
 
 				default:
@@ -424,6 +424,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				if (obj->GetType() == eType::BRICK || obj->GetType() == eType::QUESTION)
 				{
 					obj->SetState(ACTIVE_BLOCK_STATE_HIT);
+					vy = MARIO_BLOCK_DEFLECT;
 				}
 			}
 			if (startInvincible)
@@ -1491,6 +1492,7 @@ void Mario::SetState(int state)
 				shoot = false;
 				flapAni = false;
 				flapping = false;
+				flapJump = false;
 				allowFlapJump = false;
 				jumpButtonPressed = false;
 				
@@ -1618,6 +1620,7 @@ void Mario::SetState(int state)
 		shoot = false;
 		flapAni = false;
 		flapping = false;
+		flapJump = false;
 		allowFlapJump = false;
 		jumpButtonPressed = false;
 

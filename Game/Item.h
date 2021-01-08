@@ -31,6 +31,7 @@ public:
 
 	virtual void Add() = 0;
 	virtual void Destroy() = 0;
+	virtual void DestroyTouch() = 0;
 	virtual void Replace() {};
 	int getItemType() { return this->itemType; }
 

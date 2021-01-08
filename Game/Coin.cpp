@@ -14,6 +14,21 @@ Coin::Coin(float x, float y, int itemType, bool outSide) : Item(x, y, itemType)
 	this->Add();
 }
 
+void Coin::DestroyTouch()
+{
+	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
+	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
+
+	if (outSide)
+	{
+		Global::GetInstance()->money += 1;
+		Global::GetInstance()->point += 50;
+		current->Destroy(this);
+	}
+	else
+		current->Destroy_Visual(this);
+}
+
 void Coin::Add()
 {
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
@@ -32,14 +47,9 @@ void Coin::Destroy()
 	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
 
 	if (outSide)
-	{
-		Global::GetInstance()->money += 1;
-		Global::GetInstance()->point += 50;
 		current->Destroy(this);
-	}
 	else
 		current->Destroy_Visual(this);
-	
 		
 }
 
@@ -130,13 +140,6 @@ void Coin::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		delete coEvents[i];
 		coEvents[i] = NULL;
 	}
-
-	if (x < camPosX - ITEM_SAFE_DELETE_RANGE || x > camPosX + ITEM_SAFE_DELETE_RANGE ||
-		y < camPosY - ITEM_SAFE_DELETE_RANGE || y > camPosY + ITEM_SAFE_DELETE_RANGE)
-	{
-		this->Destroy();
-		return;
-	}
 }
 
 void Coin::Render()
@@ -167,7 +170,7 @@ void Coin::SetState(int state)
 		LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
 		current->FloatTextCoin(x, y);
 
-		this->Destroy();
+		this->DestroyTouch();
 	}
 		break;
 	default:

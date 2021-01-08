@@ -21,10 +21,20 @@ void SuperStar::Destroy()
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
 	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
 
-
 	current->Destroy(this);
 
 }
+
+void SuperStar::DestroyTouch()
+{
+	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
+	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
+
+	current->FloatTextCustom(x, y, HUD_BONUS_POINT_1000);
+
+	current->Destroy(this);
+}
+
 
 void SuperStar::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {

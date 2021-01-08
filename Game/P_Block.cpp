@@ -44,6 +44,7 @@ void P_Block::ChangeToCoin()
 		tempCoin->SetAnimationSet(AnimationManager::GetInstance()->Get(ITEM_ID));
 		listOfObject.push_back(tempCoin);
 
+		tempScene->AddToCell(object->GetCurrentCell(), tempCoin);
 		tempScene->Destroy(object);
 	}
 
@@ -165,6 +166,14 @@ void P_Block::Render()
 	}
 }
 
+void P_Block::Destroy()
+{
+	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
+	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
+
+	current->Destroy(this);
+}
+
 void P_Block::SetState(int state)
 {
 	GameObject::SetState(state);
@@ -174,4 +183,12 @@ void P_Block::SetState(int state)
 		ChangeToCoin();
 	}
 
+}
+
+P_Block::~P_Block()
+{
+	listOfObject.clear();
+
+	p_Block = NULL;
+	stomp_Block = NULL;
 }

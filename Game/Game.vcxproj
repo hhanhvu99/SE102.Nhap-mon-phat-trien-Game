@@ -164,6 +164,7 @@
     <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Global.cpp" />
+    <ClCompile Include="Grid.cpp" />
     <ClCompile Include="Groomba.cpp" />
     <ClCompile Include="GroupObject.cpp" />
     <ClCompile Include="Hammer.cpp" />
@@ -213,6 +214,7 @@
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Global.h" />
+    <ClInclude Include="Grid.h" />
     <ClInclude Include="Groomba.h" />
     <ClInclude Include="GroupObject.h" />
     <ClInclude Include="Hammer.h" />

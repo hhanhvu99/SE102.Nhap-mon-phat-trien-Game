@@ -17,6 +17,7 @@ SceneManager* SceneManager::__instance = NULL;
 #define GAME_FILE_SECTION_UNKNOWN -1
 #define GAME_FILE_SECTION_SIZE 1
 #define GAME_FILE_SECTION_SCENES 2
+#define GAME_FILE_SECTION_CELL 3
 
 void SceneManager::_ParseSection_SIZE(string line, int id)
 {
@@ -80,6 +81,7 @@ void SceneManager::Load(LPSCENE scene)
 
 		if (line == "[Size]") { section = GAME_FILE_SECTION_SIZE; continue; }
 		if (line == "[Grid]") { section = GAME_FILE_SECTION_SCENES; continue; }
+		if (line == "[Cell]") { section = GAME_FILE_SECTION_CELL; continue; }
 
 		switch (section)
 		{
@@ -87,6 +89,9 @@ void SceneManager::Load(LPSCENE scene)
 			case GAME_FILE_SECTION_SCENES: 
 				++lineNumber;
 				_ParseSection_SCENES(line, sceneID, lineNumber); 
+				break;
+			case GAME_FILE_SECTION_CELL:
+				scene->SetCellNumber(atoi(line.c_str()));
 				break;
 		}
 	}

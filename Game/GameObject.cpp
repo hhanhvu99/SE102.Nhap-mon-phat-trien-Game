@@ -10,6 +10,7 @@ GameObject::GameObject()
 	x = y = 0;
 	vx = vy = 0;
 	direction = 1;
+	currentCell = -1;
 }
 
 void GameObject::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)

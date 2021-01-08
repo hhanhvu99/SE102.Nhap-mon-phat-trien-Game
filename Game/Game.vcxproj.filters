@@ -119,6 +119,9 @@
     <Filter Include="GameObject\Bullet\Boomerang">
       <UniqueIdentifier>{4fc1a9a8-0428-48ab-9f0c-75a27f956e9c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameEngine\Scene\Partition">
+      <UniqueIdentifier>{0e1f1edb-b1a6-40bc-ae4a-0198b47db1a8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -262,6 +265,9 @@
     <ClCompile Include="Boomerang.cpp">
       <Filter>GameObject\Bullet\Boomerang</Filter>
     </ClCompile>
+    <ClCompile Include="Grid.cpp">
+      <Filter>GameEngine\Scene\Partition</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine.h">
@@ -404,6 +410,9 @@
     </ClInclude>
     <ClInclude Include="Boomerang.h">
       <Filter>GameObject\Bullet\Boomerang</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid.h">
+      <Filter>GameEngine\Scene\Partition</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

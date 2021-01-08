@@ -298,6 +298,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					if (hasWing)
 					{
 						hasWing = false;
+						SetState(ENEMY_STATE_FLY_STOMP);
 					}
 					else
 					{
@@ -471,6 +472,15 @@ void Koopas::SetState(int state)
 
 	switch (state)
 	{
+	case ENEMY_STATE_FLY_STOMP:
+	{
+		LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
+		LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
+		current->FloatText(x, y);
+
+		SetState(ENEMY_STATE_MOVING);
+	}
+		break;
 	case ENEMY_STATE_STOMP:
 	{
 		vx = 0;
