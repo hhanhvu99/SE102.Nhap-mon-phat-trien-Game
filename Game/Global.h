@@ -79,6 +79,7 @@
 #define ITEM_STATE_MOVING				2
 #define ITEM_STATE_HIT					3
 #define ITEM_STATE_DROP					4
+#define ITEM_STATE_STILL				5
 
 //Entity
 #define ENTITY_SAFE_DELETE_RANGE		60.0f
@@ -260,6 +261,9 @@ extern int CHOOSE;
 #define BULLET_FIREBALL_EFFECT_SPEED	20
 #define BULLET_FIREBALL_ANI_SPEED		50
 #define BULLET_HAMMER_ANI_SPEED			70
+
+//Max bullet
+#define BULLET_FIREBALL_MAXIMUM			2
 
 /////////////
 //Enemy Mob//
@@ -562,6 +566,7 @@ public:
 	//Mario 
 	int level;
 	int cardGet;
+	int numberOfFireBall = 0;
 	bool die = false;
 	bool finished = false;
 	bool allowCountTime = false;

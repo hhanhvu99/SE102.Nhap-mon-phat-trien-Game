@@ -20,6 +20,7 @@
 #include "SuperStar.h"
 #include "Mushroom.h"
 #include "Coin.h"
+#include "Flower.h"
 
 #include "EnemyTroop.h"
 #include "Teleport.h"
@@ -46,6 +47,7 @@ protected:
 	vector<LPGAMEOBJECT> gameObjects;
 	vector<LPGAMEOBJECT> collideObjects;
 	vector<LPGAMEOBJECT> deleteList;
+	vector<LPGAMEOBJECT> addList;
 
 	vector<LPGAMEOBJECT> teleport;
 	LPGAMEOBJECT currentGate;

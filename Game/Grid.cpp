@@ -296,7 +296,7 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 				id = currentScene->map[i][j];
 				if (id == -1)
 					continue;
-				if (global->occupiedGroup.find(global->TwoDimension_To_OneDimension(i, j, currentScene->width)) != global->occupiedGroup.end())
+				if (global->occupiedGroup.find(global->TwoDimension_To_OneDimension(i, j, currentScene->height)) != global->occupiedGroup.end())
 					continue;
 				if (find(begin(currentScene->GetBLOCKS()), end(currentScene->GetBLOCKS()), id) != end(currentScene->GetBLOCKS()))
 				{
@@ -497,7 +497,7 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 						collideObjects.shrink_to_fit();
 
 						//DebugOut(L"Found\n");
-						global->occupiedGroup.insert(global->TwoDimension_To_OneDimension(i, j, currentScene->width));
+						global->occupiedGroup.insert(global->TwoDimension_To_OneDimension(i, j, currentScene->height));
 
 						break;
 					}
@@ -704,6 +704,10 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 			break;
 		case ITEM_SUPER_STAR:
 			item = new SuperStar(indexX * STANDARD_SIZE, indexY * STANDARD_SIZE, itemType);
+			isCoin = false;
+			break;
+		case ITEM_FIRE_FLOWER:
+			item = new Flower(indexX * STANDARD_SIZE, indexY * STANDARD_SIZE, itemType);
 			isCoin = false;
 			break;
 		case ITEM_COIN:

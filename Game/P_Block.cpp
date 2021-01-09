@@ -42,12 +42,43 @@ void P_Block::ChangeToCoin()
 		tempCoin = new Coin(posX, posY, ITEM_COIN, true);
 		tempCoin->SetDrawOrder(BLOCK_DRAW_ORDER);
 		tempCoin->SetAnimationSet(AnimationManager::GetInstance()->Get(ITEM_ID));
+		tempCoin->SetCurrentCell(object->GetCurrentCell());
+		static_cast<Coin*>(tempCoin)->SetMaster(this);
 		listOfObject.push_back(tempCoin);
 
 		tempScene->AddToCell(object->GetCurrentCell(), tempCoin);
 		tempScene->Destroy(object);
 	}
 
+}
+
+void P_Block::ChangeToBlock()
+{
+	LPTESTSCENE tempScene = static_cast<TestScene*>(SceneManager::GetInstance()->GetCurrentScene());
+	LPGAMEOBJECT tempBlock;
+	int indexX, indexY;
+	float posX, posY;
+	vector<LPGAMEOBJECT> tempVector(listOfObject);
+
+	listOfObject.clear();
+
+	for (auto object : tempVector)
+	{
+		object->GetIndex(indexX, indexY);
+		object->GetPosition(posX, posY);
+
+		tempBlock = new BrickShiny(posX, posY);
+		tempBlock->SetIndex(indexX, indexY);
+		tempBlock->SetDrawOrder(ACTIVE_BLOCK_DRAW_ORDER);
+		tempBlock->SetAnimationSet(AnimationManager::GetInstance()->Get(ACTIVE_BLOCK));
+		tempBlock->SetCurrentCell(object->GetCurrentCell());
+		tempScene->Add(tempBlock);
+		static_cast<BrickShiny*>(tempBlock)->SetMaster(this);
+		listOfObject.push_back(tempBlock);
+
+		tempScene->AddToCell(object->GetCurrentCell(), tempBlock);
+		tempScene->Destroy(object);
+	}
 }
 
 void P_Block::RemoveObject(LPGAMEOBJECT objectToDelete)
@@ -145,6 +176,15 @@ void P_Block::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		}
 	}
+
+	if (inActive)
+	{
+		if (GetTickCount() - activeTime > P_BLOCK_TIME_SWITCH_BACK)
+		{
+			ChangeToBlock();
+			inActive = false;
+		}
+	}
 	
 }
 
@@ -181,6 +221,8 @@ void P_Block::SetState(int state)
 	if (state == P_BLOCK_STATE_STOMP)
 	{
 		ChangeToCoin();
+		inActive = true;
+		activeTime = GetTickCount();
 	}
 
 }

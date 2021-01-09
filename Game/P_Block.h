@@ -5,6 +5,8 @@
 #include "GameObject.h"
 #include "Coin.h"
 
+#define P_BLOCK_TIME_SWITCH_BACK	4000
+
 class P_Block : public GameObject
 {
 	float currentX, currentY;
@@ -12,6 +14,9 @@ class P_Block : public GameObject
 
 	bool moving = false;
 	DWORD startMoving = 0;
+
+	bool inActive = false;
+	DWORD activeTime = 0;
 
 	bool hit = false;
 	bool switchToP = false;
@@ -26,6 +31,7 @@ public:
 
 	void AddObject(LPGAMEOBJECT object);
 	void ChangeToCoin();
+	void ChangeToBlock();
 	void RemoveObject(LPGAMEOBJECT objectToDelete);
 
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);

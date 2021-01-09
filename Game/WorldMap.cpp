@@ -13,7 +13,7 @@ WorldMap::WorldMap(int id, LPCWSTR filePath) : TestScene(id, filePath)
 void WorldMap::Reset()
 {
 	castMario->MoveTo(startX, startY);
-	current = listOfPath[Global::TwoDimension_To_OneDimension(int(startX / 16), int(startY / 16), width)];
+	current = listOfPath[Global::TwoDimension_To_OneDimension(int(startX / 16), int(startY / 16), height)];
 
 }
 
@@ -21,7 +21,7 @@ void WorldMap::Restart()
 {
 	castMario->MoveTo(startX, startY);
 	castMario->SetState(MARIO_MAP_STATE_ROLLING);
-	current = listOfPath[Global::TwoDimension_To_OneDimension(int(startX / 16), int(startY / 16), width)];
+	current = listOfPath[Global::TwoDimension_To_OneDimension(int(startX / 16), int(startY / 16), height)];
 }
 
 void WorldMap::Load()
@@ -93,12 +93,12 @@ void WorldMap::Load()
 			}
 		}
 
-		listOfPath[Global::TwoDimension_To_OneDimension(indexX, indexY, width)] = path;
+		listOfPath[Global::TwoDimension_To_OneDimension(indexX, indexY, height)] = path;
 	}
 	
 	//Find current path
 	if (allowResetStart == false)
-		current = listOfPath[Global::TwoDimension_To_OneDimension(global->currentX, global->currentY, width)];
+		current = listOfPath[Global::TwoDimension_To_OneDimension(global->currentX, global->currentY, height)];
 
 	//Setup Mario
 	mario = new MarioMap(startPosX, startPosY);
@@ -117,7 +117,7 @@ void WorldMap::Load()
 		indexX = STAGE_FINISHED[x];
 		indexY = STAGE_FINISHED[x + 1];
 
-		LPPATH current = listOfPath[Global::TwoDimension_To_OneDimension(indexX, indexY, width)];
+		LPPATH current = listOfPath[Global::TwoDimension_To_OneDimension(indexX, indexY, height)];
 
 		current->currentPath->SetSprite(SpriteManager::GetInstance()->Get(MAP_MARIO_FINISHED));
 		current->isFinished = true;
@@ -274,7 +274,7 @@ void WorldMap::SetState(int state)
 			if (current->adjacent[0] != 0 && current->adjacent[1] != 0)
 			{
 				castMario->MoveTo(current->adjacent[0] * STANDARD_SIZE, current->adjacent[1] * STANDARD_SIZE);
-				current = listOfPath[Global::TwoDimension_To_OneDimension(current->adjacent[0], current->adjacent[1], width)];
+				current = listOfPath[Global::TwoDimension_To_OneDimension(current->adjacent[0], current->adjacent[1], height)];
 				current->currentPath->GetIndex(global->currentX, global->currentY);
 			}
 		}
@@ -285,7 +285,7 @@ void WorldMap::SetState(int state)
 			if (current->adjacent[2] != 0 && current->adjacent[3] != 0)
 			{
 				castMario->MoveTo(current->adjacent[2] * STANDARD_SIZE, current->adjacent[3] * STANDARD_SIZE);
-				current = listOfPath[Global::TwoDimension_To_OneDimension(current->adjacent[2], current->adjacent[3], width)];
+				current = listOfPath[Global::TwoDimension_To_OneDimension(current->adjacent[2], current->adjacent[3], height)];
 				current->currentPath->GetIndex(global->currentX, global->currentY);
 			}
 		}
@@ -296,7 +296,7 @@ void WorldMap::SetState(int state)
 			if (current->adjacent[4] != 0 && current->adjacent[5] != 0)
 			{
 				castMario->MoveTo(current->adjacent[4] * STANDARD_SIZE, current->adjacent[5] * STANDARD_SIZE);
-				current = listOfPath[Global::TwoDimension_To_OneDimension(current->adjacent[4], current->adjacent[5], width)];
+				current = listOfPath[Global::TwoDimension_To_OneDimension(current->adjacent[4], current->adjacent[5], height)];
 				current->currentPath->GetIndex(global->currentX, global->currentY);
 			}
 		}
@@ -307,7 +307,7 @@ void WorldMap::SetState(int state)
 			if (current->adjacent[6] != 0 && current->adjacent[7] != 0)
 			{
 				castMario->MoveTo(current->adjacent[6] * STANDARD_SIZE, current->adjacent[7] * STANDARD_SIZE);
-				current = listOfPath[Global::TwoDimension_To_OneDimension(current->adjacent[6], current->adjacent[7], width)];
+				current = listOfPath[Global::TwoDimension_To_OneDimension(current->adjacent[6], current->adjacent[7], height)];
 				current->currentPath->GetIndex(global->currentX, global->currentY);
 			}
 		}

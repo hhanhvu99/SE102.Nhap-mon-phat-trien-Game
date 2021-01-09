@@ -25,6 +25,6 @@ public:
 	virtual void Render();
 	virtual void SetState(int state) { this->state = state; }
 
-	~Rubbish() {};
+	virtual ~Rubbish() {};
 };
 

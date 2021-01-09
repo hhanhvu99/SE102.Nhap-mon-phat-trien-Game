@@ -371,10 +371,20 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					float objX, objY;
 					e->obj->GetPosition(objX, objY);
 
-					if (this->x < objX)
-						direction = 1;
-					else if (this->x + width > objX + e->obj->GetWidth())
-						direction = -1;
+					if (nx == 0)
+					{
+						if (this->x < objX)
+							direction = 1;
+						else if (this->x + width > objX + e->obj->GetWidth())
+							direction = -1;
+					}
+					else
+					{
+						if (nx < 0)
+							direction = -1;
+						else
+							direction = 1;
+					}
 
 				}
 			}

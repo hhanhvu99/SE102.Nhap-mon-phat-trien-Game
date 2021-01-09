@@ -4,6 +4,7 @@ Coin::Coin(float x, float y, int itemType, bool outSide) : Item(x, y, itemType)
 {
 	this->boundaryUp = this->y - STANDARD_SIZE;
 	this->outSide = outSide;
+	this->master = NULL;
 
 	if (outSide)
 	{
@@ -23,10 +24,15 @@ void Coin::DestroyTouch()
 	{
 		Global::GetInstance()->money += 1;
 		Global::GetInstance()->point += 50;
+
+		if (master != NULL)
+			static_cast<P_Block*>(master)->RemoveObject(this);
+
 		current->Destroy(this);
 	}
 	else
 		current->Destroy_Visual(this);
+
 }
 
 void Coin::Add()
@@ -47,7 +53,12 @@ void Coin::Destroy()
 	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
 
 	if (outSide)
+	{
+		if (master != NULL)
+			static_cast<P_Block*>(master)->RemoveObject(this);
+
 		current->Destroy(this);
+	}
 	else
 		current->Destroy_Visual(this);
 		

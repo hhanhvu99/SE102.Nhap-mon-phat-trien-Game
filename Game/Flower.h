@@ -3,15 +3,13 @@
 #include "Item.h"
 #include "TestScene.h"
 
-class Coin : public Item
+class Flower : public Item
 {
 	float boundaryUp;
-	bool outSide;
-	LPGAMEOBJECT master;
+	bool showUp;
 
 public:
-	Coin(float x, float y, int itemType, bool outSide);
-	void SetMaster(LPGAMEOBJECT master) { this->master = master; }
+	Flower(float x, float y, int itemType);
 
 	virtual void Add();
 	virtual void Destroy();
@@ -21,6 +19,6 @@ public:
 	virtual void Render();
 	virtual void SetState(int state);
 
-	~Coin();
+	~Flower();
 };
 

@@ -168,7 +168,7 @@ GroupObject::~GroupObject()
 	for (LPGAMEOBJECT object : group)
 	{
 		object->GetIndex(i, j);
-		global->occupiedGroup.erase(global->TwoDimension_To_OneDimension(i, j, scene->width));
+		global->occupiedGroup.erase(global->TwoDimension_To_OneDimension(i, j, scene->height));
 		delete object;
 		object = NULL;
 	}

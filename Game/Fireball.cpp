@@ -15,6 +15,7 @@ Fireball::Fireball(float x, float y, int direction)
 	this->type = eType::MARIO_BULLET;
 	this->state = BULLET_STATE_MOVING;
 	this->animation_set = AnimationManager::GetInstance()->Get(BULLET);
+	Global::GetInstance()->numberOfFireBall += 1;
 
 	this->Add();
 }
@@ -84,14 +85,14 @@ void Fireball::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			vy += BULLET_FIREBALL_GRAVITY * dt;
 			vx = direction * BULLET_FIREBALL_SPEED_X;
 			if (state != BULLET_STATE_HIT)
-				CalcPotentialCollisions(coObjects, coEvents, { eType::PLAYER , eType::ENEMY_MOB_DIE, eType::ITEM });
+				CalcPotentialCollisions(coObjects, coEvents, { eType::PLAYER , eType::ENEMY_MOB_DIE, eType::ENEMY_BULLET, eType::ITEM });
 		}
 		else
 		{
 			vy = unitVectorY * BULLET_FIREBALL_SPEED_ENEMY;
 			vx = unitVectorX * BULLET_FIREBALL_SPEED_ENEMY;
 			if (state != BULLET_STATE_HIT)
-				CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY, eType::ENEMY_BULLET, eType::ENEMY_MOB_DIE, eType::P_BLOCK,
+				CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY, eType::ENEMY_BULLET, eType::MARIO_BULLET, eType::ENEMY_MOB_DIE, eType::P_BLOCK,
 					eType::BLOCK, eType::GROUP, eType::BRICK, eType::QUESTION, eType::PLAYER_UNTOUCHABLE, eType::PLATFORM , eType::ITEM, eType::GROUP_MOVING});
 		}
 		
@@ -241,6 +242,9 @@ void Fireball::SetState(int state)
 
 Fireball::~Fireball()
 {
+	if (type == eType::MARIO_BULLET)
+		Global::GetInstance()->numberOfFireBall -= 1;
+
 	animation_set = NULL;
 	sprite = NULL;
 

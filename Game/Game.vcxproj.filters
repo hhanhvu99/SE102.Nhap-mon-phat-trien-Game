@@ -122,6 +122,9 @@
     <Filter Include="GameEngine\Scene\Partition">
       <UniqueIdentifier>{0e1f1edb-b1a6-40bc-ae4a-0198b47db1a8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Item\Flower">
+      <UniqueIdentifier>{b0e53c74-f7e6-4379-ae85-00def68b2278}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -268,6 +271,9 @@
     <ClCompile Include="Grid.cpp">
       <Filter>GameEngine\Scene\Partition</Filter>
     </ClCompile>
+    <ClCompile Include="Flower.cpp">
+      <Filter>GameObject\Item\Flower</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine.h">
@@ -413,6 +419,9 @@
     </ClInclude>
     <ClInclude Include="Grid.h">
       <Filter>GameEngine\Scene\Partition</Filter>
+    </ClInclude>
+    <ClInclude Include="Flower.h">
+      <Filter>GameObject\Item\Flower</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

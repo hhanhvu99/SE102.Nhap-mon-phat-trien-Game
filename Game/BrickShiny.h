@@ -19,7 +19,7 @@ class BrickShiny : public ActiveBlock
 public:
 	BrickShiny(float x, float y, LPSPRITE sprite = NULL);
 
-	void Destroy();
+	virtual void Destroy();
 	void SetMaster(LPGAMEOBJECT master) { this->master = master; }
 
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);

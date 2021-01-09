@@ -12,9 +12,7 @@ TestScene::TestScene(int id, LPCWSTR filePath) : Scene(id, filePath)
 
 void TestScene::CheckCell()
 {
-	int id;
 	float camX, camY, endCamX, endCamY;
-	float startX, startY, endX, endY;
 	float startCellX, startCellY, endCellX, endCellY;
 	GameEngine::GetInstance()->GetCamPos(camX, camY);
 
@@ -45,7 +43,7 @@ void TestScene::CheckCell()
 
 void TestScene::Add(LPGAMEOBJECT gameObject)
 {
-	gameObjects.push_back(gameObject);
+	addList.push_back(gameObject);
 	collideObjects.push_back(gameObject);
 
 }
@@ -72,7 +70,7 @@ void TestScene::Remove(LPGAMEOBJECT gameObject)
 
 void TestScene::Add_Visual(LPGAMEOBJECT gameObject)
 {
-	gameObjects.push_back(gameObject);
+	addList.push_back(gameObject);
 }
 
 void TestScene::Destroy_Visual(LPGAMEOBJECT gameObject)
@@ -209,8 +207,6 @@ void TestScene::Load()
 	LPGAMEOBJECT gate = NULL;
 	float currentX, currentY;
 	float targetX, targetY;
-	int indexX, indexY;
-	int indexObj_x, indexObj_y;
 	int direction;
 	int length = GATE.size();
 	for (int x = 0; x < length; x += 7)
@@ -367,6 +363,19 @@ void TestScene::Update(DWORD dt)
 		delete deleteObject;
 	}
 
+	//Check if two list overlap
+	for (auto deleteObject : deleteList)
+	{
+		addList.erase(std::remove(addList.begin(), addList.end(), deleteObject), addList.end());
+	}
+
+	//Add object
+	for (auto addObject : addList)
+	{
+		gameObjects.push_back(addObject);
+	}
+
+	addList.clear();
 	deleteList.clear();
 
 	/*

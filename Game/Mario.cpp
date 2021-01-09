@@ -358,6 +358,19 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					item->DestroyTouch();
 					break;
 
+				case ITEM_FIRE_FLOWER:
+					oldLevel = global->level;
+					global->level = MARIO_LEVEL_FIRE;
+
+					if (oldLevel != MARIO_LEVEL_SMALL)
+						SetState(MARIO_STATE_UP);
+					else
+						global->level = oldLevel;
+
+					Global::GetInstance()->point += 1000;
+					item->DestroyTouch();
+					break;
+
 				case ITEM_SUPER_STAR:
 					SetState(MARIO_STATE_INVINCIBLE);
 					Global::GetInstance()->point += 1000;
@@ -425,6 +438,11 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				{
 					obj->SetState(ACTIVE_BLOCK_STATE_HIT);
 					vy = MARIO_BLOCK_DEFLECT;
+				}
+				else if (obj->GetType() == eType::P_BLOCK)
+				{
+					if (obj->GetState() == P_BLOCK_STATE_IDLE)
+						obj->SetState(P_BLOCK_STATE_HIT);
 				}
 			}
 			if (startInvincible)
@@ -1411,7 +1429,11 @@ void Mario::SetState(int state)
 				startShoot = now;
 
 				if (global->level == MARIO_LEVEL_FIRE)
-					Fireball* bullet = new Fireball(pointX + direction * MARIO_BULLET_OFFSET_X, pointY + MARIO_BULLET_OFFSET_Y, direction);
+				{
+					if (global->numberOfFireBall < BULLET_FIREBALL_MAXIMUM)
+						Fireball* bullet = new Fireball(pointX + direction * MARIO_BULLET_OFFSET_X, pointY + MARIO_BULLET_OFFSET_Y, direction);
+				}
+	
 				else
 					Hammer* hammer = new Hammer(pointX + direction * MARIO_BULLET_OFFSET_X, pointY + MARIO_BULLET_OFFSET_Y, direction);
 			}

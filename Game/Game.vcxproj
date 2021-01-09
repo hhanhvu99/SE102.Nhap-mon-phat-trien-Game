@@ -161,6 +161,7 @@
     <ClCompile Include="EndGoal.cpp" />
     <ClCompile Include="EnemyTroop.cpp" />
     <ClCompile Include="Fireball.cpp" />
+    <ClCompile Include="Flower.cpp" />
     <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Global.cpp" />
@@ -211,6 +212,7 @@
     <ClInclude Include="EndGoal.h" />
     <ClInclude Include="EnemyTroop.h" />
     <ClInclude Include="Fireball.h" />
+    <ClInclude Include="Flower.h" />
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Global.h" />
