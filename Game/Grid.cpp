@@ -88,8 +88,8 @@ void Grid::FindGroupPos(int& left, int& top, int& right, int& bottom, LPGAMEOBJE
 	float x, y, width, height;
 
 	group->GetPosition(x, y);
-	width = group->GetWidth();
-	height = group->GetHeight();
+	width = float(group->GetWidth());
+	height = float(group->GetHeight());
 
 	groupLeft = int(x / STANDARD_SIZE);
 	groupTop = int(y / STANDARD_SIZE);
@@ -166,10 +166,10 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 
 			if (CELL[0] == this->id)
 			{
-				this->startCell_X = CELL[1];
-				this->startCell_Y = CELL[2];
-				this->endCell_X = CELL[3];
-				this->endCell_Y = CELL[4];
+				this->startCell_X = CELL[1] * STANDARD_SIZE;
+				this->startCell_Y = CELL[2] * STANDARD_SIZE;
+				this->endCell_X = CELL[3] * STANDARD_SIZE;
+				this->endCell_Y = CELL[4] * STANDARD_SIZE;
 				foundCell = true;
 			}
 
@@ -258,9 +258,9 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 
 	if (currentScene->GetType() == 3)
 	{
-		for (int j = startCell_Y; j <= endCell_Y; ++j)
+		for (int j = CELL[2]; j <= CELL[4]; ++j)
 		{
-			for (int i = startCell_X; i <= endCell_X; ++i)
+			for (int i = CELL[1]; i <= CELL[3]; ++i)
 			{
 				id = currentScene->map[i][j];
 				if (id == -1)
@@ -289,9 +289,9 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 	}
 	else
 	{
-		for (int j = startCell_Y; j <= endCell_Y; ++j)
+		for (int j = CELL[2]; j <= CELL[4]; ++j)
 		{
-			for (int i = startCell_X; i <= endCell_X; ++i)
+			for (int i = CELL[1]; i <= CELL[3]; ++i)
 			{
 				id = currentScene->map[i][j];
 				if (id == -1)
@@ -751,12 +751,6 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 
 	//Thêm vào Active Cell
 	global->cells.insert(this->id);
-
-	//Chỉnh thành float
-	this->startCell_X = this->startCell_X * STANDARD_SIZE;
-	this->startCell_Y = this->startCell_Y * STANDARD_SIZE;
-	this->endCell_X = this->endCell_X * STANDARD_SIZE;
-	this->endCell_Y = this->endCell_Y * STANDARD_SIZE;
 }
 
 void Grid::Unload()

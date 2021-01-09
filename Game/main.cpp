@@ -344,15 +344,15 @@ int Run()
 			accumulator += dt;
 
 			
-			while (accumulator >= timeStep)
+			/*while (accumulator >= timeStep)
 			{
 				gameEngine->ProcessKeyboard();
 				Update(timeStep);
 				accumulator -= timeStep;
-			}
+			}*/
 			
-			//gameEngine->ProcessKeyboard();
-			//Update(dt);
+			gameEngine->ProcessKeyboard();
+			Update(dt);
 			Render();
 		}
 		else
