@@ -110,6 +110,19 @@ void WorldMap::Load()
 
 	GameEngine::GetInstance()->SetCamPos(0.0f, 0.0f);
 
+	//Set Stage Finished
+	length = STAGE_FINISHED.size();
+	for (int x = 0; x < length; x += 2)
+	{
+		indexX = STAGE_FINISHED[x];
+		indexY = STAGE_FINISHED[x + 1];
+
+		LPPATH current = listOfPath[Global::TwoDimension_To_OneDimension(indexX, indexY, width)];
+
+		current->currentPath->SetSprite(SpriteManager::GetInstance()->Get(MAP_MARIO_FINISHED));
+		current->isFinished = true;
+	}
+
 	PAUSE = true;
 	allowResetStart = false;
 	Global::GetInstance()->inWorldMap = true;
@@ -138,17 +151,18 @@ void WorldMap::Update(DWORD dt)
 	}
 	else if (global->finished)
 	{
+		global->currentCardEmpty += 1;
 		int indexX, indexY;
 
 		current->currentPath->SetSprite(SpriteManager::GetInstance()->Get(MAP_MARIO_FINISHED));
 		current->currentPath->GetIndex(indexX, indexY);
 		current->isFinished = true;
+
 		STAGE_FINISHED.push_back(indexX);
 		STAGE_FINISHED.push_back(indexY);
 
 		global->finished = false;
 	}
-	
 	
 	if (gameOver)
 	{

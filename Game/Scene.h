@@ -43,8 +43,10 @@ public:
 	int GetType() { return this->type; }
 	int GetState() { return this->state; }
 	int GetCameraMode() { return this->cameraMode; }
+
 	std::vector<int>& GetBLOCKS() { return this->BLOCKS; }
 	std::vector<int>& GetACTIVE_BLOCKS() { return this->ACTIVE_BLOCKS; }
+	std::vector<int>& GetSTAGE_FINISHED() { return this->STAGE_FINISHED; }
 
 	void SetCellNumber(int numberOfCell) { this->numberOfCell = numberOfCell; }
 	void SetSwitch() { startSwitch = true; }

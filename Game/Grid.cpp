@@ -331,9 +331,12 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 						gameObject->SetIndex(i, j);
 						gameObject->SetDrawOrder(ACTIVE_BLOCK_DRAW_ORDER);
 						gameObject->SetAnimationSet(AnimationManager::GetInstance()->Get(ACTIVE_BLOCK));
+
 						Item* coin = new Coin(STANDARD_SIZE * i, STANDARD_SIZE * j, ITEM_COIN, false);
 						coin->SetDrawOrder(BLOCK_DRAW_ORDER);
 						coin->SetAnimationSet(AnimationManager::GetInstance()->Get(ITEM_ID));
+						coin->SetCurrentCell(this->id);
+
 						static_cast<QuestionBlock*>(gameObject)->SetItem(coin);
 
 						gameObjects.push_back(gameObject);
@@ -477,7 +480,7 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 				{
 					object->GetIndex(indexX, indexY);
 
-					if (i == indexX && j == indexY && object->GetType() == eType::BLOCK)
+					if (i == indexX && j == indexY)
 					{
 						group->Add(object);
 
@@ -679,6 +682,7 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 	Item* item = NULL;
 	ActiveBlock* newObject;
 	int indexObj_x, indexObj_y;
+	bool isCoin = false;
 
 	length = ITEM.size();
 	for (int x = 0; x < length; x += 3)
@@ -692,12 +696,18 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 		case ITEM_MUSHROOM_RED:
 		case ITEM_MUSHROOM_GREEN:
 			item = new Mushroom(indexX * STANDARD_SIZE, indexY * STANDARD_SIZE, itemType);
+			isCoin = false;
 			break;
 		case ITEM_SUPER_LEAF:
 			item = new SuperLeaf(indexX * STANDARD_SIZE, indexY * STANDARD_SIZE, itemType);
+			isCoin = false;
 			break;
 		case ITEM_SUPER_STAR:
 			item = new SuperStar(indexX * STANDARD_SIZE, indexY * STANDARD_SIZE, itemType);
+			isCoin = false;
+			break;
+		case ITEM_COIN:
+			isCoin = true;
 			break;
 		default:
 			DebugOut(L"[ERROR] Unknown item type: %d\n", mobType);
@@ -708,21 +718,34 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 			object->GetIndex(indexObj_x, indexObj_y);
 			if (indexObj_x == indexX && indexObj_y == indexY)
 			{
-				newObject = static_cast<ActiveBlock*>(object);
+				if (isCoin)
+				{
+					newObject = static_cast<ActiveBlock*>(object);
+					newObject->SetOption(1);
+					newObject->SetHP(7);
+				}
+				else
+				{
+					newObject = static_cast<ActiveBlock*>(object);
 
-				if (newObject->hasItem())
-					static_cast<LPTESTSCENE>(currentScene)->Destroy(newObject->GetItem());
+					if (newObject->hasItem())
+						static_cast<LPTESTSCENE>(currentScene)->Destroy(newObject->GetItem());
 
-				newObject->SetItem(item);
+					newObject->SetItem(item);
+				}			
 				break;
 			}
 		}
 		
-		item->SetDrawOrder(BLOCK_DRAW_ORDER);
-		item->SetAnimationSet(AnimationManager::GetInstance()->Get(ITEM_ID));
-		item->SetCurrentCell(this->id);
+		if (isCoin == false)
+		{
+			item->SetDrawOrder(BLOCK_DRAW_ORDER);
+			item->SetAnimationSet(AnimationManager::GetInstance()->Get(ITEM_ID));
+			item->SetCurrentCell(this->id);
 
-		cellObjects.push_back(item);
+			cellObjects.push_back(item);
+		}
+		
 	}
 
 

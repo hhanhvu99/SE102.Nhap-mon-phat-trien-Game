@@ -2,6 +2,7 @@
 
 #include "ActiveBlock.h"
 #include "Mushroom.h"
+#include "Coin.h"
 
 class QuestionBlock : public ActiveBlock
 {

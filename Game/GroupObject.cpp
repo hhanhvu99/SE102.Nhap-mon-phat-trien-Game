@@ -130,7 +130,7 @@ void GroupObject::Render()
 		object->Render();
 	}
 
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void GroupObject::Destroy()

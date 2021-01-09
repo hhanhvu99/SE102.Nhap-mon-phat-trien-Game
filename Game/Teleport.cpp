@@ -76,11 +76,11 @@ void Teleport::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (type == eType::TELEPORT_SCENE_TO_MAP)
 		return;
 
+	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
+	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
+
 	if (mario == NULL)
 	{
-		LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
-		LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
-
 		if (current->GetMario() != NULL)
 		{
 			if (CHOOSE == 1)

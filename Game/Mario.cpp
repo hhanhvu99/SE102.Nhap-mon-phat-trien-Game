@@ -897,7 +897,6 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			else if (this->x + width > camX + SCREEN_WIDTH)
 				this->x = camX + SCREEN_WIDTH - width;
 
-			DebugOut(L"camX: %f - camY: %f\n", camX, camY);
 		}
 	}	
 	

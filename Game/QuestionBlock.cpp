@@ -7,6 +7,7 @@ QuestionBlock::QuestionBlock(float x, float y, LPSPRITE sprite) : ActiveBlock(x,
 	this->y = oldY = y;
 	this->width = this->height = int(STANDARD_SIZE);
 
+	this->hp = 1;
 	this->hit = false;
 	this->moving = false;
 	this->type = eType::QUESTION;
@@ -28,12 +29,14 @@ void QuestionBlock::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	x += dx;
 	y += dy;
 	
+
 	if (state == ACTIVE_BLOCK_STATE_HIT && hit == false)
 	{
 		oldX = x;
 		oldY = y;
 		hit = true;
 		moving = true;
+		this->hp -= 1;
 		startMoving = GetTickCount();
 	}
 
@@ -74,6 +77,7 @@ void QuestionBlock::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			{
 				vy = 0;
 				y = oldY;
+				int currentItemCell = -1;
 
 				if (item)
 				{
@@ -92,13 +96,23 @@ void QuestionBlock::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					else
 					{
 						item->SetState(ITEM_STATE_SHOW);
+
 					}
-					
-					item = NULL;
+
+					if (hp > 0)
+					{
+						currentItemCell = item->GetCurrentCell();
+						item = new Coin(x, y, ITEM_COIN, false);
+						item->SetDrawOrder(BLOCK_DRAW_ORDER);
+						item->SetAnimationSet(AnimationManager::GetInstance()->Get(ITEM_ID));
+						static_cast<LPTESTSCENE>(SceneManager::GetInstance()->GetCurrentScene())->AddToCell(currentItemCell, item);
+						hit = false;
+					}
+					else
+						item = NULL;
 				}
 			}
 		}
-		
 	}
 
 	//DebugOut(L"State Update: %d \n", state);
@@ -106,9 +120,13 @@ void QuestionBlock::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void QuestionBlock::Render()
 {
-	if (!hit)
+	if (hp > 0)
 	{
-		int ani = QUESTION_BLOCK_ANI;
+		int ani = -1;
+		if (option == 0)
+			ani = QUESTION_BLOCK_ANI;
+		else
+			ani = BRICK_SHINY_ANI;
 		animation_set->Get(ani)->Render(x, y);
 	}
 	else

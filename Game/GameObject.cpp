@@ -9,6 +9,7 @@ GameObject::GameObject()
 {
 	x = y = 0;
 	vx = vy = 0;
+	indexX = indexY = -1;
 	direction = 1;
 	currentCell = -1;
 }

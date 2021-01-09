@@ -236,23 +236,6 @@ void TestScene::Load()
 
 		teleport.push_back(gate);
 	}
-	
-	//Set Stage Finished
-	length = STAGE_FINISHED.size();
-	for (int x = 0; x < length; x += 2)
-	{
-		indexX = STAGE_FINISHED[x];
-		indexY = STAGE_FINISHED[x+1];
-
-		for (LPGAMEOBJECT object : gameObjects)
-		{
-			object->GetIndex(indexObj_x, indexObj_y);
-
-			if (indexX == indexObj_x && indexY == indexObj_y)
-				object->SetSprite(SpriteManager::GetInstance()->Get(MAP_MARIO_FINISHED));
-			
-		}
-	}
 
 	//Set Start Position
 	if (allowResetStart)
@@ -359,7 +342,7 @@ void TestScene::Update(DWORD dt)
 	}
 
 	
-	DebugOut(L"Size: %d\n", collideObjects.size());
+	//DebugOut(L"Size: %d\n", collideObjects.size());
 
 	//Check cell
 	if (type == 1)
