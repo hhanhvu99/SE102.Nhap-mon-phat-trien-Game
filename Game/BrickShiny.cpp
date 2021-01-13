@@ -6,9 +6,11 @@ BrickShiny::BrickShiny(float x, float y, LPSPRITE sprite) : ActiveBlock(x, y, sp
 	this->x = oldX = x;
 	this->y = oldY = y;
 	this->hp = 1;
+	this->countDestroy = 0;
 	this->width = this->height = int(STANDARD_SIZE);
 
 	this->moving = false;
+	this->destroy = false;
 	this->type = eType::BRICK;
 	this->state = BRICK_SHINY_STATE_NORMAL;
 
@@ -46,12 +48,22 @@ void BrickShiny::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		oldX = x;
 		oldY = y;
 		moving = true;
+		startMoving = GetTickCount();
+	}
+	if (destroy)
+	{
+		state = BRICK_SHINY_STATE_MOVING;
+
+		if (countDestroy != 0)
+			this->Destroy();
+		++countDestroy;
+		return;
 	}
 
 	float distanceX = oldX - x;
 	float distanceY = oldY - y;
 
-	if (distanceX + distanceY != 0)
+	if (distanceX + distanceY != 0 || moving == true)
 		state = BRICK_SHINY_STATE_MOVING;
 	else
 		state = BRICK_SHINY_STATE_NORMAL;
@@ -117,12 +129,16 @@ void BrickShiny::SetState(int state)
 	{
 	case ACTIVE_BLOCK_STATE_HIT:
 	{
-		Rubbish* brick1 = new Rubbish(x + RUBBISH_OFFSET_X, y + RUBBISH_OFFSET_Y, RUBBISH_SPEED_X, RUBBISH_SPEED_Y, RUBBISH_DEFLECT_SPEED, -1);
-		Rubbish* brick2 = new Rubbish(x + RUBBISH_OFFSET_X, y + RUBBISH_OFFSET_Y, RUBBISH_SPEED_X, RUBBISH_SPEED_Y, RUBBISH_DEFLECT_SPEED - 0.1f, -1);
-		Rubbish* brick3 = new Rubbish(x + RUBBISH_OFFSET_X, y + RUBBISH_OFFSET_Y, RUBBISH_SPEED_X, RUBBISH_SPEED_Y, RUBBISH_DEFLECT_SPEED, 1);
-		Rubbish* brick4 = new Rubbish(x + RUBBISH_OFFSET_X, y + RUBBISH_OFFSET_Y, RUBBISH_SPEED_X, RUBBISH_SPEED_Y, RUBBISH_DEFLECT_SPEED - 0.1f, 1);
+		if (Global::GetInstance()->level != MARIO_LEVEL_SMALL && moving == false)
+		{
+			Rubbish* brick1 = new Rubbish(x + RUBBISH_OFFSET_X, y + RUBBISH_OFFSET_Y, RUBBISH_SPEED_X, RUBBISH_SPEED_Y, RUBBISH_DEFLECT_SPEED, -1);
+			Rubbish* brick2 = new Rubbish(x + RUBBISH_OFFSET_X, y + RUBBISH_OFFSET_Y, RUBBISH_SPEED_X, RUBBISH_SPEED_Y, RUBBISH_DEFLECT_SPEED - 0.1f, -1);
+			Rubbish* brick3 = new Rubbish(x + RUBBISH_OFFSET_X, y + RUBBISH_OFFSET_Y, RUBBISH_SPEED_X, RUBBISH_SPEED_Y, RUBBISH_DEFLECT_SPEED, 1);
+			Rubbish* brick4 = new Rubbish(x + RUBBISH_OFFSET_X, y + RUBBISH_OFFSET_Y, RUBBISH_SPEED_X, RUBBISH_SPEED_Y, RUBBISH_DEFLECT_SPEED - 0.1f, 1);
 
-		this->Destroy();
+			this->destroy = true;
+		}	
+
 	}
 		break;
 

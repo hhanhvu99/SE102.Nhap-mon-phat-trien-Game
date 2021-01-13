@@ -8,7 +8,7 @@
 //Speed
 #define MARIO_WALKING_SPEED				0.00015f 
 #define MARIO_RUNNING_SPEED				0.00008f 
-#define MARIO_JUMPING_SPEED				0.0025f
+#define MARIO_JUMPING_SPEED				0.0012f
 #define MARIO_WALKING_FINISH_SPEED		0.05f
 #define MARIO_MAX_WALKING_SPEED			0.1f
 #define MARIO_HALF_MAX_RUNNING_SPEED_1	0.115f
@@ -23,8 +23,10 @@
 #define MARIO_RUNNING_BREAK_SPEED		0.001f
 #define MARIO_TRANSPORT_SPEED			0.03f
 
+#define MARIO_MAX_GROUP_MOVING_SPEED	0.15f
 #define MARIO_BLOCK_DEFLECT				0.05f
 #define MARIO_JUMP_SPEED_Y				0.3f
+#define MARIO_MAX_JUMPING_SPEED			0.25f
 #define MARIO_JUMP_SPEED_FLAP			0.1f
 #define MARIO_JUMP_DEFLECT_SPEED		0.15f
 #define MARIO_GRAVITY					0.0007f
@@ -54,6 +56,7 @@
 #define MARIO_STATE_JUMP_FLAP_HOLD		504
 #define MARIO_STATE_STOP_JUMP			505
 #define MARIO_STATE_DEBUG_FLAP			506
+#define MARIO_STATE_JUMP_HOLD			507
 #define MARIO_STATE_CROUCH				600
 #define MARIO_STATE_NOT_CROUCH			601
 #define MARIO_STATE_INVINCIBLE			700
@@ -79,7 +82,7 @@
 #define MARIO_INVINCIBILITY_TIME		5000	
 #define MARIO_FROG_JUMPING_TIME			500
 #define MARIO_SHOOT_WAITING_TIME		1000
-#define MARIO_MAX_JUMPING				120
+#define MARIO_MAX_JUMPING				30
 #define MARIO_FLAP_TIME					200
 #define MARIO_FLAP_DURATION				100
 #define MARIO_FLAP_RUN_DURATION			150
@@ -148,6 +151,7 @@ class Mario : public GameObject
 {
 protected:
 	LPGAMEOBJECT grabObject;
+	LPGAMEOBJECT groupMoving;
 	GLOBAL global;
 
 	int oldLevel;
@@ -245,6 +249,7 @@ protected:
 	bool grabTurtlePress = false;
 	bool grabbing = false;
 	bool jumpButtonPressed = false;
+	bool standOnGroup = false;
 
 	int countTouch = 0;
 	int countOffGround = 0;

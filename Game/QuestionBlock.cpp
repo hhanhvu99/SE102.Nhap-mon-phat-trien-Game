@@ -43,7 +43,7 @@ void QuestionBlock::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	float distanceX = oldX - x;
 	float distanceY = oldY - y;
 
-	if (distanceX + distanceY != 0)
+	if (distanceX + distanceY != 0 || moving == true)
 		state = QUESTION_BLOCK_STATE_MOVING;
 	else
 		state = QUESTION_BLOCK_STATE_NORMAL;

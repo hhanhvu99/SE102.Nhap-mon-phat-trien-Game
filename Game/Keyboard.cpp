@@ -197,8 +197,9 @@ void Keyboard::OnKeyDown(int KeyCode)
 			mario->SetState(MARIO_STATE_TRANSPORT_DOWN);
 			break;
 		case DIK_P:
-			//Flap Jump
-			mario->SetState(MARIO_STATE_DEBUG_FLAP);
+			//Flap Jumps
+			if (PAUSE == false)
+				mario->SetState(MARIO_STATE_DEBUG_FLAP);
 			break;
 		case DIK_H:
 			mario->SetPosition(141 * STANDARD_SIZE, 5 * STANDARD_SIZE);

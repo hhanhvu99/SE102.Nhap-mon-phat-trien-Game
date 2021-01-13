@@ -18,6 +18,7 @@ Mario::Mario(float x, float y) : GameObject()
 	this->y = y;
 	this->type = eType::PLAYER;
 	this->grabObject = NULL;
+	this->groupMoving = NULL;
 	this->directionGrab = 0;
 
 	touchGround = false;
@@ -34,6 +35,10 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	// Calculate dx, dy 
 	GameObject::Update(dt);
+	vector<LPCOLLISIONEVENT> coEvents;
+	vector<LPCOLLISIONEVENT> coEventsResult;
+
+	coEvents.clear();
 
 	if (transporting)
 	{
@@ -75,15 +80,26 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 
 	// Simple fall down
-	vy += MARIO_GRAVITY * dt;
+	if (groupMoving == NULL)
+		vy += MARIO_GRAVITY * dt;
+	else
+	{
+		float tempX, tempY;
+		groupMoving->GetPosition(tempX, tempY);
+		this->y = tempY - height - 1.0f;
+		LPCOLLISIONEVENT e = SweptAABBEx(groupMoving);
+		coEvents.push_back(e);
+	}
 
 	if (vy > MARIO_MAX_FALLING_SPEED)
 		vy = MARIO_MAX_FALLING_SPEED;
 
-	vector<LPCOLLISIONEVENT> coEvents;
-	vector<LPCOLLISIONEVENT> coEventsResult;
-
-	coEvents.clear();
+	if (touchGround == false)
+	{
+		standOnGroup = false;
+		groupMoving = NULL;
+	}
+		
 
 	// turn off collision when die 
 	if (state != MARIO_STATE_DIE)
@@ -418,18 +434,17 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			}
 			else if (obj->GetType() == eType::GROUP_MOVING)
 			{
-				float tempX, tempY, tempVx;
+				float tempX, tempY;
 				obj->GetPosition(tempX, tempY);
+				obj->SetState(GROUP_MOVING_STATE_STOMP);
 
 				if (obj->GetState() == GROUP_MOVING_STATE_STOMP)
 				{
-					obj->GetSpeed(tempVx, this->vy);
+					this->y = tempY - height - 1.0f;
+					groupMoving = obj;
+					standOnGroup = true;
 					//DebugOut(L"Inside: vx: %f -- vy:%f\n", vx, vy);
-				}
-				else if (this->y + height <= tempY && ny < 0)
-				{
-					obj->SetState(GROUP_MOVING_STATE_STOMP);
-				}
+				}			
 
 			}
 			if (ny > 0)
@@ -459,7 +474,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	}
 
-	//DebugOut(L"Outside: vx: %f -- vy:%f\n", vx, vy);
+	//DebugOut(L"Outside: vy:%f\n", vy);
 	//DebugOut(L"x: %f -- y:%f\n", x, y);
 	//DebugOut(L"Is holding: %d\n", grabTurtlePress);
 
@@ -662,13 +677,25 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 
 	//Jumping
-	if (jump_allow)
+	if (jumpButtonPressed)
 	{
-		if (GetTickCount() - jump_start < MARIO_MAX_JUMPING)
-			vy -= (MARIO_JUMPING_SPEED + MARIO_GRAVITY) * dt;
+		if (global->level == MARIO_LEVEL_RACC || global->level == MARIO_LEVEL_TANU)
+			SetState(MARIO_STATE_JUMP_FLAP_HOLD);
 		else
-			jump_allow = false;
+			SetState(MARIO_STATE_JUMP_HOLD);
 	}
+
+	if (startJumping)
+	{
+		if (vy < -MARIO_MAX_JUMPING_SPEED)
+			startJumping = false;
+		else if (GetTickCount() - jump_start > MARIO_MAX_JUMPING)
+			jump_allow = false;
+		else	
+			vy -= (MARIO_JUMPING_SPEED + MARIO_GRAVITY) * dt;
+			
+	}
+	DebugOut(L"vy: %f \n", vy);
 
 	//Attack
 	if (ani != -1)
@@ -737,11 +764,6 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 
 	//Flapping
-	if (jumpButtonPressed)
-	{
-		SetState(MARIO_STATE_JUMP_FLAP_HOLD);
-	}
-
 	if (flapping == true)
 	{
 		if (isMax)
@@ -1306,6 +1328,7 @@ void Mario::SetState(int state)
 
 		if (startJumping == false)
 		{
+			vy = 0;
 			jump_start = now;
 			startJumping = true;
 			jump_allow = true;
@@ -1353,6 +1376,18 @@ void Mario::SetState(int state)
 
 			}
 		}
+		break;
+	case MARIO_STATE_JUMP_HOLD:
+		jumpButtonPressed = true;
+
+		if (startJumping)
+		{
+			jump_start = now;
+			startJumping = true;
+			jump_allow = true;
+			touchGround = false;
+		}
+
 		break;
 	case MARIO_STATE_JUMP_FLAP_HOLD:
 		jumpButtonPressed = true;
@@ -1644,6 +1679,7 @@ void Mario::SetState(int state)
 		flapJump = false;
 		allowFlapJump = false;
 		jumpButtonPressed = false;
+		standOnGroup = false;
 
 		if (grabbing)
 		{

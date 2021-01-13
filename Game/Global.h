@@ -493,6 +493,7 @@ enum eType
 
 	//Mario 
 	PLAYER = 04,
+	PLAYER_LUIGI = 16,
 	PLAYER_UNTOUCHABLE = 05,
 
 	//Enemy Mob

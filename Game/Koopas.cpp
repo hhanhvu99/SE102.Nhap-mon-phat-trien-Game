@@ -5,6 +5,7 @@ Koopas::Koopas(int placeX, int placeY, int mobType, bool hasWing)
 {
 	this->x = placeX * STANDARD_SIZE;
 	this->y = placeY * STANDARD_SIZE - 1.0f;
+	this->oldX = this->x;
 
 	this->immobilize = false;
 	this->rolling = false;
@@ -21,8 +22,12 @@ Koopas::Koopas(int placeX, int placeY, int mobType, bool hasWing)
 	this->state = ENEMY_STATE_MOVING;
 	this->direction = -1;
 	this->directionFly = -1;
+	this->countTouch = 0;
 	this->mobType = mobType;
 	this->hasWing = hasWing;
+
+	this->limitLeft = 99999999.9f;
+	this->limitRight = 0.0f;
 
 	this->pointUp = this->y + ENEMY_KOOPAS_FLY_BOUNDARY_UP;
 	this->pointDown = this->y + ENEMY_KOOPAS_FLY_BOUNDARY_DOWN;
@@ -363,33 +368,91 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				}
 				
 			}
-			else if (mobType == ENEMY_KOOPAS_RED && state == ENEMY_STATE_MOVING)
+			else if (nx != 0 && mobType == ENEMY_KOOPAS_GREEN)
 			{
-				if (e->obj->GetType() == eType::BLOCK || e->obj->GetType() == eType::GROUP ||
-					e->obj->GetType() == eType::PLATFORM || e->obj->GetType() == eType::BRICK)
-				{
-					float objX, objY;
-					e->obj->GetPosition(objX, objY);
+				if (nx < 0)
+					direction = -1;
+				else
+					direction = 1;
+			}
+	
+		}
 
-					if (nx == 0)
+		if (mobType == ENEMY_KOOPAS_RED && state == ENEMY_STATE_MOVING)
+		{
+			float thisLeft, thisTop, thisRight, thisBottom;
+			bool passCheck;
+			GetBoundingBox(thisLeft, thisTop, thisRight, thisBottom);
+			thisLeft -= ENEMY_KOOPAS_CHECK_RANGE;
+			thisTop -= ENEMY_KOOPAS_CHECK_RANGE;
+			thisRight += ENEMY_KOOPAS_CHECK_RANGE;
+			thisBottom += ENEMY_KOOPAS_CHECK_RANGE;
+
+			if (abs(this->x - oldX) < ENEMY_KOOPAS_SIMILAR_GAP)
+				countTouch += 1;
+			oldX = this->x;
+
+			for (auto object : *coObjects)
+			{
+				passCheck = false;
+				float left, top, right, bottom;
+				object->GetBoundingBox(left, top, right, bottom);
+
+				if (left > thisLeft)
+					if (top > thisTop)
+						if (right < thisRight)
+							if (bottom < thisBottom)
+								passCheck = true;
+
+				if (passCheck == false)
+					continue;
+
+				if (object->GetType() == eType::BLOCK || object->GetType() == eType::GROUP ||
+					object->GetType() == eType::PLATFORM || object->GetType() == eType::BRICK || object->GetType() == eType::QUESTION)
+				{
+					if (object->GetState() == BRICK_SHINY_STATE_MOVING || object->GetState() == QUESTION_BLOCK_STATE_MOVING)
 					{
-						if (this->x < objX)
-							direction = 1;
-						else if (this->x + width > objX + e->obj->GetWidth())
-							direction = -1;
+						SetState(ENEMY_STATE_HIT);
+						break;
+					}
+
+					if (countTouch < 3)
+					{
+						if (direction < 0)
+						{
+							limitRight = 0.0f;
+							if (left < limitLeft)
+								limitLeft = left;
+							if (this->x < limitLeft)
+							{
+								countTouch = 0;
+								direction = 1;
+							}
+								
+						}
+						else
+						{
+							limitLeft = 99999999.9f;
+							if (right > limitRight)
+								limitRight = right;
+							if (this->x + width > limitRight)
+							{
+								countTouch = 0;
+								direction = -1;
+							}
+						}
+
 					}
 					else
 					{
-						if (nx < 0)
-							direction = -1;
-						else
-							direction = 1;
+						direction = !direction;
+						countTouch = 0;
 					}
 
 				}
+
 			}
 
-			
 		}
 
 	}

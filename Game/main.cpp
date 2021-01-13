@@ -68,13 +68,18 @@ void LoadResources()
 	SpriteManager* spriteData = SpriteManager::GetInstance();
 	AnimationManager* aniData = AnimationManager::GetInstance();
 
-	LPDIRECT3DTEXTURE9 sheet = texture->Get(1);
+	LPDIRECT3DTEXTURE9 sheet = texture->Get(ID_TEX_BBOX);
 
 	int size = 16;
 	int beginX, beginY, endX, endY, padding = 2;
 	int width = 19;
 	int height = 18;
 	int id = 0;
+
+	//Load black title
+	spriteData->Add(ID_TEX_BBOX, 0, 0, 16, 16, sheet);
+
+	sheet = texture->Get(1);
 
 	//Load sprite của Map
 	for (int j = 0; j < height; ++j)

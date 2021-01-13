@@ -121,6 +121,9 @@ void GroupObject::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		SetGroupPos(x, y);
 	}
+
+	if (vy != 0.0f)
+		DebugOut(L"Group: vy:%f\n", vy);
 }
 
 void GroupObject::Render()

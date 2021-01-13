@@ -11,6 +11,9 @@
 #define ENEMY_KOOPAS_FLY_BOUNDARY_UP	-32.0f
 #define ENEMY_KOOPAS_FLY_BOUNDARY_DOWN	16.0f
 
+#define ENEMY_KOOPAS_SIMILAR_GAP		0.0001f
+#define ENEMY_KOOPAS_CHECK_RANGE		18.0f
+
 #define ENEMY_KOOPAS_MAX_FLY			0.05f
 #define ENEMY_KOOPAS_GRAVITY			0.0005f
 #define ENEMY_KOOPAS_FRICTION			0.0001f
@@ -54,6 +57,7 @@ class Koopas : public GameObject
 
 	int mobType;
 	int directionFly;
+	int countTouch;
 
 	float nx, ny;
 	float min_tx, min_ty;
@@ -61,6 +65,8 @@ class Koopas : public GameObject
 	float offsetX = 0, offsetY = 0;
 	float camPosX, camPosY;
 	float shakeX;
+	float limitLeft, limitRight;
+	float oldX;
 
 	bool hasWing;
 	bool immobilize;

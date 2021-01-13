@@ -422,6 +422,7 @@ void GameEngine::UpdateCamPos(float marioX, float marioY)
 
 	cam_x = trunc(cam_x);
 	cam_y = trunc(cam_y);
+	camTemp_x = cam_x;
 }
 
 void GameEngine::SlideCamPos(float speed, DWORD dt)

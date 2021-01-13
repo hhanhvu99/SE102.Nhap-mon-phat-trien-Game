@@ -5,6 +5,9 @@
 
 WorldMap::WorldMap(int id, LPCWSTR filePath) : TestScene(id, filePath)
 {
+	this->indexX = 0;
+	this->indexY = 0;
+	this->direction = 1;
 	this->type = 3;
 	this->current = NULL;
 	global->level = MARIO_LEVEL_SMALL;
@@ -38,6 +41,10 @@ void WorldMap::Load()
 	gameOver = false;
 	firstOver = true;
 	firstOption = true;
+	endScene = false;
+
+	indexX = -1;
+	indexY = 0;
 
 	//Setup Path
 	int pathType;
@@ -122,6 +129,11 @@ void WorldMap::Load()
 		current->currentPath->SetSprite(SpriteManager::GetInstance()->Get(MAP_MARIO_FINISHED));
 		current->isFinished = true;
 	}
+
+	//Set value to 1
+	for (int i = 0; i < height; ++i)
+		for (int j = 0; j < width; ++j)
+			mapTitle[i][j] = 1;
 
 	PAUSE = true;
 	allowResetStart = false;
@@ -237,6 +249,80 @@ void WorldMap::Update(DWORD dt)
 		else
 			PAUSE = true;
 	}
+	else if (endScene)
+	{
+		//Direction
+		//1: Right
+		//2: Down
+		//3: Left
+		//4: Up
+
+		if (GetTickCount() - titleTime < MAP_BLACK_TITLE)
+			return;
+
+		int fault = 0;
+
+		//Right
+		if (direction == 1)
+		{
+			if (indexX + 1 >= this->width || mapTitle[indexY][indexX + 1] == -1)
+			{
+				direction = 2;
+				fault += 1;
+			}
+			else
+				indexX += 1;
+		}
+		//Down
+		if (direction == 2)
+		{
+			if (indexY + 1 >= this->height || mapTitle[indexY + 1][indexX] == -1)
+			{
+				direction = 3;
+				fault += 1;
+			}
+			else
+				indexY += 1;
+		}
+		//Left
+		if (direction == 3)
+		{
+			if (indexX - 1 < 0 || mapTitle[indexY][indexX - 1] == -1)
+			{
+				direction = 4;
+				fault += 1;
+			}
+			else
+				indexX -= 1;
+		}
+		//Up
+		if (direction == 4)
+		{
+			if (indexY - 1 < 0 || mapTitle[indexY - 1][indexX] == -1)
+			{
+				direction = 1;
+				fault += 1;
+			}
+			else
+				indexY -= 1;
+		}
+		
+		if (fault == 4)
+		{
+			SetState(SCENE_STATE_MAP_TO_STAGE);
+			return;
+		}
+
+		//Add black title
+		LPGAMEOBJECT title = new BackGround(indexX * STANDARD_SIZE, indexY * STANDARD_SIZE, SpriteManager::GetInstance()->Get(ID_TEX_BBOX));
+		title->SetIndex(indexX, indexY);
+		title->SetDrawOrder(HUD_TEXT_DRAW_ORDER);
+		this->Add_Visual(title);
+
+		titleTime = GetTickCount();
+		mapTitle[indexY][indexX] = -1;
+
+	}
 	
 }
 
@@ -269,7 +355,7 @@ void WorldMap::SetState(int state)
 		}
 		break;
 	case MAP_STATE_MOVE_UP:
-		if (!castMario->IsMoving())
+		if (!castMario->IsMoving() && !endScene)
 		{
 			if (current->adjacent[0] != 0 && current->adjacent[1] != 0)
 			{
@@ -280,7 +366,7 @@ void WorldMap::SetState(int state)
 		}
 		break;
 	case MAP_STATE_MOVE_DOWN:
-		if (!castMario->IsMoving())
+		if (!castMario->IsMoving() && !endScene)
 		{
 			if (current->adjacent[2] != 0 && current->adjacent[3] != 0)
 			{
@@ -291,7 +377,7 @@ void WorldMap::SetState(int state)
 		}
 		break;
 	case MAP_STATE_MOVE_LEFT:
-		if (!castMario->IsMoving())
+		if (!castMario->IsMoving() && !endScene)
 		{
 			if (current->adjacent[4] != 0 && current->adjacent[5] != 0)
 			{
@@ -302,7 +388,7 @@ void WorldMap::SetState(int state)
 		}
 		break;
 	case MAP_STATE_MOVE_RIGHT:
-		if (!castMario->IsMoving())
+		if (!castMario->IsMoving() && !endScene)
 		{
 			if (current->adjacent[6] != 0 && current->adjacent[7] != 0)
 			{
@@ -345,6 +431,12 @@ void WorldMap::SetState(int state)
 	{
 		if (current->isFinished)
 			return;
+
+		if (endScene == false)
+		{
+			endScene = true;
+			return;
+		}			
 
 		Teleport* gate = static_cast<Teleport*>(currentGate);
 		SceneManager::GetInstance()->SwitchScene(gate->GetTargetID());

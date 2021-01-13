@@ -211,9 +211,10 @@ void PlayerIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				continue;
 			}
 
-			if (obj->GetType() == eType::PLAYER)
+			if (obj->GetType() == eType::PLAYER_LUIGI)
 			{
 				SetState(MARIO_MENU_STATE_HIT_BY_PLAYER);
+				this->y -= min_ty * dy + ny * 0.4f;
 				float vx, vy;
 				obj->GetSpeed(vx, vy);
 				obj->SetSpeed(vx, -LUIGI_MENU_JUMP_SPEED_Y);

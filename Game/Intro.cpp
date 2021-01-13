@@ -220,6 +220,7 @@ void Intro::Update(DWORD dt)
 				luigi->SetAnimationSet(AnimationManager::GetInstance()->Get(MARIO));
 				luigi->SetLevel(LUIGI_LEVEL_BIG);
 				luigi->SetDrawOrder(MENU_DRAW_ORDER_PLAYER);
+				luigi->SetType(eType::PLAYER_LUIGI);
 				gameObjects.push_back(luigi);
 				collideObjects.push_back(luigi);
 

@@ -9,9 +9,10 @@
 
 class BrickShiny : public ActiveBlock
 {
+	int countDestroy;
 	float oldX, oldY;
+	bool moving, destroy;
 
-	bool moving;
 	DWORD startMoving;
 
 	LPGAMEOBJECT master;

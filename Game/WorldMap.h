@@ -8,6 +8,7 @@
 
 //Time
 #define MAP_POPUP			2000
+#define MAP_BLACK_TITLE		10
 
 //Position
 #define MAP_POS_ARROW_1_X	100.0f
@@ -27,6 +28,11 @@ typedef Path* LPPATH;
 class WorldMap : public TestScene
 {
 	std::unordered_map<int, LPPATH> listOfPath;
+	int mapTitle[500][500];
+	
+	int indexX, indexY;
+	int direction;
+
 	float startX, startY;
 	LPPATH current;
 
@@ -36,10 +42,12 @@ class WorldMap : public TestScene
 	bool startTime = true;
 	DWORD timePass = 0;
 
+	bool endScene = false;
+	DWORD titleTime = 0;
+
 	bool gameOver = false;
 	bool firstOver = true;
 	bool firstOption = true;
-
 
 	//Temp
 	BackGround* startScene;
@@ -56,6 +64,7 @@ public:
 
 	void Reset();
 	void Restart();
+	bool IsEndScene() { return endScene; }
 
 	virtual void Load();
 	virtual void Update(DWORD dt);
