@@ -447,6 +447,7 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 			{
 				tempBlock->AddObject(object);
 				static_cast<BrickShiny*>(object)->SetMaster(tempBlock);
+				break;
 			}
 
 		}
@@ -785,13 +786,14 @@ void Grid::Unload()
 	global->cells.erase(this->id);
 	vector<LPGAMEOBJECT> listRemain;
 
-
 	for (auto object : cellObjects)
 	{
 		if (object->GetType() == eType::GROUP)
 			static_cast<GroupObject*>(object)->Destroy_Group();
 		else if (object->GetCurrentCell() != -1)
+		{
 			listRemain.push_back(object);
+		}		
 		else
 			object->Destroy();
 	}	

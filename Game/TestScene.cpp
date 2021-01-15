@@ -53,7 +53,6 @@ void TestScene::Destroy(LPGAMEOBJECT gameObject)
 	auto objectDelete = std::find(collideObjects.begin(), collideObjects.end(), gameObject);
 	if (objectDelete != collideObjects.end())
 		collideObjects.erase(objectDelete);
-		
 
 	deleteList.push_back(gameObject);
 
@@ -350,7 +349,7 @@ void TestScene::Update(DWORD dt)
 	if (type == 1)
 		CheckCell();
 
-	float debugX, debugY;
+	//float debugX, debugY;
 	/*
 	DebugOut(L"Cell: ");
 	for (auto i : global->cells)

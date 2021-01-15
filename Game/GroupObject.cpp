@@ -58,6 +58,7 @@ void GroupObject::Destroy_Group()
 		if (Global::GetInstance()->cells.find(cell) != Global::GetInstance()->cells.end())
 		{
 			current->AddToCell(cell, this);
+			this->currentCell = -1;
 			return;
 		}
 	}

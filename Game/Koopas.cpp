@@ -439,13 +439,15 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				if (passCheck == false)
 					continue;
 
-
-				if (object->GetState() == BRICK_SHINY_STATE_MOVING || object->GetState() == QUESTION_BLOCK_STATE_MOVING)
+				if (!onGroup)
 				{
-					SetState(ENEMY_STATE_HIT);
-					break;
+					if (object->GetState() == BRICK_SHINY_STATE_MOVING || object->GetState() == QUESTION_BLOCK_STATE_MOVING)
+					{
+						SetState(ENEMY_STATE_HIT);
+						break;
+					}
 				}
-
+				
 				if (countTouch < 3)
 				{
 					if (direction < 0)
