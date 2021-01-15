@@ -101,8 +101,6 @@ void GameObject::CalcPotentialCollisions(
 
 		if (excludeObject != eType::NONE)
 		{
-			if (coObjects->at(i)->GetType() == eType::PLAYER)
-				DebugOut(L"Here\n");
 			if (excludeObject != coObjects->at(i)->GetType())
 				continue;
 		}

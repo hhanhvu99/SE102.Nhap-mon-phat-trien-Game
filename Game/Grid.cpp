@@ -314,15 +314,19 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 					switch (id)
 					{
 					case BRICK_SHINY_ANI:
-						gameObject = new BrickShiny(STANDARD_SIZE * i, STANDARD_SIZE * j);
-						gameObject->SetIndex(i, j);
-						gameObject->SetDrawOrder(ACTIVE_BLOCK_DRAW_ORDER);
-						gameObject->SetAnimationSet(AnimationManager::GetInstance()->Get(ACTIVE_BLOCK));
-						gameObject->SetCurrentCell(this->id);
+						if (currentScene->activedBlock[j][i] == false)
+						{
+							gameObject = new BrickShiny(STANDARD_SIZE * i, STANDARD_SIZE * j);
+							gameObject->SetIndex(i, j);
+							gameObject->SetDrawOrder(ACTIVE_BLOCK_DRAW_ORDER);
+							gameObject->SetAnimationSet(AnimationManager::GetInstance()->Get(ACTIVE_BLOCK));
+							gameObject->SetCurrentCell(this->id);
 
-						gameObjects.push_back(gameObject);
-						collideObjects.push_back(gameObject);
-						cellObjects.push_back(gameObject);
+							gameObjects.push_back(gameObject);
+							collideObjects.push_back(gameObject);
+							cellObjects.push_back(gameObject);
+						}
+						
 						break;
 
 					case QUESTION_BLOCK_ANI:
@@ -332,12 +336,18 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 						gameObject->SetDrawOrder(ACTIVE_BLOCK_DRAW_ORDER);
 						gameObject->SetAnimationSet(AnimationManager::GetInstance()->Get(ACTIVE_BLOCK));
 
-						Item* coin = new Coin(STANDARD_SIZE * i, STANDARD_SIZE * j, ITEM_COIN, false);
-						coin->SetDrawOrder(BLOCK_DRAW_ORDER);
-						coin->SetAnimationSet(AnimationManager::GetInstance()->Get(ITEM_ID));
-						coin->SetCurrentCell(this->id);
+						if (currentScene->activedBlock[j][i] == false)
+						{
+							Item* coin = new Coin(STANDARD_SIZE * i, STANDARD_SIZE * j, ITEM_COIN, false);
+							coin->SetDrawOrder(BLOCK_DRAW_ORDER);
+							coin->SetAnimationSet(AnimationManager::GetInstance()->Get(ITEM_ID));
+							coin->SetCurrentCell(this->id);
 
-						static_cast<QuestionBlock*>(gameObject)->SetItem(coin);
+							static_cast<QuestionBlock*>(gameObject)->SetItem(coin);
+						}
+						else
+							gameObject->SetState(QUESTION_BLOCK_STATE_DONE);
+						
 
 						gameObjects.push_back(gameObject);
 						collideObjects.push_back(gameObject);
@@ -352,6 +362,9 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 						gameObject->SetIndex(i, j);
 						gameObject->SetDrawOrder(ACTIVE_BLOCK_DRAW_ORDER);
 						gameObject->SetAnimationSet(AnimationManager::GetInstance()->Get(ACTIVE_BLOCK));
+
+						if (currentScene->activedBlock[j][i] == true)
+							gameObject->SetState(P_BLOCK_STATE_DONE);
 
 						gameObjects.push_back(gameObject);
 						collideObjects.push_back(gameObject);
@@ -369,12 +382,16 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 				}
 				else if (id == ITEM_COIN_ID)
 				{
-					gameObject = new Coin(STANDARD_SIZE * i, STANDARD_SIZE * j, ITEM_COIN, true);
-					gameObject->SetDrawOrder(BLOCK_DRAW_ORDER);
-					gameObject->SetAnimationSet(AnimationManager::GetInstance()->Get(ITEM_ID));
-					gameObject->SetCurrentCell(this->id);
+					if (currentScene->activedBlock[j][i] == false)
+					{
+						gameObject = new Coin(STANDARD_SIZE * i, STANDARD_SIZE * j, ITEM_COIN, true);
+						gameObject->SetIndex(i, j);
+						gameObject->SetDrawOrder(BLOCK_DRAW_ORDER);
+						gameObject->SetAnimationSet(AnimationManager::GetInstance()->Get(ITEM_ID));
+						gameObject->SetCurrentCell(this->id);
 
-					cellObjects.push_back(gameObject);
+						cellObjects.push_back(gameObject);
+					}			
 
 				}
 				else if (id == END_GOAL_SPRITE_ID)
@@ -416,6 +433,9 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 	{
 		objectX = P_BLOCK_HOLDER[x];
 		objectY = P_BLOCK_HOLDER[x + 1];
+
+		if (currentScene->activedBlock[objectY][objectX] == true)
+			continue;
 
 		//DebugOut(L"Left: %d -- Top: %d -- Right: %d -- Bottom: %d \n", left,top,right,bottom);
 
@@ -690,6 +710,9 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 		indexX = ITEM[x];
 		indexY = ITEM[x + 1];
 		itemType = ITEM[x + 2];
+
+		if (currentScene->activedBlock[indexY][indexX] == true)
+			continue;
 
 		switch (itemType)
 		{

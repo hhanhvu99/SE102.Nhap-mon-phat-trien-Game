@@ -38,6 +38,9 @@ void QuestionBlock::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		moving = true;
 		this->hp -= 1;
 		startMoving = GetTickCount();
+
+		LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
+		scene->activedBlock[indexY][indexX] = true;
 	}
 
 	float distanceX = oldX - x;
@@ -144,5 +147,16 @@ void QuestionBlock::Destroy()
 	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
 
 	current->Destroy(this);
+}
+
+void QuestionBlock::SetState(int state)
+{
+	this->state = state;
+
+	if (state == QUESTION_BLOCK_STATE_DONE)
+	{
+		hit = true;
+		hp = 0;
+	}
 }
 

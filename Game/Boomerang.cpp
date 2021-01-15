@@ -164,7 +164,7 @@ void Boomerang::Render()
 	else ani = bulletType + BULLET_ANI_LEFT;
 
 	animation_set->Get(ani)->Render(x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 
 }
 

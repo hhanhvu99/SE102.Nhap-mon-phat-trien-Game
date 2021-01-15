@@ -57,6 +57,9 @@ void BrickShiny::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		if (countDestroy != 0)
 			this->Destroy();
 		++countDestroy;
+
+		LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
+		scene->activedBlock[indexY][indexX] = true;
 		return;
 	}
 
@@ -141,7 +144,16 @@ void BrickShiny::SetState(int state)
 
 	}
 		break;
+	case BRICK_SHINY_STATE_HIT:
+	{
+		Rubbish* brick1 = new Rubbish(x + RUBBISH_OFFSET_X, y + RUBBISH_OFFSET_Y, RUBBISH_SPEED_X, RUBBISH_SPEED_Y, RUBBISH_DEFLECT_SPEED, -1);
+		Rubbish* brick2 = new Rubbish(x + RUBBISH_OFFSET_X, y + RUBBISH_OFFSET_Y, RUBBISH_SPEED_X, RUBBISH_SPEED_Y, RUBBISH_DEFLECT_SPEED - 0.1f, -1);
+		Rubbish* brick3 = new Rubbish(x + RUBBISH_OFFSET_X, y + RUBBISH_OFFSET_Y, RUBBISH_SPEED_X, RUBBISH_SPEED_Y, RUBBISH_DEFLECT_SPEED, 1);
+		Rubbish* brick4 = new Rubbish(x + RUBBISH_OFFSET_X, y + RUBBISH_OFFSET_Y, RUBBISH_SPEED_X, RUBBISH_SPEED_Y, RUBBISH_DEFLECT_SPEED - 0.1f, 1);
 
+		this->destroy = true;
+	}
+	break;
 	default:
 		break;
 	}

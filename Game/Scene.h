@@ -32,6 +32,7 @@ protected:
 public:
 	int width, height;
 	int map[500][500];
+	bool activedBlock[500][500];
 	float startPosX, startPosY;
 
 	Scene(int id, LPCWSTR filePath);
@@ -48,6 +49,7 @@ public:
 	std::vector<int>& GetACTIVE_BLOCKS() { return this->ACTIVE_BLOCKS; }
 	std::vector<int>& GetSTAGE_FINISHED() { return this->STAGE_FINISHED; }
 
+	void ResetActivedBlock();
 	void SetCellNumber(int numberOfCell) { this->numberOfCell = numberOfCell; }
 	void SetSwitch() { startSwitch = true; }
 	void DisableSwitch() { startSwitch = false; }

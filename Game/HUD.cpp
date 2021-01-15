@@ -31,6 +31,21 @@ HUD::HUD(float x, float y, int number)
 	this->Add();
 }
 
+HUD::HUD(float x, float y, LPANIMATION ani)
+{
+	this->x = x;
+	this->y = y;
+	this->isBubble = false;
+	this->number = 0;
+	this->type = eType::HUD_ANI;
+	this->instance = GameEngine::GetInstance();
+	this->global = Global::GetInstance();
+	this->ani = ani;
+
+	this->Setup();
+	this->Add();
+}
+
 HUD::HUD(float x, float y, LPSPRITE sprite)
 {
 	this->x = x;
@@ -179,6 +194,12 @@ void HUD::Setup()
 
 			object = new HUD_Object(SpriteManager::GetInstance()->Get(HUD_ID + global->cardThree));
 			spriteHolder.push_back(object);
+			break;
+		case HUD_ANI:
+			draw_order = BULLET_DRAW_ORDER;
+			splashTime = GetTickCount();
+			return;
+
 			break;
 		default:
 			break;
@@ -411,6 +432,11 @@ void HUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			spriteHolder.front()->SetPosition(x, y);
 
 			break;
+		case HUD_ANI:
+			if (GetTickCount() - splashTime > HUD_SPLASH_EFFECT_TIME)
+				this->Destroy();
+
+			break;
 		default:
 			break;
 		}
@@ -467,6 +493,9 @@ void HUD::Render()
 			break;
 		case HUD_CUSTOM:
 			spriteHolder.front()->Render();
+			break;
+		case HUD_ANI:
+			ani->Render(x, y);
 			break;
 		default:
 			break;

@@ -26,6 +26,14 @@ int Scene::GetID()
 
 #define MAX_GAME_LINE 1024
 
+void Scene::ResetActivedBlock()
+{
+	for (int j = 0; j < this->height; ++j)
+		for (int i = 0; i < this->width; ++i)
+			activedBlock[j][i] = false;
+	
+}
+
 void Scene::LoadBlock(LPCWSTR gameFile)
 {
 	this->sceneFileBlock = gameFile;

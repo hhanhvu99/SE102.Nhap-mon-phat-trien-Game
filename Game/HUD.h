@@ -54,6 +54,7 @@
 //Time
 #define HUD_BUTTON_FLASH_TIME		149
 #define HUD_BUTTON_FLASH_TIME_2		300
+#define HUD_SPLASH_EFFECT_TIME		100
 
 class HUD : public GameObject
 {
@@ -65,13 +66,16 @@ class HUD : public GameObject
 	GLOBAL global;
 
 	HUD_Object* object;
+	LPANIMATION ani;
 	vector<HUD_Object*> spriteHolder;
 
+	DWORD splashTime = 0;
 	DWORD buttonFlashing = 0;
 
 public:
 	HUD(eType type);
 	HUD(float x, float y, int number);
+	HUD(float x, float y, LPANIMATION ani);
 	HUD(float x, float y, LPSPRITE sprite);
 
 	void Add();

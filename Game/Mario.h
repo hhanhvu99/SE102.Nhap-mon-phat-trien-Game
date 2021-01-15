@@ -201,6 +201,7 @@ protected:
 	bool frog_jumping = false;
 	DWORD startFrogJump = 0;
 
+	bool alreadyWhip = true;
 	bool tail_whip = false;
 	DWORD startWhip = 0;
 

@@ -131,7 +131,7 @@ void WorldMap::Load()
 	}
 
 	//Set value to 1
-	for (int i = 0; i < height; ++i)
+	for (int i = 0; i < height - 1; ++i)
 		for (int j = 0; j < width; ++j)
 			mapTitle[i][j] = 1;
 
@@ -276,7 +276,7 @@ void WorldMap::Update(DWORD dt)
 		//Down
 		if (direction == 2)
 		{
-			if (indexY + 1 >= this->height || mapTitle[indexY + 1][indexX] == -1)
+			if (indexY + 1 >= this->height - 1 || mapTitle[indexY + 1][indexX] == -1)
 			{
 				direction = 3;
 				fault += 1;

@@ -22,9 +22,10 @@ protected:
 
 public:
 	void Load(LPSCENE scene);
-	LPSCENE GetCurrentScene() { return scenes[current_scene]; }
 	void SwitchScene(int scene_id);
-
+	LPSCENE GetCurrentScene() { return scenes[current_scene]; }
+	LPSCENE GetScene(int id) { return scenes[id]; }
+	
 	static SceneManager* GetInstance();
 
 };

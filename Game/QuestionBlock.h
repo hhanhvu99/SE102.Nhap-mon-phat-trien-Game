@@ -19,7 +19,7 @@ public:
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL);
 	virtual void Render();
 	virtual void Destroy();
-	virtual void SetState(int state) { this->state = state; }
+	virtual void SetState(int state);
 
 	~QuestionBlock() {};
 };

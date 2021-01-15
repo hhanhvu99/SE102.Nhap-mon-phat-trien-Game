@@ -40,6 +40,7 @@ void P_Block::ChangeToCoin()
 		object->GetPosition(posX, posY);
 
 		tempCoin = new Coin(posX, posY, ITEM_COIN, true);
+		tempCoin->SetIndex(indexX, indexY);
 		tempCoin->SetDrawOrder(BLOCK_DRAW_ORDER);
 		tempCoin->SetAnimationSet(AnimationManager::GetInstance()->Get(ITEM_ID));
 		tempCoin->SetCurrentCell(object->GetCurrentCell());
@@ -127,6 +128,9 @@ void P_Block::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		stomp = true;
 		switchToP = false;
+
+		LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
+		scene->activedBlock[indexY][indexX] = true;
 	}
 
 	if (switchToP)
@@ -139,8 +143,6 @@ void P_Block::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		else
 			state = P_BLOCK_STATE_NORMAL;
 		
-			
-		//DebugOut(L"State: %d \n", state);
 
 		if (moving)
 			vy = -MOVING_SPEED;
@@ -186,6 +188,7 @@ void P_Block::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 	}
 	
+	//DebugOut(L"size: %d \n", listOfObject.size());
 }
 
 void P_Block::Render()
@@ -223,6 +226,11 @@ void P_Block::SetState(int state)
 		ChangeToCoin();
 		inActive = true;
 		activeTime = GetTickCount();
+	}
+	else if (state == P_BLOCK_STATE_DONE)
+	{
+		stomp = true;
+		hit = true;
 	}
 
 }

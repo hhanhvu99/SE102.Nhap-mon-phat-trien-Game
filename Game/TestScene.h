@@ -80,6 +80,7 @@ public:
 	void FloatText(float x, float y);
 	void FloatTextCoin(float x, float y);
 	void FloatTextCustom(float x, float y, int point);
+	void FloatEffectSplash(float x, float y);
 	void SortGameObject();
 
 	virtual void Load();

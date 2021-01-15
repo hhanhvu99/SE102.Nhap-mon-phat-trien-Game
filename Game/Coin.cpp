@@ -28,6 +28,7 @@ void Coin::DestroyTouch()
 		if (master != NULL)
 			static_cast<P_Block*>(master)->RemoveObject(this);
 
+		current->activedBlock[indexY][indexX] = true;
 		current->Destroy(this);
 	}
 	else

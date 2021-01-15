@@ -297,7 +297,7 @@ void BoomerangBro::Render()
 
 
 	animation_set->Get(ani)->Render(x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void BoomerangBro::SetState(int state)

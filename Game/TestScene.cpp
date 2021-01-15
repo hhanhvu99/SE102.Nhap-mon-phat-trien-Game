@@ -168,6 +168,12 @@ void TestScene::FloatTextCustom(float x, float y, int point)
 	temp->SetDrawOrder(HUD_TEXT_DRAW_ORDER);
 }
 
+void TestScene::FloatEffectSplash(float x, float y)
+{
+	LPANIMATION ani = AnimationManager::GetInstance()->Get(BULLET)->Get(BULLET_EFFECT_SPLASH);
+	HUD* temp = new HUD(x, y, ani);
+}
+
 void TestScene::SortGameObject()
 {
 	for (unsigned int j = 1; j < gameObjects.size(); ++j)
@@ -344,7 +350,7 @@ void TestScene::Update(DWORD dt)
 	if (type == 1)
 		CheckCell();
 
-	//float debugX, debugY;
+	float debugX, debugY;
 	/*
 	DebugOut(L"Cell: ");
 	for (auto i : global->cells)
@@ -358,6 +364,7 @@ void TestScene::Update(DWORD dt)
 			//DebugOut(L"Wrong!!!\n");
 
 		//deleteObject->GetPosition(debugX, debugY);
+		//DebugOut(L"x: %f -- y: %f\n", debugX, debugY);
 
 		gameObjects.erase(std::remove(gameObjects.begin(), gameObjects.end(), deleteObject), gameObjects.end());
 		delete deleteObject;
@@ -431,11 +438,24 @@ void TestScene::Unload()
 		delete deleteObject;	
 	}
 
+	//Check if two list overlap
+	for (auto deleteObject : deleteList)
+	{
+		addList.erase(std::remove(addList.begin(), addList.end(), deleteObject), addList.end());
+	}
+
+	//Delete newly added object
+	for (auto addObject : addList)
+	{
+		delete addObject;
+	}
+
 	for (auto object : gameObjects)
 		delete object;
 
 	cells.clear();
 	deleteList.clear();
+	addList.clear();
 }
 
 

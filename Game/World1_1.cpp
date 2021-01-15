@@ -106,6 +106,15 @@ void World1_1::Unload()
 {
 	TestScene::Unload();
 
+	if (global->die)
+	{
+		for (int j = 0; j < this->height; ++j)
+			for (int i = 0; i < this->width; ++i)
+				activedBlock[j][i] = false;
+	}
+
+	if (this->id == SCENE_WORLD_1_1)
+		SceneManager::GetInstance()->GetScene(SCENE_WORLD_1_1_BONUS)->ResetActivedBlock();
 }
 
 void World1_1::SetState(int state)

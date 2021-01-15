@@ -355,7 +355,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			{
 				if (e->obj->GetType() == eType::QUESTION || e->obj->GetType() == eType::BRICK)
 				{
-					e->obj->SetState(ACTIVE_BLOCK_STATE_HIT);
+					e->obj->SetState(BRICK_SHINY_STATE_HIT);
 
 				}
 
@@ -378,10 +378,13 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	
 		}
 
+
 		if (mobType == ENEMY_KOOPAS_RED && state == ENEMY_STATE_MOVING)
 		{
-			float thisLeft, thisTop, thisRight, thisBottom;
 			bool passCheck;
+			bool onGroup = false;
+			float thisLeft, thisTop, thisRight, thisBottom;		
+
 			GetBoundingBox(thisLeft, thisTop, thisRight, thisBottom);
 			thisLeft -= ENEMY_KOOPAS_CHECK_RANGE;
 			thisTop -= ENEMY_KOOPAS_CHECK_RANGE;
@@ -392,63 +395,97 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				countTouch += 1;
 			oldX = this->x;
 
+
 			for (auto object : *coObjects)
 			{
-				passCheck = false;
+				if (!onGroup)
+					passCheck = false;
 				float left, top, right, bottom;
 				object->GetBoundingBox(left, top, right, bottom);
 
-				if (left > thisLeft)
-					if (top > thisTop)
-						if (right < thisRight)
-							if (bottom < thisBottom)
-								passCheck = true;
+				if (onGroup == false)
+				{
+					if (object->GetType() == eType::BLOCK ||
+						object->GetType() == eType::BRICK ||
+						object->GetType() == eType::QUESTION)
+					{
+						if (left > thisLeft)
+							if (top > thisTop)
+								if (right < thisRight)
+									if (bottom < thisBottom)
+										passCheck = true;
+					}
+				}		
+				if (object->GetType() == eType::GROUP ||
+					object->GetType() == eType::PLATFORM)
+				{
+					for (auto eventCol : coEventsResult)
+					{
+						if (eventCol->obj == object)
+						{
+							limitLeft = left;
+							limitRight = right;
+							passCheck = true;
+							onGroup = true;
+							break;
+						}
+							
+					}
+						
+				}
+					
+				//DebugOut(L"ongroup: %d\n", onGroup);
 
 				if (passCheck == false)
 					continue;
 
-				if (object->GetType() == eType::BLOCK || object->GetType() == eType::GROUP ||
-					object->GetType() == eType::PLATFORM || object->GetType() == eType::BRICK || object->GetType() == eType::QUESTION)
-				{
-					if (object->GetState() == BRICK_SHINY_STATE_MOVING || object->GetState() == QUESTION_BLOCK_STATE_MOVING)
-					{
-						SetState(ENEMY_STATE_HIT);
-						break;
-					}
 
-					if (countTouch < 3)
+				if (object->GetState() == BRICK_SHINY_STATE_MOVING || object->GetState() == QUESTION_BLOCK_STATE_MOVING)
+				{
+					SetState(ENEMY_STATE_HIT);
+					break;
+				}
+
+				if (countTouch < 3)
+				{
+					if (direction < 0)
 					{
-						if (direction < 0)
+						if (!onGroup)
 						{
 							limitRight = 0.0f;
 							if (left < limitLeft)
 								limitLeft = left;
-							if (this->x < limitLeft)
-							{
-								countTouch = 0;
-								direction = 1;
-							}
-								
+						}	
+						if (this->x < limitLeft)
+						{
+							countTouch = 0;
+							direction = 1;
 						}
-						else
+								
+					}
+					else
+					{
+						if (!onGroup)
 						{
 							limitLeft = 99999999.9f;
 							if (right > limitRight)
 								limitRight = right;
-							if (this->x + width > limitRight)
-							{
-								countTouch = 0;
-								direction = -1;
-							}
+						}		
+						if (this->x + width > limitRight)
+						{
+							countTouch = 0;
+							direction = -1;
 						}
-
 					}
+
+				}
+				else
+				{
+					if (direction < 0)
+						direction = 1;
 					else
-					{
-						direction = !direction;
-						countTouch = 0;
-					}
-
+						direction = -1;
+					countTouch = 0;
 				}
 
 			}
@@ -535,7 +572,7 @@ void Koopas::Render()
 		animation_set->Get(ani)->Render(x + offsetX, y + offsetY, 90.0f);
 	else
 		animation_set->Get(ani)->Render(x + offsetX, y + offsetY);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void Koopas::SetState(int state)

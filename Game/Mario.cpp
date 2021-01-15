@@ -80,26 +80,32 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 
 	// Simple fall down
+	if (touchGround == false)
+	{
+		standOnGroup = false;
+		groupMoving = NULL;
+	}
+
 	if (groupMoving == NULL)
 		vy += MARIO_GRAVITY * dt;
 	else
 	{
 		float tempX, tempY;
 		groupMoving->GetPosition(tempX, tempY);
+
 		this->y = tempY - height - 1.0f;
+		this->vy = MARIO_MAX_FALLING_SPEED;
+
 		LPCOLLISIONEVENT e = SweptAABBEx(groupMoving);
 		coEvents.push_back(e);
+			
 	}
 
 	if (vy > MARIO_MAX_FALLING_SPEED)
 		vy = MARIO_MAX_FALLING_SPEED;
 
-	if (touchGround == false)
-	{
-		standOnGroup = false;
-		groupMoving = NULL;
-	}
 		
+	//DebugOut(L"vy: %f \n", vy);
 
 	// turn off collision when die 
 	if (state != MARIO_STATE_DIE)
@@ -133,7 +139,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		if (fallOutside == false && die == false)
 		{
-			if (isOutSideCam())
+			if (isOutSideCam() || global->time == 0)
 			{
 				fallOutside = true;
 				SetState(MARIO_STATE_DIE);
@@ -273,7 +279,8 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		// block every object first!
 		this->x += min_tx * dx + nx * 0.4f;
-		this->y += min_ty * dy + ny * 0.4f;
+		if (standOnGroup == false)
+			this->y += min_ty * dy + ny * 0.4f;
 
 		if (nx != 0)
 		{
@@ -679,13 +686,13 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	//Jumping
 	if (jumpButtonPressed)
 	{
-		if (global->level == MARIO_LEVEL_RACC || global->level == MARIO_LEVEL_TANU)
+		if ((global->level == MARIO_LEVEL_RACC || global->level == MARIO_LEVEL_TANU) && startJumping == false)
 			SetState(MARIO_STATE_JUMP_FLAP_HOLD);
 		else
 			SetState(MARIO_STATE_JUMP_HOLD);
 	}
 
-	if (startJumping)
+	if (startJumping && allowFlapJump == false)
 	{
 		if (vy < -MARIO_MAX_JUMPING_SPEED)
 			startJumping = false;
@@ -695,7 +702,6 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			vy -= (MARIO_JUMPING_SPEED + MARIO_GRAVITY) * dt;
 			
 	}
-	DebugOut(L"vy: %f \n", vy);
 
 	//Attack
 	if (ani != -1)
@@ -723,6 +729,9 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				}
 			}
 
+			if (currentFrame == 2 && tail_whip)
+				alreadyWhip = false;
+
 			if (currentFrame == size - 1) flipFrame = true;
 			if (tail_whip) ani_walk_time = MARIO_ANI_TAIL_WHIP_TIME;
 			else ani_walk_time = MARIO_ANI_SHOOT_TIME;
@@ -732,7 +741,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (tail_whip)
 	{
 		LPGAMEOBJECT object = NULL;
-		if (PointCollision(*coObjects, pointTail_X, pointTail_Y, object))
+		if (PointCollision(*coObjects, pointTail_X, pointTail_Y, object) && alreadyWhip == false)
 		{
 			if(object == NULL)
 				DebugOut(L"NULL \n");
@@ -747,6 +756,10 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						object->SetPosition(pointTail_X, pointTail_Y - object->GetHeight());
 					else
 						object->SetPosition(pointTail_X - object->GetWidth(), pointTail_Y - object->GetHeight());
+
+					LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
+					LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
+					current->FloatEffectSplash(pointTail_X, pointTail_Y);
 				}
 				else if (object->GetType() == eType::P_BLOCK)
 				{
@@ -761,6 +774,8 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			}
 			
 		}
+
+		alreadyWhip = true;
 	}
 
 	//Flapping
@@ -831,12 +846,15 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	//Grabbing
 	if (grabbing)
 	{
+		SetState(MARIO_STATE_HOLD_SWITCH);
+
 		if (grabObject != NULL)
 		{
 			if (grabTurtlePress == false)
 			{
 				grabObject->SetDirection(direction);
 				grabObject->SetState(ENEMY_STATE_KICK);
+				grabObject->SetDrawOrder(ENEMY_ENTITY_DRAW_ORDER);
 				grabObject = NULL;
 				grabbing = false;
 				directionGrab = 0;
@@ -848,6 +866,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				float x, y;
 				int widthObject;
 				grabObject->GetWidth(widthObject);
+				grabObject->SetDrawOrder(BULLET_DRAW_ORDER);
 
 				if (switching == false)
 				{
@@ -897,7 +916,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 							x = this->x - widthObject - MARIO_GRAB_OFFSET_X;
 					}
 
-					if (global->level != 1100)
+					if (global->level != MARIO_LEVEL_SMALL)
 						y = this->y + MARIO_GRAB_OFFSET_Y;
 					else
 						y = this->y - 1.0f;
@@ -1477,7 +1496,10 @@ void Mario::SetState(int state)
 		else if (global->level == MARIO_LEVEL_RACC || global->level == MARIO_LEVEL_TANU)
 		{
 			if (tail_whip == false)
+			{
 				tail_whip = true;
+			}
+				
 		}
 		break;
 	case MARIO_STATE_IDLE:

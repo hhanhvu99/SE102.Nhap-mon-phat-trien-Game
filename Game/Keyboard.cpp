@@ -87,9 +87,6 @@ void Keyboard::KeyState(BYTE* states)
 						else
 							mario->SetState(MARIO_STATE_WALKING_RIGHT_FROG);
 
-				if (mario->isGrapping())
-					mario->SetState(MARIO_STATE_HOLD_SWITCH);
-
 				return;
 			}
 			else if (game->IsKeyDown(DIK_LEFT))
@@ -104,9 +101,6 @@ void Keyboard::KeyState(BYTE* states)
 							mario->SetState(MARIO_STATE_WALKING_LEFT);
 						else
 							mario->SetState(MARIO_STATE_WALKING_LEFT_FROG);
-
-				if (mario->isGrapping())
-					mario->SetState(MARIO_STATE_HOLD_SWITCH);
 
 				return;
 			}
@@ -278,7 +272,7 @@ void Keyboard::OnKeyDown(int KeyCode)
 			SceneManager::GetInstance()->GetCurrentScene()->SetState(MAP_STATE_SELECT);
 			break;
 		case DIK_W:
-			if (Global::GetInstance()->allowSwitch && Global::GetInstance()->live > 0)
+			if (Global::GetInstance()->allowSwitch && Global::GetInstance()->live > 0 && PAUSE == false)
 				SceneManager::GetInstance()->GetCurrentScene()->SetState(SCENE_STATE_MAP_TO_STAGE);
 			else
 				SceneManager::GetInstance()->GetCurrentScene()->SetState(MAP_STATE_CHOOSE);
