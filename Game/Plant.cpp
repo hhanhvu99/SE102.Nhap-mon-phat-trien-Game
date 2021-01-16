@@ -283,7 +283,7 @@ void Plant::Render()
 	}
 
 	animation_set->Get(ani)->Render(x + offsetX, y + offsetY);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void Plant::SetState(int state)

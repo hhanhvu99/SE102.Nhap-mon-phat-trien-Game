@@ -423,11 +423,12 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					{
 						if (eventCol->obj == object)
 						{
-							limitLeft = left;
-							limitRight = right;
+							if (left < limitLeft)
+								limitLeft = left;
+							if (right > limitRight)
+								limitRight = right;
 							passCheck = true;
 							onGroup = true;
-							break;
 						}
 							
 					}

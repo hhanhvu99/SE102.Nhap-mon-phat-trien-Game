@@ -378,6 +378,7 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 				case ITEM_MUSHROOM_GREEN:
 					Global::GetInstance()->point += 1000;
+					global->live += 1;
 					item->DestroyTouch();
 					break;
 

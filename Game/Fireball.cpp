@@ -145,7 +145,7 @@ void Fireball::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		//DebugOut(L"vx: %f -- vy: %f\n", vx, vy);
 		//DebugOut(L"nx: %f -- ny: %f", nx, ny);
 
-
+		x += dx;
 		if (type == eType::MARIO_BULLET)
 		{
 			this->y += min_ty * dy + ny * 0.4f;

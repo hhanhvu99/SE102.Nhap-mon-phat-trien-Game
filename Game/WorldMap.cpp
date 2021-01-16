@@ -139,6 +139,7 @@ void WorldMap::Load()
 	allowResetStart = false;
 	Global::GetInstance()->inWorldMap = true;
 	Global::GetInstance()->time = 0;
+	Global::GetInstance()->speed = 0;
 }
 
 void WorldMap::Update(DWORD dt)
