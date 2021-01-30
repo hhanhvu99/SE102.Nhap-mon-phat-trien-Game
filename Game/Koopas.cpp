@@ -407,7 +407,8 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				{
 					if (object->GetType() == eType::BLOCK ||
 						object->GetType() == eType::BRICK ||
-						object->GetType() == eType::QUESTION)
+						object->GetType() == eType::QUESTION ||
+						object->GetType() == eType::P_BLOCK)
 					{
 						if (left > thisLeft)
 							if (top > thisTop)
