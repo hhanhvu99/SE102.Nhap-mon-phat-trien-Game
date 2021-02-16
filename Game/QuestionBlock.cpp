@@ -1,4 +1,4 @@
-#include "QuestionBlock.h"
+﻿#include "QuestionBlock.h"
 #include "debug.h"
 
 QuestionBlock::QuestionBlock(float x, float y, LPSPRITE sprite) : ActiveBlock(x, y, sprite)
@@ -29,7 +29,7 @@ void QuestionBlock::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	x += dx;
 	y += dy;
 	
-
+	//Nếu bị hit lần đầu (đội gạch, dính rùa, quật đuôi,...)
 	if (state == ACTIVE_BLOCK_STATE_HIT && hit == false)
 	{
 		oldX = x;
@@ -46,6 +46,7 @@ void QuestionBlock::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	float distanceX = oldX - x;
 	float distanceY = oldY - y;
 
+	//Di chuyển khi bị đội
 	if (distanceX + distanceY != 0 || moving == true)
 		state = QUESTION_BLOCK_STATE_MOVING;
 	else
@@ -72,6 +73,7 @@ void QuestionBlock::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				vx = 0;
 				x = oldX;
 			}
+			//Với TH y thay đổi, khi kết thúc sẽ spawn một item nằm trong đó
 			if (abs(distanceY) >= BOUNDARY)
 			{
 				vy = Global::Sign(distanceY) * DEFLECT_SPEED;
@@ -82,12 +84,16 @@ void QuestionBlock::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				y = oldY;
 				int currentItemCell = -1;
 
+				//Spawn item
 				if (item)
 				{
+					//Là Leaf
 					if (item->getItemType() == ITEM_SUPER_LEAF)
-					{
+					{	
+						//Nếu mario level khác nhỏ, spawn leaf
 						if (Global::GetInstance()->level > MARIO_LEVEL_SMALL)
 							item->SetState(ITEM_STATE_SHOW);
+						//Nếu mario level nhỏ, spawn cục nấm
 						else
 						{
 							item->Replace();
@@ -96,12 +102,13 @@ void QuestionBlock::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 							item->SetState(ITEM_STATE_SHOW);
 						}
 					}
+					//Show item
 					else
 					{
 						item->SetState(ITEM_STATE_SHOW);
 
 					}
-
+					//HP của block lớn hơn 0, coin nhảy lên
 					if (hp > 0)
 					{
 						currentItemCell = item->GetCurrentCell();
@@ -123,6 +130,8 @@ void QuestionBlock::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void QuestionBlock::Render()
 {
+	//Ani thuộc ACTIVE_BLOCK
+	//Nếu hp lớn hơn 0
 	if (hp > 0)
 	{
 		int ani = -1;
@@ -132,6 +141,7 @@ void QuestionBlock::Render()
 			ani = BRICK_SHINY_ANI;
 		animation_set->Get(ani)->Render(x, y);
 	}
+	//Nếu hp = 0
 	else
 	{
 		sprite->Draw(x, y);
@@ -153,6 +163,7 @@ void QuestionBlock::SetState(int state)
 {
 	this->state = state;
 
+	//Nếu block đã active xong
 	if (state == QUESTION_BLOCK_STATE_DONE)
 	{
 		hit = true;

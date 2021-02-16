@@ -1,4 +1,4 @@
-#include "SuperLeaf.h"
+﻿#include "SuperLeaf.h"
 
 SuperLeaf::SuperLeaf(float x, float y, int itemType) : Item(x, y, itemType)
 {
@@ -10,11 +10,15 @@ SuperLeaf::SuperLeaf(float x, float y, int itemType) : Item(x, y, itemType)
 	this->Add();
 }
 
+/*
+	Chạm vào thì hủy
+*/
 void SuperLeaf::DestroyTouch()
 {
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
 	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
 
+	//Thêm 1000 điểm
 	current->FloatTextCustom(x, y, HUD_BONUS_POINT_1000);
 
 	current->Destroy(this);
@@ -67,9 +71,10 @@ void SuperLeaf::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		if (showUp == false)	
 			vy += ITEM_LEAF_SPEED_Y * dt;
 
-
+		//Item di chuyển thì lá di chuyển trái phải liên tục
 		if (state == ITEM_STATE_MOVING)
 		{
+			//Đổi hướng
 			if (stop)
 			{
 				direction = -direction;
@@ -80,6 +85,7 @@ void SuperLeaf::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				stop = false;
 				leafBreak = false;
 			}
+			//TH còn lại, tùy vào hướng mà lá sẽ thay đổi khi tốc độ vượt quá một ngưỡng nào đó
 			else
 			{
 				if (direction > 0)
@@ -122,6 +128,7 @@ void SuperLeaf::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			}
 			
 		}
+		//Item xuất hiện từ block thì item nhảy lên
 		else if (state == ITEM_STATE_SHOW)
 		{
 			if (vy > 0)
@@ -154,7 +161,7 @@ void SuperLeaf::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	x += dx;
 	y += dy;
 
-
+	//Ra khỏi camera thì xóa
 	if (x < camPosX - ITEM_SAFE_DELETE_RANGE || x > camPosX + SCREEN_WIDTH + ITEM_SAFE_DELETE_RANGE ||
 		y < camPosY - ITEM_SAFE_DELETE_RANGE || y > camPosY + SCREEN_HEIGHT + ITEM_SAFE_DELETE_RANGE)
 	{
@@ -165,6 +172,7 @@ void SuperLeaf::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void SuperLeaf::Render()
 {
+	//Ani thuộc ITEM_ID
 	if (state != ITEM_STATE_IDLE)
 	{
 		int ani = -1;

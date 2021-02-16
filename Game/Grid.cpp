@@ -13,6 +13,13 @@ Grid::Grid(int id, LPCWSTR fileBlock)
 	this->Init();
 }
 
+/*
+	LƯU Ý: Grid và Cell đều mang nghĩa tương đồng với nhau
+*/
+
+/*
+	Khởi tạo object trong grid
+*/
 void Grid::Init()
 {
 	/*Load các object của Grid*/
@@ -56,23 +63,34 @@ void Grid::Init()
 	f.close();
 }
 
+/*
+	Trong grid sẽ có các group bị overlap giữa 2 hoặc nhiều grid với nhau
+	Tìm các GroupObject bị overlap khi thêm vào grid bằng cách so sánh vị trí
+	Không so sánh bằng index là vì mỗi GameObject chỉ biết vị trí index tại điểm nó bắt đầu trên map 
+	và GroupObject kế thừa từ GameObject nên ta không biết được điểm kết thúc nằm tại nếu tìm bằng index
+*/
 LPGAMEOBJECT Grid::FindGroup(int left, int top, int right, int bottom, vector<LPGAMEOBJECT>& collideObjects)
 {
+	//left, top, right, bottom là bounding box của group bị overlap, tương ứng với vị trí index trong map
 	float leftPos = left * STANDARD_SIZE;
 	float topPos = top * STANDARD_SIZE;
 	float rightPos = (right + 1) * STANDARD_SIZE;
 	float bottomPos = (bottom + 1) * STANDARD_SIZE;
+	//objectLeft, objectTop, objectRight, objectBottom là GroupObject trùng 
 	float objectLeft, objectTop;
 	float objectRight, objectBottom;
 
 	for (auto object : collideObjects)
 	{
+		//Nếu là GroupObject
 		if (object->GetType() == eType::GROUP)
 		{
+			//Lấy vị trí group
 			object->GetPosition(objectLeft, objectTop);
 			objectRight = objectLeft + object->GetWidth();
 			objectBottom = objectTop + object->GetHeight();
 
+			//So sánh vị trí bounding box, nếu trùng 1 trong 2 góc: góc trái trên hoặc góc phải dưới thì trả về group
 			if ((objectLeft == leftPos && objectTop == topPos) || (objectRight == rightPos && objectBottom == bottomPos))
 				return object;
 		}
@@ -81,9 +99,13 @@ LPGAMEOBJECT Grid::FindGroup(int left, int top, int right, int bottom, vector<LP
 	return NULL;
 }
 
-
+/*
+	Khi tìm được group bị overlap, ta kéo dài bounding box của GroupObject đang xét theo bounding box của group
+	bằng index
+*/
 void Grid::FindGroupPos(int& left, int& top, int& right, int& bottom, LPGAMEOBJECT group)
 {
+	//Lấy index của group overlap
 	int groupLeft, groupTop, groupRight, groupBottom;
 	float x, y, width, height;
 
@@ -96,19 +118,26 @@ void Grid::FindGroupPos(int& left, int& top, int& right, int& bottom, LPGAMEOBJE
 	groupRight = int((x + width)/ STANDARD_SIZE) - 1;
 	groupBottom = int((y + height)/ STANDARD_SIZE) - 1;
 
+	//Tính chênh lệch giữa 4 cạnh của boundingbox
 	int diffX_Left = groupLeft - left;
 	int diffX_Right = right - groupRight;
 	int diffY_Top = groupTop - top;
 	int diffY_Bottom = bottom - groupBottom;
 
+	//Chênh lệch có thể âm hoặc dương
+	//Nếu left của cả 2 khác nhau, lấy right group hiện tại đang xét + cho chênh lệch
 	if (diffX_Left != 0)
 		right = left + diffX_Left - 1;
+	//Nếu right của cả 2 khác nhau, lấy left group hiện tại đang xét + cho chênh lệch
 	if (diffX_Right != 0)
 		left = right - diffX_Right + 1;
+	//Nếu top của cả 2 khác nhau, lấy bottom group hiện tại đang xét + cho chênh lệch
 	if (diffY_Top != 0)
 		bottom = top + diffY_Top - 1;
+	//Nếu bottom của cả 2 khác nhau, lấy top group hiện tại đang xét + cho chênh lệch
 	if (diffY_Bottom != 0)
 		top = bottom - diffY_Bottom + 1;
+	//Nếu không thay đổi, đặt index top, left, right, bottom sao cho thoát khỏi vòng for
 	if (diffX_Left + diffX_Right + diffY_Top + diffY_Bottom == 0)
 	{
 		top = left = 1;
@@ -117,20 +146,30 @@ void Grid::FindGroupPos(int& left, int& top, int& right, int& bottom, LPGAMEOBJE
 
 }
 
+/*
+	Thêm vào grid, đồng thời đặt lại currentCell 
+*/
 void Grid::Insert(LPGAMEOBJECT objectToAdd)
 {
 	cellObjects.push_back(objectToAdd);
 	objectToAdd->SetCurrentCell(this->id);
 }
 
+/*
+	Xóa object ra khỏi object holder của grid, không xóa object đó
+*/
 void Grid::Delete(LPGAMEOBJECT objectToRemove)
 {
 	cellObjects.erase(std::remove(cellObjects.begin(), cellObjects.end(), objectToRemove), cellObjects.end());
 }
 
+/*
+	Load từ file vào
+*/
 void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collideObjects)
 {
 	/*Load các object của Grid*/
+	//Tất cả các vector đều được đọc từ file ra
 	vector<int> GROUP;
 	vector<int> GROUP_MOVING;
 	vector<int> PLATFORM;
@@ -250,14 +289,16 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 		return;
 	}
 
-	/*Load các object của vùng trong Grid*/
+	/*Load các object trong vùng của Grid*/
 	int id;
 	LPGAMEOBJECT gameObject, p_Block_Temp = NULL;
 	LPSPRITEMANAGER sprites = SpriteManager::GetInstance();
 	LPSCENE currentScene = SceneManager::GetInstance()->GetCurrentScene();
 
+	//Nếu scene là World Map
 	if (currentScene->GetType() == 3)
 	{
+		//Load các object trong map, mỗi id trong map tương ứng mỗi object
 		for (int j = CELL[2]; j <= CELL[4]; ++j)
 		{
 			for (int i = CELL[1]; i <= CELL[3]; ++i)
@@ -287,8 +328,10 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 			}
 		}
 	}
+	//Nếu scene không phải là World Map
 	else
 	{
+		//Load các object trong map, mỗi id trong map tương ứng mỗi object
 		for (int j = CELL[2]; j <= CELL[4]; ++j)
 		{
 			for (int i = CELL[1]; i <= CELL[3]; ++i)
@@ -314,6 +357,7 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 					switch (id)
 					{
 					case BRICK_SHINY_ANI:
+						//Nếu chưa bị phá
 						if (currentScene->activedBlock[j][i] == false)
 						{
 							gameObject = new BrickShiny(STANDARD_SIZE * i, STANDARD_SIZE * j);
@@ -336,6 +380,7 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 						gameObject->SetDrawOrder(ACTIVE_BLOCK_DRAW_ORDER);
 						gameObject->SetAnimationSet(AnimationManager::GetInstance()->Get(ACTIVE_BLOCK));
 
+						//Nếu chưa bị đụng
 						if (currentScene->activedBlock[j][i] == false)
 						{
 							Item* coin = new Coin(STANDARD_SIZE * i, STANDARD_SIZE * j, ITEM_COIN, false);
@@ -363,6 +408,7 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 						gameObject->SetDrawOrder(ACTIVE_BLOCK_DRAW_ORDER);
 						gameObject->SetAnimationSet(AnimationManager::GetInstance()->Get(ACTIVE_BLOCK));
 
+						//Nếu đã kích hoạt P_Block tới đoạn cuối cùng
 						if (currentScene->activedBlock[j][i] == true)
 							gameObject->SetState(P_BLOCK_STATE_DONE);
 
@@ -382,6 +428,7 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 				}
 				else if (id == ITEM_COIN_ID)
 				{
+					//Nếu chưa bị đụng
 					if (currentScene->activedBlock[j][i] == false)
 					{
 						gameObject = new Coin(STANDARD_SIZE * i, STANDARD_SIZE * j, ITEM_COIN, true);
@@ -422,7 +469,7 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 		}
 	}
 
-	//Add P_Block object
+	//Thêm các object vào P_Block
 	int objectX, objectY;
 	int indexX, indexY;
 	int length = P_BLOCK_HOLDER.size();
@@ -431,14 +478,17 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 		tempBlock = static_cast<P_Block*>(p_Block_Temp);
 	for (int x = 0; x < length; x += 2)
 	{
+		//Index x, y
 		objectX = P_BLOCK_HOLDER[x];
 		objectY = P_BLOCK_HOLDER[x + 1];
 
+		//Nếu tại index đó brick đã bị phá
 		if (currentScene->activedBlock[objectY][objectX] == true)
 			continue;
 
 		//DebugOut(L"Left: %d -- Top: %d -- Right: %d -- Bottom: %d \n", left,top,right,bottom);
 
+		//Kiếm các object giống index và cho vào trong P_Block
 		for (LPGAMEOBJECT object : gameObjects)
 		{
 			object->GetIndex(indexX, indexY);
@@ -464,6 +514,7 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 	length = GROUP.size();
 	for (int x = 0; x < length; x += 4)
 	{
+		//Kiểm tra có overlap không
 		if (GROUP_OVERLAP.find(x) != GROUP_OVERLAP.end())
 		{
 			overlapCell = GROUP_OVERLAP[x];
@@ -484,8 +535,10 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 		right = GROUP[x + 2];
 		bottom = GROUP[x + 3];
 
+		//Nếu không overlap
 		if(foundDuplicate == false)
 			group = new GroupObject();
+		//Nếu có overlap, xác định object bị overlap và kéo dài bounding box của nó qua index left, top, right, bottom
 		else
 		{
 			group = static_cast<GroupObject*>(FindGroup(left, top, right, bottom, collideObjects));
@@ -503,8 +556,10 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 
 					if (i == indexX && j == indexY)
 					{
+						//Thêm object vào trong group
 						group->Add(object);
 
+						//Xóa object khỏi gameObjects, collideOjbects và cellObjects
 						pos = find(gameObjects.begin(), gameObjects.end() - 1, object);
 						gameObjects.erase(pos);
 						gameObjects.shrink_to_fit();
@@ -525,6 +580,7 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 				}
 			}
 
+		//Nếu không bị overlap
 		if (foundDuplicate == false)
 		{
 			group->SetType(eType::GROUP);
@@ -542,7 +598,7 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 
 	}
 
-	//Group moving
+	//Group moving (platform di chuyển trong màn 4)
 	length = GROUP_MOVING.size();
 	for (int x = 0; x < length; x += 4)
 	{
@@ -563,8 +619,10 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 
 					if (i == indexX && j == indexY)
 					{
+						//Thêm object vào trong group
 						group->Add(object);
 
+						//Xóa object khỏi gameObjects, collideOjbects và cellObjects
 						pos = find(gameObjects.begin(), gameObjects.end() - 1, object);
 						gameObjects.erase(pos);
 						gameObjects.shrink_to_fit();
@@ -591,7 +649,7 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 		cellObjects.push_back(group);
 	}
 
-	//Group platform object
+	//Group platform object (platform nhảy lên được)
 	length = PLATFORM.size();
 	for (int x = 0; x < length; x += 4)
 	{
@@ -612,8 +670,10 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 
 					if (i == indexX && j == indexY)
 					{
+						//Thêm object vào trong group
 						group->Add(object);
 
+						//Xóa object khỏi gameObjects, collideOjbects và cellObjects
 						pos = find(gameObjects.begin(), gameObjects.end() - 1, object);
 						gameObjects.erase(pos);
 						gameObjects.shrink_to_fit();
@@ -632,6 +692,7 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 					}
 				}
 			}
+
 		group->SetType(eType::PLATFORM);
 		group->SetDrawOrder(BLOCK_DRAW_ORDER);
 		gameObjects.push_back(group);
@@ -639,7 +700,7 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 		cellObjects.push_back(group);
 	}
 
-	//Add Enemy Mob
+	//Thêm Enemy
 	int placeX;
 	int placeY;
 	int mobType;
@@ -649,9 +710,12 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 	length = ENEMY.size();
 	for (int x = 0; x < length; x += 4)
 	{
+		//Index x, y
 		placeX = ENEMY[x];
 		placeY = ENEMY[x + 1];
+		//Kiểu enemy
 		mobType = ENEMY[x + 2];
+		//Có cánh không
 		hasWing = ENEMY[x + 3];
 
 		switch (mobType)
@@ -684,6 +748,7 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 		else
 			enemy->SetDrawOrder(ENEMY_ENTITY_DRAW_ORDER);
 
+		//Nếu scene là World Map (dành cho ENEMY_TROOP)
 		if (CHOOSE == 3)
 		{
 			enemy->SetAnimationSet(AnimationManager::GetInstance()->Get(MAP_ANI_ID));
@@ -692,13 +757,14 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 		else
 			enemy->SetAnimationSet(AnimationManager::GetInstance()->Get(ENEMY_MOB));
 
+		//Đặt grid cho enemy
 		enemy->SetCurrentCell(this->id);
 		cellObjects.push_back(enemy);
 
 	}
 
 
-	//Add Item
+	//Thêm Item
 	int itemType;
 	Item* item = NULL;
 	ActiveBlock* newObject;
@@ -708,10 +774,13 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 	length = ITEM.size();
 	for (int x = 0; x < length; x += 3)
 	{
+		//Index x, y
 		indexX = ITEM[x];
 		indexY = ITEM[x + 1];
+		//Kiểu item
 		itemType = ITEM[x + 2];
 
+		//Nếu item tại index đó đã kích hoạt
 		if (currentScene->activedBlock[indexY][indexX] == true)
 			continue;
 
@@ -741,17 +810,21 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 			DebugOut(L"[ERROR] Unknown item type: %d\n", mobType);
 		}
 
+		//Thêm vào active block
+		//Active block mặc định item là 1 coin
 		for (auto object : collideObjects)
 		{
 			object->GetIndex(indexObj_x, indexObj_y);
 			if (indexObj_x == indexX && indexObj_y == indexY)
 			{
+				//Active block có nhiều coin (đụng 7 lần)
 				if (isCoin)
 				{
 					newObject = static_cast<ActiveBlock*>(object);
 					newObject->SetOption(1);
 					newObject->SetHP(7);
 				}
+				//Đặt item cho active block
 				else
 				{
 					newObject = static_cast<ActiveBlock*>(object);
@@ -765,6 +838,7 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 			}
 		}
 		
+		//Không có 7 coin
 		if (isCoin == false)
 		{
 			item->SetDrawOrder(BLOCK_DRAW_ORDER);
@@ -777,7 +851,7 @@ void Grid::Load(vector<LPGAMEOBJECT>& gameObjects, vector<LPGAMEOBJECT>& collide
 	}
 
 
-	//Thêm vào Active Cell
+	//Thêm grid này vào global cells (các cells đang hoạt động)
 	global->cells.insert(this->id);
 }
 
@@ -788,16 +862,17 @@ void Grid::Unload()
 
 	for (auto object : cellObjects)
 	{
+		//Là group
 		if (object->GetType() == eType::GROUP)
 			static_cast<GroupObject*>(object)->Destroy_Group();
+		//Là các entity (enemy, item,...)
 		else if (object->GetCurrentCell() != -1)
-		{
-			listRemain.push_back(object);
-		}		
+			listRemain.push_back(object);	
 		else
 			object->Destroy();
 	}	
 
+	//Phải để riêng để chặn việc xóa trong lúc lặp vector ở trên
 	for (auto object : listRemain)
 		object->Destroy();
 

@@ -1,4 +1,4 @@
-#include "WorldMap.h"
+﻿#include "WorldMap.h"
 
 #include "WorldMap.h"
 #include "debug.h"
@@ -13,6 +13,9 @@ WorldMap::WorldMap(int id, LPCWSTR filePath) : TestScene(id, filePath)
 	global->level = MARIO_LEVEL_SMALL;
 }
 
+/*
+	Reset về vị trí ban đầu khi chết
+*/
 void WorldMap::Reset()
 {
 	castMario->MoveTo(startX, startY);
@@ -20,6 +23,9 @@ void WorldMap::Reset()
 
 }
 
+/*
+	Reset về vị trí ban đầu khi chết, sau khi không còn mạng
+*/
 void WorldMap::Restart()
 {
 	castMario->MoveTo(startX, startY);
@@ -147,10 +153,11 @@ void WorldMap::Update(DWORD dt)
 	TestScene::Update(dt);
 	DWORD now = GetTickCount();
 
+	//Update lại vị trí mario trên World Map
 	if(!castMario->IsMoving())
 		castMario->GetPosition(startPosX, startPosY);
 
-
+	//Nếu mario chết
 	if (global->die)
 	{
 		global->live -= 1;
@@ -162,6 +169,7 @@ void WorldMap::Update(DWORD dt)
 			
 		global->die = false;
 	}
+	//Nếu play scene hoàn thành
 	else if (global->finished)
 	{
 		global->currentCardEmpty += 1;
@@ -176,7 +184,8 @@ void WorldMap::Update(DWORD dt)
 
 		global->finished = false;
 	}
-	
+	//---Pop up khi vào scene World Map
+	//Nếu hết mạng
 	if (gameOver)
 	{
 		if (firstOver)
@@ -203,6 +212,7 @@ void WorldMap::Update(DWORD dt)
 				arrow->SetPosition(MAP_POS_ARROW_2_X, MAP_POS_ARROW_2_Y);
 		}
 	}
+	//Nếu còn mạng
 	else if (startTime)
 	{
 		showPopup = true;
@@ -235,6 +245,7 @@ void WorldMap::Update(DWORD dt)
 		this->gameObjects.push_back(numberTwo);
 
 	}
+	//Show popup
 	else if (showPopup)
 	{
 		if (now - timePass > MAP_POPUP)
@@ -250,6 +261,7 @@ void WorldMap::Update(DWORD dt)
 		else
 			PAUSE = true;
 	}
+	//Chuyển từ World Map sang play scene, màn hình sẽ đen dần từ từ 
 	else if (endScene)
 	{
 		//Direction
@@ -314,7 +326,7 @@ void WorldMap::Update(DWORD dt)
 			return;
 		}
 
-		//Add black title
+		//Thêm black title
 		LPGAMEOBJECT title = new BackGround(indexX * STANDARD_SIZE, indexY * STANDARD_SIZE, SpriteManager::GetInstance()->Get(ID_TEX_BBOX));
 		title->SetIndex(indexX, indexY);
 		title->SetDrawOrder(HUD_TEXT_DRAW_ORDER);
@@ -347,6 +359,7 @@ void WorldMap::SetState(int state)
 
 	switch (state)
 	{
+		//Chuyển cảnh
 	case SCENE_STATE_SWITCH:
 		if (global->allowSwitch)
 		{
@@ -355,6 +368,7 @@ void WorldMap::SetState(int state)
 			SceneManager::GetInstance()->SwitchScene(gate->GetTargetID());
 		}
 		break;
+		//Di chuyển lên
 	case MAP_STATE_MOVE_UP:
 		if (!castMario->IsMoving() && !endScene)
 		{
@@ -366,6 +380,7 @@ void WorldMap::SetState(int state)
 			}
 		}
 		break;
+		//Di chuyển xuống
 	case MAP_STATE_MOVE_DOWN:
 		if (!castMario->IsMoving() && !endScene)
 		{
@@ -377,6 +392,7 @@ void WorldMap::SetState(int state)
 			}
 		}
 		break;
+		//Di chuyển trái
 	case MAP_STATE_MOVE_LEFT:
 		if (!castMario->IsMoving() && !endScene)
 		{
@@ -388,6 +404,7 @@ void WorldMap::SetState(int state)
 			}
 		}
 		break;
+		//Di chuyển phải
 	case MAP_STATE_MOVE_RIGHT:
 		if (!castMario->IsMoving() && !endScene)
 		{
@@ -399,20 +416,24 @@ void WorldMap::SetState(int state)
 			}
 		}
 		break;
+		//Reset lại vị trí khi mario chết
 	case MAP_STATE_RESET:
 		if (!castMario->IsMoving())
 			Reset();
 		break;
+		//Mario hết mạng
 	case MAP_STATE_RESTART:
 		if (!castMario->IsMoving())
 			gameOver = true;	
 		break;
+		//Di chuyển mũi tên trong pop up
 	case MAP_STATE_SELECT:
 		if (gameOver)
 		{
 			firstOption = !firstOption;
 		}
 		break;
+		//Chọn
 	case MAP_STATE_CHOOSE:
 		if (gameOver && firstOption)
 		{
@@ -428,6 +449,7 @@ void WorldMap::SetState(int state)
 			Destroy(arrow);
 		}
 		break;
+		//Chuyển cảnh từ World Map sang play scene
 	case SCENE_STATE_MAP_TO_STAGE:
 	{
 		if (current->isFinished)

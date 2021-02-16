@@ -1,4 +1,4 @@
-#include "BoomerangBro.h"
+﻿#include "BoomerangBro.h"
 #include "debug.h"
 
 BoomerangBro::BoomerangBro(int placeX, int placeY, int mobType)
@@ -116,25 +116,28 @@ void BoomerangBro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// Simple fall down
 	if (PAUSE == false)
 	{
+		//Nếu chưa chết
 		if (type != eType::ENEMY_MOB_DIE)
 		{
 			float tempX, tempY;
 			mario->GetPosition(tempX, tempY);
 
+			//Nằm trong vùng ném
 			if (abs(this->x - tempX) < ENEMY_BRO_THROW_RANGE)
 			{
+				//Chuyển hướng qua lại, mặt hướng về mario
 				if (GetTickCount() - timeLeft > ENEMY_BRO_TIME_SWITCH)
 				{
 					direction = -direction;
 					timeLeft = GetTickCount();
 				}
-
+				//Nhảy lên
 				if (GetTickCount() - timeJump > ENEMY_BRO_TIME_JUMP)
 				{
 					vy = -ENEMY_BRO_JUMP;
 					timeJump = GetTickCount();
 				}
-
+				//Sẵn sàng ném
 				if (steady)
 				{
 					if (GetTickCount() - timeThrow > ENEMY_BRO_TIME_THROW_READY)
@@ -149,6 +152,7 @@ void BoomerangBro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 					}
 				}
+				//Đợi sẵn sàng
 				else
 				{
 					if (GetTickCount() - timeThrow > ENEMY_BRO_TIME_THROW_WAIT)
@@ -158,12 +162,13 @@ void BoomerangBro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					}
 				}
 				
-
+				//Vị trí giữa mario với enemy này, facing = 1 quay mặt bên phải, facing = -1 quay mặt bên trái
 				if (this->x < tempX)
 					facing = 1;
 				else
 					facing = -1;
 			}
+			//Nằm ngoài vùng ném, tự động di chuyển tới mario
 			else
 			{
 				direction = -Global::GetInstance()->Sign(this->x - tempX);
@@ -203,7 +208,6 @@ void BoomerangBro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		float rdy = 0;
 		float nx, ny;
 
-		// TODO: This is a very ugly designed function!!!!
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
 
@@ -232,12 +236,14 @@ void BoomerangBro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				float vx, vy;
 				e->obj->GetSpeed(vx, vy);
 
+				//Đạp trúng đầu
 				if (e->ny > 0)
 				{
 					SetState(ENEMY_STATE_STOMP);
 					e->obj->SetSpeed(vx, -MARIO_JUMP_DEFLECT_SPEED);
 
 				}
+				//Đụng trúng mario
 				else
 				{
 					e->obj->SetState(MARIO_STATE_HIT);
@@ -268,11 +274,11 @@ void BoomerangBro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void BoomerangBro::Render()
 {
+	//Ani thuộc ENEMY_MOB
 	if (firstRun == false)
 		return;
 
 	int ani = -1;
-
 
 	if (state == ENEMY_STATE_MOVING)
 	{
@@ -307,6 +313,7 @@ void BoomerangBro::SetState(int state)
 
 	switch (state)
 	{
+		//Bị đạp
 	case ENEMY_STATE_STOMP:
 	{
 		this->type = eType::ENEMY_MOB_DIE;
@@ -322,6 +329,7 @@ void BoomerangBro::SetState(int state)
 	}
 
 	break;
+		//Bị hit
 	case ENEMY_STATE_HIT:
 	case ENEMY_STATE_HIT_TAIL:
 	{

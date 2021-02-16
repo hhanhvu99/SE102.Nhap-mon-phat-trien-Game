@@ -1,4 +1,4 @@
-#include "Coin.h"
+﻿#include "Coin.h"
 
 Coin::Coin(float x, float y, int itemType, bool outSide) : Item(x, y, itemType)
 {
@@ -15,22 +15,30 @@ Coin::Coin(float x, float y, int itemType, bool outSide) : Item(x, y, itemType)
 	this->Add();
 }
 
+/*
+	Chạm vào thì hủy
+*/
 void Coin::DestroyTouch()
 {
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
 	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
 
+	//Nằm bên ngoài
 	if (outSide)
 	{
+		//Cộng tiền và điểm
 		Global::GetInstance()->money += 1;
 		Global::GetInstance()->point += 50;
 
+		//Thuộc P-Block
 		if (master != NULL)
 			static_cast<P_Block*>(master)->RemoveObject(this);
 
+		//Lưu lại vị trí
 		current->activedBlock[indexY][indexX] = true;
 		current->Destroy(this);
 	}
+	//Nằm trong block
 	else
 		current->Destroy_Visual(this);
 
@@ -41,8 +49,10 @@ void Coin::Add()
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
 	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
 
+	//Nằm bên ngoài
 	if (outSide)
 		current->Add(this);
+	//Nằm bên trong block
 	else
 		current->Add_Visual(this);
 
@@ -53,13 +63,16 @@ void Coin::Destroy()
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
 	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
 
+	//Nằm bên ngoài
 	if (outSide)
 	{
+		//Thuộc về P-Block
 		if (master != NULL)
 			static_cast<P_Block*>(master)->RemoveObject(this);
 
 		current->Destroy(this);
 	}
+	//Nằm bên trong block
 	else
 		current->Destroy_Visual(this);
 		
@@ -83,6 +96,7 @@ void Coin::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// Simple fall down
 	if (PAUSE == false)
 	{
+		//Nằm bên trong block
 		if (!outSide)
 		{
 			vy += ITEM_COIN_GRAVITY * dt;
@@ -128,7 +142,6 @@ void Coin::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		float rdy = 0;
 		float nx, ny;
 
-		// TODO: This is a very ugly designed function!!!!
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
 		if (ny != 0)
@@ -156,6 +169,8 @@ void Coin::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void Coin::Render()
 {
+	//Ani thuộc ITEM_ID
+
 	if (state != ITEM_STATE_IDLE)
 	{
 		int ani = itemType;
@@ -171,11 +186,13 @@ void Coin::SetState(int state)
 
 	switch (state)
 	{
+		//Hiện coin trong block
 	case ITEM_STATE_SHOW:
 		vy = -ITEM_COIN_JUMP_SPEED;
 		Global::GetInstance()->money += 1;
 		
 		break;
+		//Mario chạm vào coin
 	case ITEM_STATE_HIT:
 	{
 		LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();

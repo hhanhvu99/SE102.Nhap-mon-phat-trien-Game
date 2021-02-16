@@ -1,4 +1,4 @@
-#include "Koopas.h"
+﻿#include "Koopas.h"
 #include "debug.h"
 
 Koopas::Koopas(int placeX, int placeY, int mobType, bool hasWing)
@@ -132,6 +132,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// Simple fall down
 	if (PAUSE == false)
 	{
+		//Nếu có cánh và là rùa đỏ thì bay lên bay xuống
 		if (hasWing && mobType == ENEMY_KOOPAS_RED)
 		{
 			vy += directionFly * ENEMY_KOOPAS_GRAVITY;
@@ -154,12 +155,15 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			}
 
 		}
+		//TH còn lại
 		else
 		{
 			vy += ENEMY_KOOPAS_GRAVITY * dt;
 
+			//Bị lộn ngược
 			if (upSideDown)
 			{
+				//Bất động mà còn di chuyển, mai rùa từ từ giảm tốc độ
 				if (immobilize)
 				{
 					if (abs(vx) < ENEMY_KOOPAS_THRESHOLD)
@@ -170,6 +174,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			}
 			else
 			{
+				//Không bắt động
 				if (!immobilize)
 					vx = direction * ENEMY_KOOPAS_MOVE_SPEED_X;
 			}
@@ -195,6 +200,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		return;
 	}
 
+	//Nếu bất động, mai rùa sẽ tự động thò đầu ra sau một khoảng thời gian, kể cả khi bị cầm 
 	if (immobilize)
 	{
 		if (GetTickCount() - timeLeft > ENEMY_KOOPAS_TIME_LEFT)
@@ -252,9 +258,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		float rdx = 0;
 		float rdy = 0;
 
-		// TODO: This is a very ugly designed function!!!!
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
-
 
 		//DebugOut(L"vx: %f -- vy: %f\n", vx, vy);
 		//DebugOut(L"nx: %f -- ny: %f -- direction: %d\n", nx, ny, direction);
@@ -267,13 +271,16 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			vy = 0;
 
+			//Nếu có cánh và không phải rùa đỏ, khi chạm đất thì nó sẽ nảy lên
 			if (hasWing && mobType != ENEMY_KOOPAS_RED)
 			{
 				if (ny < 0)
 					vy = -ENEMY_KOOPAS_JUMP_SPEED;
 			}
+			//TH khác
 			else
 			{
+				//Nếu mai rùa bị quật bằng đuội, mai rùa sẽ nảy
 				if (ny < 0)
 				{
 					if (state == ENEMY_STATE_HIT_TAIL)
@@ -298,13 +305,16 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				float vx, vy;
 				e->obj->GetSpeed(vx, vy);
 
+				//Bị đạp
 				if (e->ny > 0)
 				{
+					//Nếu có cánh thì mất
 					if (hasWing)
 					{
 						hasWing = false;
 						SetState(ENEMY_STATE_FLY_STOMP);
 					}
+					//Nếu không thì sang trạng thái bất động hoặc xoay
 					else
 					{
 						if (immobilize == false)
@@ -315,18 +325,23 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					
 					e->obj->SetSpeed(vx, -MARIO_JUMP_DEFLECT_SPEED);
 				}
+				//TH khác
 				else
 				{	
+					//Nếu không bất động, mario bị hit
 					if (immobilize == false)
 						e->obj->SetState(MARIO_STATE_HIT);
+					//Nếu bất động
 					else
 					{
+						//Mario đang nhấn nút cầm
 						if (mario->isGrappingPress())
 						{
 							mario->SetGrabObject(this);
 							mario->SetState(MARIO_STATE_HOLD_SOMETHING);
 							beingGrab = true;
 						}
+						//Nếu không thì đá
 						else
 						{
 							mario->SetState(MARIO_STATE_KICK);
@@ -336,11 +351,13 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					}
 				}
 			}
+			//Nếu là enemy, chỉ xét khi đang xoay hoặc bị cầm
 			else if (e->obj->GetType() == eType::ENEMY)
 			{
 				e->obj->SetState(ENEMY_STATE_HIT);
 				e->obj->SetDirection(direction);
 
+				//Nếu cầm, cả 2 cùng chết
 				if (beingGrab)
 				{
 					mario->GetDirection(direction);
@@ -351,8 +368,10 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				hitEnemy = true;
 					
 			}
+			//Đang xoay
 			else if (rolling)
 			{
+				//Là gạch hoặc active block
 				if (e->obj->GetType() == eType::QUESTION || e->obj->GetType() == eType::BRICK)
 				{
 					e->obj->SetState(BRICK_SHINY_STATE_HIT);
@@ -368,6 +387,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				}
 				
 			}
+			//Nếu rùa xanh đụng vào gì đó
 			else if (nx != 0 && mobType == ENEMY_KOOPAS_GREEN)
 			{
 				if (nx < 0)
@@ -378,7 +398,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	
 		}
 
-
+		//Rùa đỏ và đang di chuyển thì chuyển hướng theo thứ ở dưới chân
 		if (mobType == ENEMY_KOOPAS_RED && state == ENEMY_STATE_MOVING)
 		{
 			bool passCheck;
@@ -391,11 +411,12 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			thisRight += ENEMY_KOOPAS_CHECK_RANGE;
 			thisBottom += ENEMY_KOOPAS_CHECK_RANGE;
 
+			//Kiểm tra va chạm
 			if (abs(this->x - oldX) < ENEMY_KOOPAS_SIMILAR_GAP)
 				countTouch += 1;
 			oldX = this->x;
 
-
+			//Xét từng object trong một khoảng xung quanh con rùa
 			for (auto object : *coObjects)
 			{
 				if (!onGroup)
@@ -403,6 +424,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				float left, top, right, bottom;
 				object->GetBoundingBox(left, top, right, bottom);
 
+				//Không đứng trên group
 				if (onGroup == false)
 				{
 					if (object->GetType() == eType::BLOCK ||
@@ -417,6 +439,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 										passCheck = true;
 					}
 				}		
+				//Đứng trên group
 				if (object->GetType() == eType::GROUP ||
 					object->GetType() == eType::PLATFORM)
 				{
@@ -438,9 +461,11 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					
 				//DebugOut(L"ongroup: %d\n", onGroup);
 
+				//Nếu không nằm trong khoảng
 				if (passCheck == false)
 					continue;
 
+				//Nếu đứng trên block active hoặc brick và gạch đội trúng, thì con rùa sẽ chết
 				if (!onGroup)
 				{
 					if (object->GetState() == BRICK_SHINY_STATE_MOVING || object->GetState() == QUESTION_BLOCK_STATE_MOVING)
@@ -450,6 +475,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					}
 				}
 				
+				//Xét chuyển hướng di chuyển dựa trên vị trí đang đứng
 				if (countTouch < 3)
 				{
 					if (direction < 0)
@@ -511,6 +537,7 @@ void Koopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void Koopas::Render()
 {
+	//Ani thuộc ENEMY_MOB
 	if (firstRun == false)
 		return;
 

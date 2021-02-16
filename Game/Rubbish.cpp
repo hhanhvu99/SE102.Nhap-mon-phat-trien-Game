@@ -1,4 +1,4 @@
-#include "Rubbish.h"
+﻿#include "Rubbish.h"
 
 Rubbish::Rubbish(float x, float y, float speedX, float speedY, float deflect, int direction)
 {
@@ -14,6 +14,9 @@ Rubbish::Rubbish(float x, float y, float speedX, float speedY, float deflect, in
 	this->Add();
 }
 
+/*
+	Thêm vào scene dưới dạng Background
+*/
 void Rubbish::Add()
 {
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
@@ -21,6 +24,9 @@ void Rubbish::Add()
 	current->Add_Visual(this);
 }
 
+/*
+	Xóa khỏi scene
+*/
 void Rubbish::Destroy()
 {
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
@@ -39,15 +45,18 @@ void Rubbish::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	x += dx;
 	y += dy;
 
+	//Nếu góc hiện tại lớn hơn 360, reset lại góc
 	if (currentDergee >= 360.0f)
 		currentDergee = 0.0f;
+	//Xoay gạch với 1 góc cố định
 	else
 		currentDergee += RUBBISH_ROTATE_SPEED * dt;
 
+	//Tốc độ vx, vy để tạo hiệu ứng vòng
 	vx = direction * speedX * dt;
 	vy += speedY * dt;
 
-
+	//Ra khỏi scene, xóa
 	GameEngine::GetInstance()->GetCamPos(camPosX, camPosY);
 	if (x < camPosX - BULLET_SAFE_DELETE_RANGE || x > camPosX + SCREEN_WIDTH + BULLET_SAFE_DELETE_RANGE ||
 		y < camPosY - BULLET_SAFE_DELETE_RANGE || y > camPosY + SCREEN_HEIGHT + BULLET_SAFE_DELETE_RANGE)
@@ -59,6 +68,7 @@ void Rubbish::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void Rubbish::Render()
 {
+	//Ani thuộc phần BULLET
 	int ani = -1;
 
 	if (direction > 0) ani = BULLET_EFFECT_RUBBISH + BULLET_ANI_RIGHT;

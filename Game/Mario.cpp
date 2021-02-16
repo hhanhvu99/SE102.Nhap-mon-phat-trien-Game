@@ -1,4 +1,4 @@
-#include <algorithm>
+﻿#include <algorithm>
 #include <assert.h>
 #include "Debug.h"
 
@@ -964,6 +964,8 @@ void Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void Mario::Render()
 {
+	//Ani thuộc MARIO
+
 	//DebugOut(L"vx: %f - vy: %f\n", vx, vy);
 	//DebugOut(L"State: %d\n", state);
 	//DebugOut(L"Running: %d\n", isRunning);
@@ -1153,7 +1155,7 @@ void Mario::Render()
 			indexPalette = 0;
 	}
 		
-
+	//Đặt thời gian giữa các frame
 	animation_set->Get(ani)->SetTime(ani_walk_time);
 	animation_set->Get(ani)->Render(x + offset_Draw_X, y + offset_Draw_Y, color);
 	

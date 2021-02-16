@@ -1,4 +1,4 @@
-#include "Animation.h"
+﻿#include "Animation.h"
 #include "debug.h"
 
 void Animation::Add(int spriteId, DWORD time)
@@ -15,6 +15,9 @@ void Animation::Add(int spriteId, DWORD time)
 	frames.push_back(frame);
 }
 
+/*
+	Render bình thường
+*/
 void Animation::Render(float x, float y, D3DCOLOR color)
 {
 	DWORD now = GetTickCount();
@@ -25,6 +28,7 @@ void Animation::Render(float x, float y, D3DCOLOR color)
 	}
 	else
 	{
+		//Chuyển frame trong animation, khi animation kết thúc giữa chừng thì sẽ tự động reset về frame đầu tiên
 		DWORD t = frames[currentFrame]->GetTime();
 		DWORD different = now - lastFrameTime;
 
@@ -45,41 +49,9 @@ void Animation::Render(float x, float y, D3DCOLOR color)
 	frames[currentFrame]->GetSprite()->Draw(x, y, color);
 }
 
-bool Animation::RenderOnce(float x, float y, D3DCOLOR color)
-{
-	DWORD now = GetTickCount();
-	if (currentFrame == -1)
-	{
-		currentFrame = 0;
-		lastFrameTime = now;
-	}
-	else
-	{
-		DWORD t = frames[currentFrame]->GetTime();
-		DWORD different = now - lastFrameTime;
-
-		if (different > t && different <= t + 100)
-		{
-			++currentFrame;
-			lastFrameTime = now;
-			if (currentFrame == frames.size())
-			{
-				currentFrame = 0;
-				return false;
-			}
-				
-		}
-		else if (different > t + 100)
-		{
-			currentFrame = 0;
-			lastFrameTime = now;
-		}
-	}
-
-	frames[currentFrame]->GetSprite()->Draw(x, y, color);
-	return true;
-}
-
+/*
+	Render có xoay
+*/
 void Animation::Render(float x, float y, float rotate, D3DCOLOR color)
 {
 	DWORD now = GetTickCount();

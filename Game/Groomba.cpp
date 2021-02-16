@@ -122,8 +122,10 @@ void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		vy += ENEMY_GROMMBA_GRAVITY * dt;
 		vx = direction * ENEMY_GROOMBA_MOVE_SPEED_X;
 
+		//Nếu có cánh thì nhảy
 		if (hasWing)
 		{
+			//Nhảy số lần nhất định rồi dừng một lúc
 			if (allowJump == false)
 			{
 				if (numberOfJump == ENEMY_GROOMBA_MAX_JUMP)
@@ -161,7 +163,6 @@ void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		if (GetTickCount() - timeLeft > ENEMY_GROOMBA_TIME_LEFT)
 		{
 			this->Destroy();
-			//Doi co index
 			return;
 		}
 	}
@@ -189,7 +190,6 @@ void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		float rdx = 0;
 		float rdy = 0;
 
-		// TODO: This is a very ugly designed function!!!!
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
 		
@@ -209,8 +209,10 @@ void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				countOffGround = 0;
 				touchGround = true;
 
+				//Nếu có cánh
 				if (hasWing)
 				{
+					//Cho phép nhảy
 					if (allowJump)
 					{
 						if (numberOfJump == ENEMY_GROOMBA_MAX_JUMP - 1)
@@ -225,6 +227,7 @@ void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 						numberOfJump += 1;
 
+						//Đủ số lần nhảy
 						if (numberOfJump == ENEMY_GROOMBA_MAX_JUMP)
 							allowJump = false;
 					}
@@ -243,9 +246,10 @@ void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				float vx, vy;
 				e->obj->GetSpeed(vx, vy);
 
-				
+				//Nếu bị đạp
 				if (e->ny > 0)
 				{
+					//Nếu có cánh thì cánh bị mất
 					if (hasWing)
 					{
 						hasWing = false;
@@ -254,6 +258,7 @@ void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
 						current->FloatText(x, y);
 					}
+					//Bị đạp
 					else
 						SetState(ENEMY_STATE_STOMP);
 					e->obj->SetSpeed(vx, -MARIO_JUMP_DEFLECT_SPEED);
@@ -290,6 +295,7 @@ void Groomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void Groomba::Render()
 {
+	//Ani thuộc ENEMY_MOB
 	if (firstRun == false)
 		return;
 

@@ -1,4 +1,4 @@
-#include "Teleport.h"
+﻿#include "Teleport.h"
 #include "debug.h"
 
 Teleport::Teleport(int targetScene) : GameObject()
@@ -73,14 +73,17 @@ void Teleport::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	GameObject::Update(dt);
 
+	//Teleport từ scene sang map
 	if (type == eType::TELEPORT_SCENE_TO_MAP)
 		return;
 
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
 	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
 
+	//Kiểm tra mario
 	if (mario == NULL)
 	{
+		//Lấy mario
 		if (current->GetMario() != NULL)
 		{
 			if (CHOOSE == 1)
@@ -91,6 +94,7 @@ void Teleport::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 	else
 	{
+		//Kiểm tra mario có nằm trong vùng gate không
 		mario->GetPosition(marioX, marioY);
 
 		if (marioX + mario->GetWidth() >= currentX)

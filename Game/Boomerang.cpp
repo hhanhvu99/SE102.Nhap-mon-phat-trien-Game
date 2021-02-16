@@ -1,4 +1,4 @@
-#include "Boomerang.h"
+﻿#include "Boomerang.h"
 
 Boomerang::Boomerang(float x, float y, int direction, LPGAMEOBJECT thrower)
 {
@@ -27,6 +27,8 @@ void Boomerang::Add()
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
 	LPTESTSCENE current = dynamic_cast<LPTESTSCENE>(scene);
 	current->Add(this);
+
+	//Lấy mario
 	mario = current->GetMario();
 
 }
@@ -60,18 +62,23 @@ void Boomerang::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// Simple fall down
 	if (PAUSE == false)
 	{
+		//Lấy vị trí đứa ném
 		thrower->GetPosition(throwerX, throwerY);
 
 		x += dx;
 		y += dy;
 
+		//Boomerang di chuyển theo hình giọt nước
+		//Làm cho boomerang không nằm dưới đứa ném
 		if (y > throwerY + BULLET_BOOMERANG_OFFSET_Y)
 			vy = 0;
 		else
 			vy += BULLET_BOOMERANG_REFLECT_VY * dt;
 
+		//Xét trường hợp hủy cái boomerang
 		if (direction > 0 && vx < 0)
 		{
+			//Nếu quăng về bên phải và x của boomerang nhỏ hơn x của người ném
 			if (x < throwerX)
 			{
 				this->Destroy();
@@ -80,6 +87,7 @@ void Boomerang::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 		else if (direction < 0 && vx > 0)
 		{
+			//Nếu quăng về bên trái và x của boomerang lớn hơn x của người ném
 			if (x > throwerX)
 			{
 				this->Destroy();
@@ -87,6 +95,7 @@ void Boomerang::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			}
 		}
 
+		//Boomerang quay về hướng ngược lại
 		vx += -direction * BULLET_BOOMERANG_REFLECT_VX * dt;
 
 		CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY, eType::ENEMY_BULLET, eType::ENEMY_MOB_DIE, eType::P_BLOCK,
@@ -101,34 +110,29 @@ void Boomerang::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 
 	GameEngine::GetInstance()->GetCamPos(camPosX, camPosY);
+	//Nếu đạn đứng yên
 	if (state == BULLET_STATE_IDLE)
 	{
 		vx = 0;
 		vy = 0;
 	}
 
-	// No collision occured, proceed normally
 	//DebugOut(L"Size: %d \n", coEvents.size());
 	//DebugOut(L"Result: %d\n", result);
 
+	//Kiểm tra collision
 	if (coEvents.size() != 0)
 	{
 		float min_tx, min_ty;
 		float rdx = 0;
 		float rdy = 0;
 
-		// TODO: This is a very ugly designed function!!!!
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
-
 
 		//DebugOut(L"vx: %f -- vy: %f\n", vx, vy);
 		//DebugOut(L"nx: %f -- ny: %f", nx, ny);
 
-
-		//
-		// Collision logic with other objects
-		//
-
+		//Nếu chạm vào mario
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
@@ -148,6 +152,7 @@ void Boomerang::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		coEvents[i] = NULL;
 	}
 
+	//Ra khỏi camera thì xóa
 	if (x < camPosX - BULLET_SAFE_DELETE_RANGE || x > camPosX + SCREEN_WIDTH + BULLET_SAFE_DELETE_RANGE ||
 		y < camPosY - BULLET_SAFE_DELETE_RANGE || y > camPosY + SCREEN_HEIGHT + BULLET_SAFE_DELETE_RANGE)
 	{
@@ -158,6 +163,7 @@ void Boomerang::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void Boomerang::Render()
 {
+	//Ani thuộc BULLET
 	int ani = -1;
 
 	if (direction > 0) ani = bulletType + BULLET_ANI_RIGHT;
@@ -171,15 +177,6 @@ void Boomerang::Render()
 void Boomerang::SetState(int state)
 {
 	GameObject::SetState(state);
-	DWORD now = GetTickCount();
-
-	switch (state)
-	{
-	case BULLET_STATE_IDLE:
-		break;
-	case BULLET_STATE_MOVING:
-		break;
-	}
 }
 
 Boomerang::~Boomerang()

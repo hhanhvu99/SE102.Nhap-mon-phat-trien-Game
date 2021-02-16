@@ -1,4 +1,4 @@
-#include "Flower.h"
+﻿#include "Flower.h"
 
 Flower::Flower(float x, float y, int itemType) : Item(x, y, itemType)
 {
@@ -8,11 +8,15 @@ Flower::Flower(float x, float y, int itemType) : Item(x, y, itemType)
 	this->Add();
 }
 
+/*
+	Chạm vào thì hủy
+*/
 void Flower::DestroyTouch()
 {
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
 	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
 
+	//Nếu mario nhỏ, cộng 1000 điểm, các TH khác mario biến thành mario nhỏ
 	if (Global::GetInstance()->level == MARIO_LEVEL_SMALL)
 		current->FloatTextCustom(x, y, HUD_BONUS_POINT_1000);
 
@@ -57,6 +61,7 @@ void Flower::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		x += dx;
 		y += dy;
 
+		//Đang hiện lên
 		if (showUp)
 		{
 			if (this->y <= boundaryUp)
@@ -88,6 +93,7 @@ void Flower::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	GameEngine::GetInstance()->GetCamPos(camPosX, camPosY);
 
+	//Ra khỏi camera thì xóa
 	if (x < camPosX - ITEM_SAFE_DELETE_RANGE || x > camPosX + SCREEN_WIDTH + ITEM_SAFE_DELETE_RANGE ||
 		y < camPosY - ITEM_SAFE_DELETE_RANGE || y > camPosY + SCREEN_HEIGHT + ITEM_SAFE_DELETE_RANGE)
 	{
@@ -98,6 +104,7 @@ void Flower::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void Flower::Render()
 {
+	//Ani thuộc ITEM_ID
 	if (state != ITEM_STATE_IDLE)
 	{
 		int ani = itemType;

@@ -53,6 +53,7 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 */
 void LoadResources()
 {
+	//Load tất cả các Texture
 	Texture* texture = Texture::GetInstance();
 
 	texture->Add(1, L"Asset\\Block\\SpriteSheet.png", NULL);
@@ -65,6 +66,7 @@ void LoadResources()
 	texture->Add(8, L"Asset\\Block\\Goal.png", D3DCOLOR_XRGB(0, 183, 239));
 	texture->Add(ID_TEX_BBOX, L"Asset\\Debug\\BoundingBox.png", NULL);
 
+	//Lấy reference
 	SpriteManager* spriteData = SpriteManager::GetInstance();
 	AnimationManager* aniData = AnimationManager::GetInstance();
 
@@ -204,6 +206,7 @@ void LoadResources()
 
 	LPSCENEMANAGER sceneManager = SceneManager::GetInstance();
 	
+	//Load tất cả các scene
 	sceneManager->Load(scene);
 	sceneManager->Load(sceneBonus);
 	sceneManager->Load(sceneTwo);
@@ -338,23 +341,10 @@ int Run()
 		DWORD now = GetTickCount();
 		DWORD dt = now - frameStart;
 
-		//DWORD now = GetTickCount();
-		// dt: the time between (beginning of last frame) and now
-		// this frame: the frame we are about to render
-		//DWORD dt = now - frameStart;
-
 		if (dt >= tickPerFrame)
 		{
 			frameStart = now;
 			accumulator += dt;
-
-			
-			/*while (accumulator >= timeStep)
-			{
-				gameEngine->ProcessKeyboard();
-				Update(timeStep);
-				accumulator -= timeStep;
-			}*/
 			
 			gameEngine->ProcessKeyboard();
 			Update(dt);
@@ -362,6 +352,7 @@ int Run()
 		}
 		else
 		{
+			//Hạn chế trường hợp dt tăng bất thường dẫn đến việc thỉnh thoảng Mario nhảy rất cao
 			Sleep((DWORD)tickPerFrame - dt);
 		}
 

@@ -39,7 +39,6 @@ public:
 	void Reset() { lastFrameTime = GetTickCount(); }
 	void Add(int spriteId, DWORD time = 100);
 	void Render(float x, float y, D3DCOLOR color = D3DCOLOR_ARGB(255,255,255,255));
-	bool RenderOnce(float x, float y, D3DCOLOR color = D3DCOLOR_ARGB(255, 255, 255, 255));
 	void Render(float x, float y, float rotate, D3DCOLOR color = D3DCOLOR_ARGB(255, 255, 255, 255));
 	void SetTime(DWORD time);
 	DWORD GetTime() { return this->defaultTime; }

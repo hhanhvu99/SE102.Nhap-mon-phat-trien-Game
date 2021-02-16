@@ -1,4 +1,4 @@
-#include "SuperStar.h"
+﻿#include "SuperStar.h"
 
 SuperStar::SuperStar(float x, float y, int itemType) : Item(x, y, itemType)
 {
@@ -25,11 +25,15 @@ void SuperStar::Destroy()
 
 }
 
+/*
+	Chạm vào thì hủy
+*/
 void SuperStar::DestroyTouch()
 {
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
 	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
 
+	//Thêm 1000 điểm
 	current->FloatTextCustom(x, y, HUD_BONUS_POINT_1000);
 
 	current->Destroy(this);
@@ -54,16 +58,19 @@ void SuperStar::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// Simple fall down
 	if (PAUSE == false)
 	{
+		//Item không hiện lên
 		if (showUp == false)
 			vy += ITEM_GRAVITY * dt;
 
 		CalcPotentialCollisions(coObjects, coEvents, { eType::ITEM, eType::ENEMY, eType::ENEMY_BULLET,
 					eType::PLAYER_UNTOUCHABLE, eType::ENEMY_MOB_DIE });
 
+		//Di chuyển
 		if (state == ITEM_STATE_MOVING)
 		{
 			vx = direction * ITEM_MOVE_SPEED_X;
 		}
+		//Item hiện lên
 		else if (state == ITEM_STATE_SHOW)
 		{
 			if (this->y <= boundaryUp)
@@ -105,18 +112,17 @@ void SuperStar::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 	else
 	{
-
 		float min_tx, min_ty;
 		float rdx = 0;
 		float rdy = 0;
 		float nx, ny;
 
-		// TODO: This is a very ugly designed function!!!!
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
 		this->x += min_tx * dx + nx * 0.4f;
 		this->y += min_ty * dy + ny * 0.4f;
 
+		//Chạm đất thì nảy hoặc di chuyển
 		if (ny != 0)
 		{
 			vy = 0;
@@ -151,6 +157,7 @@ void SuperStar::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		coEvents[i] = NULL;
 	}
 
+	//Ra khỏi camera thì xóa
 	if (x < camPosX - ITEM_SAFE_DELETE_RANGE || x > camPosX + SCREEN_WIDTH + ITEM_SAFE_DELETE_RANGE ||
 		y < camPosY - ITEM_SAFE_DELETE_RANGE || y > camPosY + SCREEN_HEIGHT + ITEM_SAFE_DELETE_RANGE)
 	{
@@ -161,6 +168,7 @@ void SuperStar::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void SuperStar::Render()
 {
+	//Ani thuộc ITEM_ID
 	if (state != ITEM_STATE_IDLE)
 	{
 		int ani = itemType;

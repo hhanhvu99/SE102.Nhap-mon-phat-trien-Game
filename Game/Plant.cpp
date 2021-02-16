@@ -1,4 +1,4 @@
-#include "Plant.h"
+﻿#include "Plant.h"
 #include "debug.h"
 
 Plant::Plant(int placeX, int placeY, int mobType)
@@ -139,14 +139,18 @@ void Plant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		current->GetMarioPos(marioPos_x, marioPos_y);
 		direction = GetDirection();
 
+		//Nếu không di chuyển
 		if (moving == false)
 		{
+			//Di chuyển lên xuống theo chu kì
 			if (GetTickCount() - timePass > ENEMY_PLANT_CYCLE_TIME)
 			{
 				moving = true;
 			}
+			//Nếu enemy có khả năng bắn được
 			else if (mobType >= ENEMY_VENUS_GREEN)
 			{
+				//Nếu mặt thò ra ngoài
 				if (showFace)
 				{
 					if (GetTickCount() - timeShoot > ENEMY_PLANT_SHOOT_TIME)
@@ -160,6 +164,7 @@ void Plant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			DWORD now = GetTickCount();
 
+			//Nếu mặt thục vô trong ống cống
 			if (showFace == false)
 			{
 				if (this->y <= boundaryY_UP)
@@ -174,6 +179,7 @@ void Plant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				else
 					vy = -ENEMY_PLANT_MOVE_SPEED;
 			}
+			//Nếu mặt thò ra ngoài
 			else
 			{
 				if (this->y >= boundaryY_DOWN)
@@ -221,7 +227,6 @@ void Plant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		float rdx = 0;
 		float rdy = 0;
 
-		// TODO: This is a very ugly designed function!!!!
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
 
@@ -255,6 +260,7 @@ void Plant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void Plant::Render()
 {
+	//Ani thuộc ENEMY_MOB
 	if (firstRun == false)
 		return;
 

@@ -1,4 +1,4 @@
-#include <sstream>
+﻿#include <sstream>
 
 #include "HUD.h"
 #include "debug.h"
@@ -79,11 +79,13 @@ void HUD::Destroy()
 
 void HUD::Setup()
 {
+	//Chữ nổi
 	if (isBubble)
 	{
 		vy = -HUD_BUBBLE_JUMP;
 		sprite = SpriteManager::GetInstance()->Get(HUD_ID + number);
 	}
+	//HUD, thanh trạng thái
 	else
 	{
 		switch (type)
@@ -218,6 +220,9 @@ void HUD::Setup()
 
 }
 
+/*
+	Chuyển từ số sang string
+*/
 string HUD::numberToString(int number, unsigned int n)
 {
 	vector<int> listNumber;
@@ -249,6 +254,7 @@ string HUD::numberToString(int number, unsigned int n)
 
 void HUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	//Chữ nổi
 	if (isBubble)
 	{
 		GameObject::Update(dt);
@@ -264,6 +270,7 @@ void HUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 					
 	}
+	//HUD
 	else
 	{
 		switch (type)
@@ -317,7 +324,7 @@ void HUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			x = global->frameHUD_x + HUD_SPEED_O_METER_X;
 			y = global->frameHUD_y + HUD_SPEED_O_METER_Y;
 
-
+			//Tốc độ hiện tại, max là tốc độ hiện tại
 			int limit = global->speed;
 
 			for (int i = 0; i < 6; ++i)
@@ -445,10 +452,12 @@ void HUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void HUD::Render()
 {
+	//Chữ nổi
 	if (isBubble)
 	{
 		sprite->Draw(x, y);
 	}
+	//HUD
 	else
 	{
 		switch (type)

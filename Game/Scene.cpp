@@ -1,4 +1,4 @@
-#include <fstream>
+﻿#include <fstream>
 
 #include "Scene.h"
 #include "Global.h"
@@ -26,6 +26,9 @@ int Scene::GetID()
 
 #define MAX_GAME_LINE 1024
 
+/*
+	Reset lại toàn bộ play scene
+*/
 void Scene::ResetActivedBlock()
 {
 	for (int j = 0; j < this->height; ++j)

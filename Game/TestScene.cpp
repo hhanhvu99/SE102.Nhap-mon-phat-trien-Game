@@ -10,6 +10,9 @@ TestScene::TestScene(int id, LPCWSTR filePath) : Scene(id, filePath)
 	global = Global::GetInstance();
 }
 
+/*
+	Kiểm tra hiện tại thuộc grid nào (cell và grid giống nhau)
+*/
 void TestScene::CheckCell()
 {
 	float camX, camY, endCamX, endCamY;
@@ -21,6 +24,7 @@ void TestScene::CheckCell()
 	camX -= ENTITY_SAFE_DELETE_RANGE;
 	camY -= ENTITY_SAFE_DELETE_RANGE;
 
+	//Với mỗi grid thì kiểm tra xem nếu màn hình play scene chạm vào bất kì cạnh nào của grid hay không
 	for (auto cell : cells)
 	{
 		LPGRID cell_cast = static_cast<LPGRID>(cell);
@@ -41,6 +45,9 @@ void TestScene::CheckCell()
 
 }
 
+/*
+	Thêm object vào gameObject và collideObject
+*/
 void TestScene::Add(LPGAMEOBJECT gameObject)
 {
 	addList.push_back(gameObject);
@@ -48,6 +55,9 @@ void TestScene::Add(LPGAMEOBJECT gameObject)
 
 }
 
+/*
+	Xóa object khỏi gameObject và collideObject
+*/
 void TestScene::Destroy(LPGAMEOBJECT gameObject)
 {
 	auto objectDelete = std::find(collideObjects.begin(), collideObjects.end(), gameObject);
@@ -56,10 +66,14 @@ void TestScene::Destroy(LPGAMEOBJECT gameObject)
 
 	deleteList.push_back(gameObject);
 
+	//Nếu object có thuộc một grid (là các entity như nấm, enemy,...)
 	if (gameObject->GetCurrentCell() != -1)
 		RemoveFromCell(gameObject->GetCurrentCell(), gameObject);
 }
 
+/*
+	Xóa object khỏi collideObject
+*/
 void TestScene::Remove(LPGAMEOBJECT gameObject)
 {
 	auto objectDelete = std::find(collideObjects.begin(), collideObjects.end(), gameObject);
@@ -67,11 +81,17 @@ void TestScene::Remove(LPGAMEOBJECT gameObject)
 		collideObjects.erase(objectDelete);
 }
 
+/*
+	Thêm object vào gameObject
+*/
 void TestScene::Add_Visual(LPGAMEOBJECT gameObject)
 {
 	addList.push_back(gameObject);
 }
 
+/*
+	Xóa object khỏi gameObject
+*/
 void TestScene::Destroy_Visual(LPGAMEOBJECT gameObject)
 {
 	deleteList.push_back(gameObject);
@@ -80,11 +100,17 @@ void TestScene::Destroy_Visual(LPGAMEOBJECT gameObject)
 		RemoveFromCell(gameObject->GetCurrentCell(), gameObject);
 }
 
+/*
+	Thêm object vào grid, khi thêm vào thì object sẽ tự động thuộc về grid đó, tức là grid sẽ khác -1
+*/
 void TestScene::AddToCell(int cell, LPGAMEOBJECT gameObject)
 {
 	static_cast<LPGRID>(cells[cell])->Insert(gameObject);
 }
 
+/*
+	Xóa khỏi object holder của grid, không xóa object đó
+*/
 void TestScene::RemoveFromCell(int cell, LPGAMEOBJECT gameObject)
 {
 	static_cast<LPGRID>(cells[cell])->Delete(gameObject);
@@ -95,6 +121,9 @@ void TestScene::GetMarioPos(float& x, float& y)
 	this->mario->GetPosition(x, y);
 }
 
+/*
+	Chữ nổi khi đạp cái gì đó và nó giúp mario nảy lên
+*/
 void TestScene::FloatText(float x, float y)
 {
 	
@@ -151,6 +180,9 @@ void TestScene::FloatText(float x, float y)
 
 }
 
+/*
+	Chữ nổi cho 100 point
+*/
 void TestScene::FloatTextCoin(float x, float y)
 {
 	global->point += 100;
@@ -159,6 +191,9 @@ void TestScene::FloatTextCoin(float x, float y)
 	temp->SetDrawOrder(HUD_TEXT_DRAW_ORDER);
 }
 
+/*
+	Chữ nỗi cho custom point, lưu ý phải thuộc một trong các HUD_BONUS_POINT
+*/
 void TestScene::FloatTextCustom(float x, float y, int point)
 {
 	y = y - FLOAT_TEXT_HEIGHT;
@@ -166,12 +201,18 @@ void TestScene::FloatTextCustom(float x, float y, int point)
 	temp->SetDrawOrder(HUD_TEXT_DRAW_ORDER);
 }
 
+/*
+	Hiệu ứng splash khi quật đuôi
+*/
 void TestScene::FloatEffectSplash(float x, float y)
 {
 	LPANIMATION ani = AnimationManager::GetInstance()->Get(BULLET)->Get(BULLET_EFFECT_SPLASH);
 	HUD* temp = new HUD(x, y, ani);
 }
 
+/*
+	Sort gameObject theo draw order, dùng Insertion Sort do các object không thay đổi thứ tự nhiều
+*/
 void TestScene::SortGameObject()
 {
 	for (unsigned int j = 1; j < gameObjects.size(); ++j)
@@ -296,7 +337,7 @@ void TestScene::Update(DWORD dt)
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	//if (mario == NULL) return;
 
-
+	//Mới bắt đầu scene
 	if (startSwitch)
 	{
 		DWORD timePass = GetTickCount() - timeSwitch;
@@ -335,6 +376,7 @@ void TestScene::Update(DWORD dt)
 		}
 	}
 
+	//Update lại các gameObject
 	for (auto x : gameObjects)
 	{
 		if (x != nullptr)
@@ -368,13 +410,13 @@ void TestScene::Update(DWORD dt)
 		delete deleteObject;
 	}
 
-	//Check if two list overlap
+	//Xóa overlap giữa 2 danh sách deleteList và addList
 	for (auto deleteObject : deleteList)
 	{
 		addList.erase(std::remove(addList.begin(), addList.end(), deleteObject), addList.end());
 	}
 
-	//Add object
+	//Thêm object
 	for (auto addObject : addList)
 	{
 		gameObjects.push_back(addObject);
@@ -389,7 +431,7 @@ void TestScene::Update(DWORD dt)
 		DebugOut(L"here\n");
 	}*/
 
-	//Check teleport
+	//Kiểm tra gate
 	for (auto teleportObject : teleport)
 	{
 		if (static_cast<Teleport*>(teleportObject)->IsAllowSwitch())
@@ -401,7 +443,7 @@ void TestScene::Update(DWORD dt)
 		global->allowSwitch = false;
 	}
 
-	//Sort Game objects by draw order
+	//Sort object theo draw order
 	SortGameObject();
 
 }
@@ -430,24 +472,26 @@ void TestScene::Unload()
 		temp->Unload();
 	}	
 
+	//Xóa các object trong deleteList
 	for (auto deleteObject : deleteList)
 	{
 		gameObjects.erase(std::remove(gameObjects.begin(), gameObjects.end(), deleteObject), gameObjects.end());
 		delete deleteObject;	
 	}
 
-	//Check if two list overlap
+	//Xóa overlap giữa 2 danh sách deleteList và addList
 	for (auto deleteObject : deleteList)
 	{
 		addList.erase(std::remove(addList.begin(), addList.end(), deleteObject), addList.end());
 	}
 
-	//Delete newly added object
+	//Xóa các object trong addList, cho những trường hợp đã tạo object nhưng chưa kịp thêm vào gameObject
 	for (auto addObject : addList)
 	{
 		delete addObject;
 	}
 
+	//Xóa các gameObject
 	for (auto object : gameObjects)
 		delete object;
 

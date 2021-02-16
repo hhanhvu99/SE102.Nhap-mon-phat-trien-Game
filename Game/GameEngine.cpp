@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <fstream>
 #include <cmath>
 
@@ -82,10 +82,12 @@ void GameEngine::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, in
 
 	//DebugOut(L"Direction: %d\n", angle);
 
+	//Góc bình thường
 	if (angle == 0.0f)
 	{
 		spriteHandler->Draw(texture, &r, NULL, &p, this->color);
 	}
+	//Góc lật ngược (trái thành phải)
 	else if (angle == 180.0f)
 	{
 		spriteHandler->GetTransform(&anhGoc);
@@ -97,6 +99,7 @@ void GameEngine::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, in
 		spriteHandler->Draw(texture, &r, NULL, &p, this->color);
 		spriteHandler->SetTransform(&anhGoc);
 	}
+	//Góc úp ngược
 	else if (angle == 90.0f)
 	{
 		spriteHandler->GetTransform(&anhGoc);
@@ -108,6 +111,7 @@ void GameEngine::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, in
 		spriteHandler->Draw(texture, &r, NULL, &p, this->color);
 		spriteHandler->SetTransform(&anhGoc);
 	}
+	//Góc lật ngược trái sang phải và úp ngược
 	else if (angle == 90.1f)
 	{
 		spriteHandler->GetTransform(&anhGoc);
@@ -120,6 +124,7 @@ void GameEngine::Draw(float x, float y, LPDIRECT3DTEXTURE9 texture, int left, in
 		spriteHandler->Draw(texture, &r, NULL, &p, this->color);
 		spriteHandler->SetTransform(&anhGoc);
 	}
+	//Góc xoay bình thường
 	else if (angle != 0.0f)
 	{
 		spriteHandler->GetTransform(&anhGoc);
@@ -280,7 +285,7 @@ void GameEngine::SweptAABB(
 	float& dy_entry, float& dy_exit, float& ty_entry, float& ty_exit,
 	float& t_entry, float& t_exit)
 {
-
+	//Dùng cho debug
 	//float dx_entry, dx_exit, tx_entry, tx_exit;
 	//float dy_entry, dy_exit, ty_entry, ty_exit;
 
@@ -371,9 +376,14 @@ void GameEngine::SweptAABB(
 
 }
 
+/*
+	Camera đi theo Mario
+	Check bên trong Mario. Khi chạm vào cạnh camera sẽ tự di chuyển theo hướng chạm
+*/
+
 void GameEngine::UpdateCamPos(float marioX, float marioY)
 {
-	//Check inside
+	//left, top, right, bottom tương ứng với 4 cạnh bao bọc xung quanh Mario
 	float left = cam_x + CAMERA_POSITION_LEFT;
 	float top = cam_y + CAMERA_POSITION_TOP;
 	float right = cam_x + CAMERA_POSITION_RIGHT;
@@ -397,7 +407,8 @@ void GameEngine::UpdateCamPos(float marioX, float marioY)
 		cam_y = marioY - CAMERA_POSITION_BOTTOM;
 	}
 
-	//Check outside
+	//Check bên ngoài Mario. Nếu chạm vào cạnh của scene thì camera sẽ dừng tại cạnh đó
+	//cam_x, cam_y, outSideRight, outSideBottom tương ứng với 4 cạnh của màn hình chơi
 	float outSideRight = cam_x + SCREEN_WIDTH;
 	float outSideBottom = cam_y + SCREEN_HEIGHT;
 
@@ -419,17 +430,25 @@ void GameEngine::UpdateCamPos(float marioX, float marioY)
 		cam_y = Global::GetInstance()->screenHeight - SCREEN_HEIGHT + 35.0f;
 	}
 
-
+	//Làm cho HUD không bị dịch chuyển
 	cam_x = trunc(cam_x);
 	cam_y = trunc(cam_y);
+
+	//Reset lại vị trí của Mario ở phần SlideCamPos
 	camTemp_x = cam_x;
 }
+
+/*
+	Camera trượt không theo Mario
+	Khi chạm tới cạnh phải của scene thì camera tự dừng
+*/
 
 void GameEngine::SlideCamPos(float speed, DWORD dt)
 {
 	if (cam_x + SCREEN_WIDTH < Global::GetInstance()->screenWidth)
 		camTemp_x += speed * dt;
 
+	//Làm cho HUD không bị dịch chuyển
 	cam_x = trunc(camTemp_x);
 	cam_y = trunc(cam_y);
 

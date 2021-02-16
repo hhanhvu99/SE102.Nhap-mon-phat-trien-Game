@@ -1,4 +1,4 @@
-#include "GameObject.h"
+﻿#include "GameObject.h"
 
 #include <d3dx9.h>
 #include <algorithm>
@@ -59,6 +59,7 @@ LPCOLLISIONEVENT GameObject::SweptAABBEx(LPGAMEOBJECT coO)
 		t_entry, t_exit
 	);
 
+	//Debug AABB
 	/*
 	if (coO->GetType() == eType::PLAYER && this->type == eType::ENEMY)
 	{
@@ -83,10 +84,12 @@ LPCOLLISIONEVENT GameObject::SweptAABBEx(LPGAMEOBJECT coO)
 }
 
 /*
-	Calculate potential collisions with the list of colliable objects
+	Tính các va chạm có thể xảy ra trong danh sách các vật va chạm
+	Chú ý là class đang gọi hàm này là vật va chạm chủ, ta xét các va chạm khách vào vật chủ này 
 
-	coObjects: the list of colliable objects
-	coEvents: list of potential collisions
+	coObjects: danh sách các vật va chạm
+	coEvents: danh sách các va chạm có thể xảy ra với vật chủ
+	excludeType: danh sách các kiểu vật va chạm bỏ qua
 */
 void GameObject::CalcPotentialCollisions(
 	vector<LPGAMEOBJECT>* coObjects,
@@ -96,31 +99,30 @@ void GameObject::CalcPotentialCollisions(
 {
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
+		// Nếu là vật chủ
 		if (this == coObjects->at(i))
 			continue;
 
-		if (excludeObject != eType::NONE)
+		//Nếu danh sách loại trừ khác rỗng
+		if (excludeType.size() != 0)
 		{
-			if (excludeObject != coObjects->at(i)->GetType())
-				continue;
-		}
-		else
-		{
-			if (excludeType.size() != 0)
+			// Nếu vật va chạm đang xét giống với kiểu trong danh sách loại trừ, nhảy đến continueLoop
+			for (eType type : excludeType)
 			{
-				for (eType type : excludeType)
-				{
-					if (type == coObjects->at(i)->GetType())
-						goto continueLoop;
-				}
+				if (type == coObjects->at(i)->GetType())
+					goto continueLoop;
 			}
+		}
 
-			if (false)
-			{
-			continueLoop:
-				continue;
-			}
+		//continueLoop
+		if (false)
+		{
+			//Trong đây code này sẽ không bao giờ được thực thi, trừ khi gọi từ hàm goto
+			//Khi gọi sẽ bỏ qua vật va chạm này
+		continueLoop:
+			continue;
 		}
+		
 
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
 
@@ -133,10 +135,14 @@ void GameObject::CalcPotentialCollisions(
 			delete e;
 
 	}
-
-	std::sort(coEvents.begin(), coEvents.end(), CollisionEvent::compare);
 }
 
+/*
+	Lọc các danh sách các vật có thể va chạm với vật chủ
+
+	coEvents: danh sách các va chạm có thể xảy ra với vật chủ
+	coEventsResult: danh sách các va chạm với vật chủ
+*/
 void GameObject::FilterCollision(
 	vector<LPCOLLISIONEVENT>& coEvents,
 	vector<LPCOLLISIONEVENT>& coEventsResult,
@@ -158,10 +164,12 @@ void GameObject::FilterCollision(
 		LPCOLLISIONEVENT c = coEvents[i];
 
 		if (c->nx != 0) {
+			//Nếu là platform, không xét hai va chạm trái phải
 			if (c->obj->GetType() == eType::PLATFORM)
 			{
 				min_tx = c->t; nx = 0; min_ix = i; rdx = c->dx;
 			}
+			//Nếu là item, không xét hai va chạm trái phải
 			else if (c->obj->GetType() == eType::ITEM)
 			{
 				min_tx = nx = rdx = 0; min_ix = i;
@@ -174,6 +182,7 @@ void GameObject::FilterCollision(
 		}
 
 		if (c->ny != 0) {
+			//Nếu là platform, chỉ xét va chạm bên dưới (va chạm với mặt đất)
 			if (c->obj->GetType() == eType::PLATFORM)
 			{
 				min_ty = c->t; min_iy = i; rdy = c->dy;
@@ -183,10 +192,12 @@ void GameObject::FilterCollision(
 				else
 					ny = c->ny;
 			}
+			//Nếu là item, không xét hai va chạm trên dưới
 			else if (c->obj->GetType() == eType::ITEM)
 			{
 				min_ty = ny = rdy = 0; min_iy = i;
 			}
+			//Nếu là player, không xét hai va chạm trên dưới (dành cho intro scene)
 			else if (c->obj->GetType() == eType::PLAYER && this->type != eType::GROUP_MOVING)
 			{
 				min_ty = ny = rdy = 0; min_iy = i;
@@ -198,16 +209,6 @@ void GameObject::FilterCollision(
 			coEventsResult.push_back(coEvents[min_iy]);
 		}
 	}
-
-	sort(coEventsResult.begin(), coEventsResult.end(),
-		[](const LPCOLLISIONEVENT& lhs, const LPCOLLISIONEVENT& rhs)
-		{
-			return lhs->obj->GetDrawOrder() > rhs->obj->GetDrawOrder();
-		}
-	);
-
-	//if (min_ix >= 0) coEventsResult.push_back(coEvents[min_ix]);
-	//if (min_iy >= 0) coEventsResult.push_back(coEvents[min_iy]);
 
 	/*
 	if (this->type == eType::ENEMY)

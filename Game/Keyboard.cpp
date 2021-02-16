@@ -1,13 +1,17 @@
-#include "Keyboard.h"
+﻿#include "Keyboard.h"
 #include "Global.h"
 #include "debug.h"
 
 Keyboard* Keyboard::__instance = NULL;
 
+/*
+	Kiểm tra key liên tục
+*/
 void Keyboard::KeyState(BYTE* states)
 {
 	switch (CHOOSE)
 	{
+		//Màn hình scene
 	case 1:
 	{
 		if (PAUSE == false)
@@ -127,12 +131,16 @@ void Keyboard::KeyState(BYTE* states)
 	
 }
 
+/*
+	Ấn key xuống
+*/
 void Keyboard::OnKeyDown(int KeyCode)
 {
 	//DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
 
 	switch (CHOOSE)
 	{
+		//Màn hình scene
 	case 1:
 	{
 		switch (KeyCode)
@@ -230,6 +238,7 @@ void Keyboard::OnKeyDown(int KeyCode)
 		}
 	}
 		break;
+		//Màn hình menu
 	case 2:
 	{
 		switch (KeyCode)
@@ -246,6 +255,7 @@ void Keyboard::OnKeyDown(int KeyCode)
 		}
 	}
 		break;
+		//Màn hình World Map
 	case 3:
 	{
 		switch (KeyCode)
@@ -287,10 +297,14 @@ void Keyboard::OnKeyDown(int KeyCode)
 
 }
 
+/*
+	Thả key ra
+*/
 void Keyboard::OnKeyUp(int KeyCode)
 {
 	switch (CHOOSE)
 	{
+		//Màn hình scene
 	case 1:
 	{
 		switch (KeyCode)

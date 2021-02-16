@@ -1,4 +1,4 @@
-#include "Hammer.h"
+﻿#include "Hammer.h"
 
 Hammer::Hammer(float x, float y, int direction)
 {
@@ -25,6 +25,8 @@ void Hammer::Add()
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
 	LPTESTSCENE current = dynamic_cast<LPTESTSCENE>(scene);
 	current->Add(this);
+
+	//Lấy mario
 	mario = current->GetMario();
 
 }
@@ -58,6 +60,7 @@ void Hammer::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// Simple fall down
 	if (PAUSE == false)
 	{
+		//Di chuyển hình vòng cung
 		vy += BULLET_HAMMER_GRAVITY * dt;
 		vx = direction * BULLET_HAMMER_SPEED_X;
 		CalcPotentialCollisions(coObjects, coEvents, {}, eType::ENEMY);
@@ -94,7 +97,6 @@ void Hammer::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		float rdx = 0;
 		float rdy = 0;
 
-		// TODO: This is a very ugly designed function!!!!
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
 		//DebugOut(L"vx: %f -- vy: %f\n", vx, vy);
@@ -102,6 +104,7 @@ void Hammer::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
+			//Là enemy
 			LPCOLLISIONEVENT e = coEventsResult[i];
 			if (e->obj->GetType() == eType::ENEMY)
 			{
@@ -122,6 +125,7 @@ void Hammer::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		coEvents[i] = NULL;
 	}
 
+	//Ra khỏi camera thì xóa 
 	if (x < camPosX - BULLET_SAFE_DELETE_RANGE || x > camPosX + SCREEN_WIDTH + BULLET_SAFE_DELETE_RANGE ||
 		y < camPosY - BULLET_SAFE_DELETE_RANGE || y > camPosY + SCREEN_HEIGHT + BULLET_SAFE_DELETE_RANGE)
 	{

@@ -140,7 +140,6 @@ public:
 	Intro(int id, LPCWSTR filePath);
 
 	bool OutSideCam(LPGAMEOBJECT object);
-	void Reset();
 
 	virtual void Load();
 	virtual void Update(DWORD dt);

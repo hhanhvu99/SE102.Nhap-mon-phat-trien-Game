@@ -85,6 +85,7 @@ void SpriteManager::ParseCommon(string line, LPDIRECT3DTEXTURE9 tex)
 	for (unsigned int i = 0; i < tokens.size(); ++i)
 		data.push_back(atoi(tokens[i].c_str()));
 
+	//ID - left - top - right - bottom - texture - angle - offsetX - offsetY
 	if (data.size() <= 5)
 		this->Add(data[0], data[1], data[2], data[3], data[4], tex);
 	else if (data.size() == 6)

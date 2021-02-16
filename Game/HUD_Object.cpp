@@ -1,4 +1,4 @@
-#include "HUD_Object.h"
+﻿#include "HUD_Object.h"
 
 HUD_Object::HUD_Object(LPSPRITE sprite)
 {
@@ -41,8 +41,7 @@ void HUD_Object::GetToken(string text)
 		}
 	}
 	
-
-	//Setup string
+	//Đặt dấu '/' để cách từng word
 	string temp;
 	unsigned int tempLength = limit;
 
@@ -64,10 +63,12 @@ void HUD_Object::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void HUD_Object::Render()
 {
+	//Nếu là image
 	if (type == eType::HUD_OBJECT_IMAGE)
 	{
 		sprite->Draw(x, y);
 	}
+	//Khác
 	else
 	{
 		float i = 0.0f, j = 0.0f;

@@ -1,4 +1,4 @@
-#include "EnemyTroop.h"
+﻿#include "EnemyTroop.h"
 
 EnemyTroop::EnemyTroop(int indexX, int indexY, int mobType) : GameObject()
 {
@@ -34,13 +34,18 @@ void EnemyTroop::Remove()
 	current->Remove(this);
 }
 
+/*
+	Di chuyển tới vị trí x, y
+*/
 void EnemyTroop::MoveTo(float x, float y)
 {
 	newX = x;
 	newY = y;
 	isMoving = true;
+	//Đặt lại oldDist
 	oldDist = 9999999.9f;
 
+	//Tính vector đơn vị
 	vectorX = newX - this->x;
 	vectorY = newY - this->y;
 	magnitude = float(sqrt(vectorX * vectorX + vectorY * vectorY));
@@ -57,12 +62,15 @@ void EnemyTroop::Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects)
 		x += dx;
 		y += dy;
 
+		//Đang di chuyển
 		if (isMoving)
 		{
+			//Tính khoảng cách giữa 2 điểm theo Pytago
 			float distX = pow((x - newX), 2);
 			float distY = pow((y - newY), 2);
 			float newDist = distX + distY;
 
+			//Càng di chuyển, oldDist càng giảm tới khi newDist > oldDist
 			if (newDist > oldDist)
 			{
 				isMoving = false;
@@ -93,6 +101,7 @@ void EnemyTroop::Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects)
 
 void EnemyTroop::Render()
 {
+	//Ani thuộc MAP_ANI_ID
 	if (PAUSE == false)
 	{
 		int ani = -1;

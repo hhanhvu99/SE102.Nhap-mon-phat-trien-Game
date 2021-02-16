@@ -1,4 +1,4 @@
-#include "BrickShiny.h"
+﻿#include "BrickShiny.h"
 #include "debug.h"
 
 BrickShiny::BrickShiny(float x, float y, LPSPRITE sprite) : ActiveBlock(x, y, sprite)
@@ -17,11 +17,15 @@ BrickShiny::BrickShiny(float x, float y, LPSPRITE sprite) : ActiveBlock(x, y, sp
 	this->master = NULL;
 }
 
+/*
+	Xóa object
+*/
 void BrickShiny::Destroy()
 {
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
 	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
 	
+	//Nếu object thuộc P-Block, xóa nó khỏi object holder của P-Block
 	if (master != NULL)
 		static_cast<P_Block*>(master)->RemoveObject(this);
 
@@ -43,6 +47,7 @@ void BrickShiny::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	x += dx;
 	y += dy;
 
+	//Nếu gạch bị hit (đội gạch, quẩy đuôi, dính rùa,...)
 	if (state == ACTIVE_BLOCK_STATE_HIT)
 	{
 		oldX = x;
@@ -50,6 +55,7 @@ void BrickShiny::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		moving = true;
 		startMoving = GetTickCount();
 	}
+	//Nếu bị bể, dừng lại 1 frame để xử lý đội gạch khi có rùa đứng trên
 	if (destroy)
 	{
 		state = BRICK_SHINY_STATE_MOVING;
@@ -63,6 +69,7 @@ void BrickShiny::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		return;
 	}
 
+	//Di chuyển gạch khi đội, TH mario nhỏ
 	float distanceX = oldX - x;
 	float distanceY = oldY - y;
 
@@ -74,18 +81,21 @@ void BrickShiny::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	//DebugOut(L"State: %d \n", state);
 
+	//Nếu di chuyển, đặt tốc độ
 	if (moving)
 		vy = -MOVING_SPEED;
-
+	//Trong trạng thái di chuyển
 	if (state == BRICK_SHINY_STATE_MOVING)
 	{
+		//Quá thời gian di chuyển, dừng lại
 		if (GetTickCount() - startMoving > BLOCK_MOVING_TIME)
 		{
 			moving = false;
 		}
-		
+		//Nếu dừng, cho gạch lùi từ từ về vị trí ban đầu
 		if (moving == false)
 		{
+			//X khác
 			if (abs(distanceX) >= BOUNDARY)
 			{
 				vx = Global::Sign(distanceX) * DEFLECT_SPEED;
@@ -95,6 +105,7 @@ void BrickShiny::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				vx = 0;
 				x = oldX;
 			}
+			//Y khác
 			if (abs(distanceY) >= BOUNDARY)
 			{
 				vy = Global::Sign(distanceY) * DEFLECT_SPEED;
@@ -113,13 +124,8 @@ void BrickShiny::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void BrickShiny::Render()
 {
+	//Ani thuộc phần ACTIVE_BLOCK
 	int ani = BRICK_SHINY_ANI;
-
-	/*if (state == BRICK_SHINY_STATE_NORMAL)
-	{
-		ani = BRICK_SHINY_ANI_1;
-	}*/
-
 	animation_set->Get(ani)->Render(x, y);
 	//RenderBoundingBox();
 }
@@ -130,6 +136,7 @@ void BrickShiny::SetState(int state)
 
 	switch (state)
 	{
+		//TH bị hit, nếu mario con và gạch không di chuyển thì tạo 4 viên gạch nhỏ
 	case ACTIVE_BLOCK_STATE_HIT:
 	{
 		if (Global::GetInstance()->level != MARIO_LEVEL_SMALL && moving == false)
@@ -144,6 +151,7 @@ void BrickShiny::SetState(int state)
 
 	}
 		break;
+		//TH bị rùa hit
 	case BRICK_SHINY_STATE_HIT:
 	{
 		Rubbish* brick1 = new Rubbish(x + RUBBISH_OFFSET_X, y + RUBBISH_OFFSET_Y, RUBBISH_SPEED_X, RUBBISH_SPEED_Y, RUBBISH_DEFLECT_SPEED, -1);

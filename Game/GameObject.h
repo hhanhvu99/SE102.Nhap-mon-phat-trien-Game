@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <Windows.h>
 #include <d3dx9.h>
@@ -36,10 +36,6 @@ struct CollisionEvent
 		this->obj = obj;
 	}
 
-	static bool compare(const LPCOLLISIONEVENT& a, LPCOLLISIONEVENT& b)
-	{
-		return a->t < b->t;
-	}
 };
 
 
@@ -74,7 +70,7 @@ protected:
 	LPANIMATION_SET animation_set;
 	LPSPRITE sprite;
 
-	//Cell
+	//Dành cho các Grid
 	int currentCell;
 	vector<int> inCell;
 

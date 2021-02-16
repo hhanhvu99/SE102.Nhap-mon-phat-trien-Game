@@ -1,4 +1,4 @@
-#include "Mushroom.h"
+﻿#include "Mushroom.h"
 
 Mushroom::Mushroom(float x, float y, int itemType) : Item(x, y, itemType)
 {
@@ -8,11 +8,15 @@ Mushroom::Mushroom(float x, float y, int itemType) : Item(x, y, itemType)
 	this->Add();
 }
 
+/*
+	Chạm vào thì hủy
+*/
 void Mushroom::DestroyTouch()
 {
 	LPSCENE scene = SceneManager::GetInstance()->GetCurrentScene();
 	LPTESTSCENE current = static_cast<LPTESTSCENE>(scene);
 
+	//Nấm xanh thêm 1 mạng, nấm đỏ biến thành mario lớn nếu mario là nhỏ và cộng thêm 1000
 	if (itemType == ITEM_MUSHROOM_GREEN)
 		current->FloatTextCustom(x, y, HUD_BONUS_POINT_UP);
 	else if (Global::GetInstance()->level > MARIO_LEVEL_SMALL)
@@ -56,16 +60,19 @@ void Mushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// Simple fall down
 	if (PAUSE == false)
 	{
+		//Hiện lên xong
 		if (showUp == false)
 			vy += ITEM_GRAVITY * dt;
 
 		CalcPotentialCollisions(coObjects, coEvents, { eType::ITEM, eType::ENEMY, eType::ENEMY_BULLET,
 					eType::PLAYER_UNTOUCHABLE, eType::ENEMY_MOB_DIE });
 
+		//Item di chuyển bình thường
 		if (state == ITEM_STATE_MOVING)
 		{
 			vx = direction * ITEM_MOVE_SPEED_X;
 		}
+		//Hiện item trong block
 		else if (state == ITEM_STATE_SHOW)
 		{
 			if (this->y <= boundaryUp)
@@ -89,6 +96,7 @@ void Mushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		return;
 	}
 
+	//Item rớt xuống
 	if (state == ITEM_STATE_DROP)
 	{
 		vx = 0;
@@ -107,13 +115,11 @@ void Mushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 	else
 	{
-
 		float min_tx, min_ty;
 		float rdx = 0;
 		float rdy = 0;
 		float nx, ny;
 
-		// TODO: This is a very ugly designed function!!!!
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
 		this->x += min_tx * dx + nx * 0.4f;
@@ -147,6 +153,7 @@ void Mushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		coEvents[i] = NULL;
 	}
 
+	//Ra khỏi camera thì xóa
 	if (x < camPosX - ITEM_SAFE_DELETE_RANGE || x > camPosX + SCREEN_WIDTH + ITEM_SAFE_DELETE_RANGE ||
 		y < camPosY - ITEM_SAFE_DELETE_RANGE || y > camPosY + SCREEN_HEIGHT + ITEM_SAFE_DELETE_RANGE)
 	{
@@ -157,6 +164,7 @@ void Mushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void Mushroom::Render()
 {
+	//Ani thuộc ITEM_ID
 	if (state != ITEM_STATE_IDLE)
 	{
 		int ani = itemType;

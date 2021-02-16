@@ -1,4 +1,4 @@
-#include <algorithm>
+﻿#include <algorithm>
 #include <assert.h>
 #include "Debug.h"
 
@@ -42,8 +42,6 @@ void PlayerIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
 	coEvents.clear();
-
-	// turn off collision when die 
 	CalcPotentialCollisions(coObjects, coEvents, { eType::ENEMY, eType::MARIO_BULLET, eType::ENEMY_MOB_DIE });
 
 	if (inTransition)
@@ -101,12 +99,7 @@ void PlayerIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		float rdx = 0;
 		float rdy = 0;
 
-		// TODO: This is a very ugly designed function!!!!
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
-
-		// how to push back PlayerIntro if collides with a moving objects, what if PlayerIntro is pushed this way into another object?
-		//if (rdx != 0 && rdx!=dx)
-			//x += nx*abs(rdx); 
 
 		//DebugOut(L"dx: %f -- dy: %f -- min_tx: %f -- min_ty: %f\n", dx, dy, min_tx, min_ty);
 
@@ -114,6 +107,7 @@ void PlayerIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		this->x += min_tx * dx + nx * 0.4f;
 		this->y += min_ty * dy + ny * 0.4f;
 
+		//Đụng 2 bên
 		if (nx != 0)
 		{
 			++countTouch;
@@ -140,7 +134,7 @@ void PlayerIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			countTouch = 0;
 
 
-
+		//Đụng trên dưới
 		if (ny != 0)
 		{
 			vy = 0;
@@ -373,6 +367,8 @@ void PlayerIntro::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void PlayerIntro::Render()
 {
+	//Ani thuộc MARIO
+
 	//DebugOut(L"State: %d\n", state);
 	//DebugOut(L"Running: %d\n", isRunning);
 	ani = -1;
@@ -489,6 +485,7 @@ void PlayerIntro::Render()
 	D3DCOLOR color = D3DCOLOR_ARGB(255, 255, 255, 255);
 	if (inTransition)
 	{
+		//Chuyển level khác mario nhỏ
 		if (state == MARIO_STATE_TRANSITION_1)
 		{
 			if (direction > 0) ani = BULLET_EFFECT_POP + BULLET_ANI_RIGHT;
@@ -497,15 +494,18 @@ void PlayerIntro::Render()
 			offset_Draw_Y = (height - STANDARD_SIZE) / 2;
 			ani_walk_time = 50;
 		}
+		//Chuyển level có dính tới mario nhỏ
 		else
 		{
 			ani_walk_time = 60;
 
+			//Mario nhỏ sang lớn
 			if (transitionUp)
 			{
 				if (direction > 0) ani = MARIO_ANI_TRAN_RIGHT_UP;
 				else ani = MARIO_ANI_TRAN_LEFT_UP;
 			}
+			//Mario lớn sang nhỏ
 			else
 			{
 				if (direction > 0) ani = MARIO_ANI_TRAN_RIGHT_DOWN;
@@ -514,12 +514,9 @@ void PlayerIntro::Render()
 		}
 	}
 
-
+	//Đặt thời gian giữa các frame
 	animation_set->Get(ani)->SetTime(ani_walk_time);
 	animation_set->Get(ani)->Render(x + offset_Draw_X, y + offset_Draw_Y, color);
-
-
-	//this->sprite->Draw(x, y);
 
 	//DebugOut(L"Direction: %d\n", direction);
 	//RenderBoundingBox();
@@ -899,6 +896,9 @@ void PlayerIntro::SetLevel(int l)
 	prevLevel = l;
 }
 
+/*
+	Giảm tốc độ chạy trong intro
+*/
 void PlayerIntro::SlowDown()
 {
 	if (vx > 0)
@@ -915,6 +915,9 @@ void PlayerIntro::GetBoundingBox(float& left, float& top, float& right, float& b
 	bottom = y + this->height;
 }
 
+/*
+	Kiểm tra va chạm tại 1 điểm
+*/
 bool PlayerIntro::PointCollision(vector<LPGAMEOBJECT>& coObjects, float pointX, float pointY)
 {
 	float left, top, right, bottom;
@@ -951,6 +954,9 @@ bool PlayerIntro::PointCollision(vector<LPGAMEOBJECT>& coObjects, float pointX, 
 	return false;
 }
 
+/*
+	Kiểm tra va chạm của 1 vật tại 1 điểm
+*/
 bool PlayerIntro::PointCollision(vector<LPGAMEOBJECT>& coObjects, float pointX, float pointY, LPGAMEOBJECT& target)
 {
 	float left, top, right, bottom;

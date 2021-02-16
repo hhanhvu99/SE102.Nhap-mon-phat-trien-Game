@@ -1,4 +1,4 @@
-#include "Intro.h"
+﻿#include "Intro.h"
 #include "debug.h"
 
 Intro::Intro(int id, LPCWSTR filePath) : TestScene(id, filePath)
@@ -6,6 +6,9 @@ Intro::Intro(int id, LPCWSTR filePath) : TestScene(id, filePath)
 	this->type = 2;
 }
 
+/*
+	Kiểm tra object có rớt ra ngoài màn hình hay không
+*/
 bool Intro::OutSideCam(LPGAMEOBJECT object)
 {
 	float x, y;
@@ -17,12 +20,6 @@ bool Intro::OutSideCam(LPGAMEOBJECT object)
 		return true;
 
 	return false;
-}
-
-void Intro::Reset()
-{
-
-
 }
 
 void Intro::Load()
@@ -171,6 +168,7 @@ void Intro::Load()
 
 	GameEngine::GetInstance()->SetCamPos(32.0f, 0.0f);
 
+	//Chưa vẽ
 	ribbon_top->SetDisableDraw();
 	tree1->SetDisableDraw();
 	tree2->SetDisableDraw();
@@ -184,7 +182,7 @@ void Intro::Update(DWORD dt)
 	TestScene::Update(dt);
 	DWORD now = GetTickCount();
 	
-	//Stage
+	//Kéo màn
 	if (moveRibbon)
 	{
 		float x, y;
@@ -206,6 +204,7 @@ void Intro::Update(DWORD dt)
 		}
 		else if (y < -MENU_RIBBON_LIMIT / 2)
 		{
+			//Tạo mario và luigi
 			if (allowCreate)
 			{
 				mario = new PlayerIntro(272.0f, 152.0f);
@@ -229,6 +228,7 @@ void Intro::Update(DWORD dt)
 		}
 			
 	}
+	//Chữ rớt xuống
 	else if (moveTitle)
 	{
 		DWORD timePass = now - waittingTime;
@@ -277,6 +277,7 @@ void Intro::Update(DWORD dt)
 				}
 			}
 
+			//Tạo các entity rớt xuống 
 			if (allowCreateTurtleShell)
 			{
 				turtleShell = new KoopasIntro(9, -5, ENEMY_KOOPAS_MENU, true);
@@ -317,6 +318,7 @@ void Intro::Update(DWORD dt)
 		}
 	
 	}
+	//Chuyển màu background và các object gồm 4 giai đoạn
 	else if (allowTranform)
 	{
 		if (startTranform)
@@ -328,6 +330,7 @@ void Intro::Update(DWORD dt)
 		DWORD timePass = now - tranformTime;
 		D3DCOLOR color;
 
+		//Giai đoạn 4
 		if (timePass > MENU_TIME_STAGE_FOUR)
 		{
 			color = D3DCOLOR_XRGB(255, 255, 255);
@@ -344,6 +347,7 @@ void Intro::Update(DWORD dt)
 			allowTranform = false;
 
 		}
+		//Giai đoạn 3
 		else if (timePass > MENU_TIME_STAGE_THREE)
 		{
 			color = D3DCOLOR_XRGB(200, 200, 200);
@@ -355,6 +359,7 @@ void Intro::Update(DWORD dt)
 			number->SetDrawColor(color);
 			ribbon_top->SetDrawColor(color);
 		}
+		//Giai đoạn 2
 		else if (timePass > MENU_TIME_STAGE_TWO)
 		{
 			color = D3DCOLOR_XRGB(100, 100, 100);
@@ -366,6 +371,7 @@ void Intro::Update(DWORD dt)
 			number->SetDrawColor(color);
 			ribbon_top->SetDrawColor(color);
 		}
+		//Giai đoạn 1
 		else if (timePass > MENU_TIME_STAGE_ONE)
 		{
 			color = D3DCOLOR_XRGB(50, 50, 50);
@@ -386,7 +392,7 @@ void Intro::Update(DWORD dt)
 
 	}
 
-	//Entity
+	//Di chuyển các entity
 	if (allowEntity)
 	{
 		if (startEntity)
@@ -395,10 +401,12 @@ void Intro::Update(DWORD dt)
 			startEntity = false;
 		}
 
+		//Phần 1: Từ khi kéo màn tới lúc chuyển thành Raccoon
 		if (allowPartOne)
 		{
 			DWORD timePass = now - timeEntity;
 
+			//Mario đứng yên, luigi chạy ra ngoài màn hình
 			if (timePass > MENU_TIME_ENTITY_THREE)
 			{
 				if (!mario->IsStop())
@@ -406,6 +414,7 @@ void Intro::Update(DWORD dt)
 				else
 					allowPartOne = false;
 			}
+			//Luigi nhảy 1 lần
 			else if (timePass > MENU_TIME_ENTITY_TWO)
 			{
 				if (stageTwoFirst)
@@ -415,11 +424,13 @@ void Intro::Update(DWORD dt)
 				}
 
 			}
+			//Luigi sang trái còn mario sang phải 
 			else if (timePass > MENU_TIME_ENTITY_ONE)
 			{
 				mario->SetState(MARIO_MENU_STATE_WALKING_LEFT);
 				luigi->SetState(MARIO_MENU_STATE_WALKING_RIGHT);
 			}
+			//Cả 2 đứng yên
 			else
 			{
 				mario->SetState(MARIO_MENU_STATE_WALK_LEFT_NO_MOVE);
@@ -427,7 +438,7 @@ void Intro::Update(DWORD dt)
 			}
 		}
 
-
+		//Mario bị luigi dẫm lên
 		if (mario->GetState() == MARIO_MENU_STATE_CROUCH)
 		{
 			float x, y;
@@ -450,33 +461,40 @@ void Intro::Update(DWORD dt)
 				waittingTime = now;
 			}
 		}
+		//Mario bị vỏ rùa rơi trúng đầu
 		else if (mario->IsHitByShell())
 		{
 			DWORD timePass = now - timeHitShell;
 
+			//Nếu dính mai rùa vào đầu
 			if (hitByShell)
 			{
 				timeHitShell = now;
 				hitByShell = false;
 			}
+			//Nhảy cao ăn Super Leaf
 			else if (timePass > MENU_MARIO_TITLE_4)
 			{
 				mario->SetState(MARIO_MENU_STATE_LONG_JUMP);
 				mario->SetState(MARIO_MENU_STATE_HIT_RELEASE_2);
 			}
+			//Ngẩng đầu lên
 			else if (timePass > MENU_MARIO_TITLE_3)
 			{
 				mario->SetState(MARIO_MENU_STATE_TITLE_2);
 			}
+			//Bình thường
 			else if (timePass > MENU_MARIO_TITLE_2)
 			{
 				mario->SetState(MARIO_MENU_STATE_IDLE);
 			}
+			//Dính mai rùa
 			else
 			{
 				mario->SetState(MARIO_MENU_STATE_TITLE_1);
 			}
 
+			//Luigi ra ngoài màn hình
 			if (OutSideCam(luigi))
 			{
 				luigi->SetState(MARIO_MENU_STATE_IDLE);
@@ -485,194 +503,10 @@ void Intro::Update(DWORD dt)
 				luigi->SetType(eType::ENEMY_MOB_DIE);
 			}
 		}
-		else if (beginStageTwo)
+		//Chuyển thành Raccoon, lúc này mario chưa chạm đất
+		else if (mario->GetLevel() == MARIO_LEVEL_RACC && beginStageTwo == false)
 		{
-			DWORD timePass = now - timeRaccoon;
-
-			if (inRaccoonFirst)
-			{
-				timeRaccoon = now;
-				inRaccoonFirst = false;
-			}
-
-			float vx, vy;
-			mario->GetSpeed(vx, vy);
-
-			if (allowBreak)
-			{
-				if (vx < 0)
-				{
-					turtleShell->SetGrapper(mario);
-					mario->SetState(MARIO_MENU_STATE_BREAK_RIGHT);
-				}
-				else
-				{
-					allowPartTwo = true;
-					allowBreak = false;
-				}
-			}
-
-
-			if (allowPartTwo)
-			{
-				if (timePass > MENU_MARIO_SECOND_16)
-				{
-					mario->SetState(MARIO_MENU_STATE_IDLE);
-					showMenu = true;
-					allowEntity = false;
-				}
-				else if (timePass > MENU_MARIO_SECOND_15)
-				{
-					mario->SetState(MARIO_MENU_STATE_RUNNING_RIGHT_CUS);
-					mario->SetDrawOrder(MENU_DRAW_ORDER_RIBBON_BG);
-				}
-				else if (timePass > MENU_MARIO_SECOND_14)
-				{
-					mario->SetState(MARIO_MENU_STATE_IDLE);
-				}
-				else if (timePass > MENU_MARIO_SECOND_13)
-				{
-					if (vx > 0)
-						mario->SetState(MARIO_MENU_STATE_BREAK_LEFT);
-					else
-						mario->SetState(MARIO_MENU_STATE_WALKING_LEFT);
-				}
-				else if (timePass > MENU_MARIO_SECOND_12)
-				{
-					mario->SetState(MARIO_MENU_STATE_RUNNING_RIGHT_FAST);
-				}
-				else if (timePass > MENU_MARIO_SECOND_11)
-				{
-					mario->SetState(MARIO_MENU_STATE_IDLE);
-				}
-				else if (timePass > MENU_MARIO_SECOND_10)
-				{
-					mario->SetState(MARIO_MENU_STATE_WALKING_LEFT);
-				}
-				else if (timePass > MENU_MARIO_SECOND_9)
-				{
-					if (turtleRollFirst)
-					{
-						turtleShell->SetDirection(1);
-						turtleShell->SetPosition(0.0f, 144.0f);
-						turtleShell->SetState(ENEMY_STATE_ROLLING);
-						turtleRollFirst = false;
-					}
-
-				}
-				else if (timePass > MENU_MARIO_SECOND_8)
-				{
-					mario->SetState(MARIO_MENU_STATE_RELEASE);
-					mario->SetState(MARIO_MENU_STATE_IDLE);
-					luigi->SetState(MARIO_MENU_STATE_RUNNING_RIGHT_FAST);
-				}
-				else if (timePass > MENU_MARIO_SECOND_7)
-				{
-					mario->SetState(MARIO_MENU_STATE_HOLD);
-					mario->SetState(MARIO_MENU_STATE_WALKING_RIGHT);
-					luigi->SetState(MARIO_MENU_STATE_IDLE);
-					luigiDisappear = true;
-				}
-				else if (timePass > MENU_MARIO_SECOND_6)
-				{
-					if (jumpFirst)
-					{
-						mario->SetState(MARIO_MENU_STATE_VERY_SHORT_JUMP);
-						jumpFirst = false;
-					}
-
-
-					if (mario->isTouchGround())
-					{
-						mario->SetState(MARIO_MENU_STATE_IDLE);
-					}
-					else if (turtleShell->GetState() == ENEMY_STATE_STOMP)
-					{
-						mario->SetState(MARIO_MENU_STATE_IDLE);
-						mario->SetDirection(1);
-						turtleShell->SetGrapper(mario);
-						turtleShell->SetRollSpeed(ENEMY_MENU_KOOPAS_ROLL_SPEED_SLOW);
-					}
-
-
-					luigi->SetState(MARIO_MENU_STATE_IDLE);
-				}
-				else if (timePass > MENU_MARIO_SECOND_5)
-				{
-					mario->SetState(MARIO_MENU_STATE_WALKING_LEFT);
-					luigi->SetState(MARIO_MENU_STATE_RELEASE);
-					luigi->SetState(MARIO_MENU_STATE_IDLE);
-					turtleShell->SetSpeed(-ENEMY_MENU_KOOPAS_ROLL_SPEED_CUSTOM, 0);
-				}
-				else if (timePass > MENU_MARIO_SECOND_4)
-				{
-					mario->SetState(MARIO_MENU_STATE_WALKING_LEFT);
-					luigi->SetState(MARIO_MENU_STATE_HOLD);
-					luigi->SetState(MARIO_MENU_STATE_IDLE);
-				}
-				else if (timePass > MENU_MARIO_SECOND_3)
-				{
-					mario->SetState(MARIO_MENU_STATE_IDLE);
-					luigi->SetState(MARIO_MENU_STATE_HOLD);
-					luigi->SetState(MARIO_MENU_STATE_IDLE);
-				}
-				else if (timePass > MENU_MARIO_SECOND_2)
-				{
-					mario->SetState(MARIO_MENU_STATE_IDLE);
-					luigi->SetState(MARIO_MENU_STATE_HOLD);
-					luigi->SetState(MARIO_MENU_STATE_WALKING_LEFT);
-				}
-				else if (timePass > MENU_MARIO_SECOND_1)
-				{
-					mario->SetState(MARIO_MENU_STATE_IDLE);
-					luigi->SetState(MARIO_MENU_STATE_HOLD);
-					luigi->SetPosition(MENU_LUIGI_POSITION_X, MENU_LUIGI_POSITION_Y);
-				}
-				else
-				{
-					mario->SetState(MARIO_MENU_STATE_WALKING_RIGHT);
-				}
-
-				if (OutSideCam(turtleShell))
-				{
-					if (turtleShellFirst)
-					{
-						if (turtleShell->GetState() != ENEMY_STATE_BEING_GRAB)
-						{
-							luigi->SetType(eType::PLAYER);
-							turtleShell->SetGrapper(luigi);
-							turtleShell->SetState(ENEMY_STATE_BEING_GRAB);
-							turtleShellFirst = false;
-
-						}
-
-						luigi->SetState(MARIO_MENU_STATE_HOLD);
-					}
-					else if (turtleShellSecond)
-					{
-						turtleShell->SetState(ENEMY_STATE_STOMP);
-						turtleShellSecond = false;
-					}
-
-				}
-
-				if (luigiDisappear)
-				{
-					if (OutSideCam(luigi))
-					{
-						luigi->SetState(MARIO_MENU_STATE_IDLE);
-						luigi->SetSpeed(0.0f, 0.0f);
-						luigi->SetDirection(-1);
-						luigi->SetType(eType::ENEMY_MOB_DIE);
-					}
-
-					luigiDisappear = false;
-				}
-			}
-
-		}
-		else if (mario->GetLevel() == MARIO_LEVEL_RACC)
-		{
+			//Nếu groomba chưa bị đạp
 			if (groomba != NULL)
 			{
 				if (inRaccoonFirst)
@@ -688,16 +522,18 @@ void Intro::Update(DWORD dt)
 				groomba->GetPosition(gX, gY);
 				mario->GetPosition(mX, mY);
 
+				//Đến giữa groomba rớt xuống
 				if (mX <= gX + 2 * groomba->GetWidth())
 				{
 					mario->SetState(MARIO_MENU_STATE_STOP_JUMP);
 				}
+				//Mario rơi từ từ tới groomba
 				else
 				{
 					mario->SetState(MARIO_MENU_STATE_JUMP_FLAP_HOLD);
 					mario->SetState(MARIO_MENU_STATE_WALKING_LEFT);
 				}
-
+				//Groomba bị đạp
 				if (groomba->GetState() == ENEMY_STATE_STOMP)
 				{
 					groomba = NULL;
@@ -706,15 +542,227 @@ void Intro::Update(DWORD dt)
 				}
 			}
 
+			//Nếu chạm đất, bắt đầu phần 2
 			if (mario->isTouchGround())
 			{
 				beginStageTwo = true;
 			}
 
 		}
+		//Phần 2: Từ khi chuyển thành Raccoon tới hết
+		else if (beginStageTwo)
+		{
+			DWORD timePass = now - timeRaccoon;
+
+			if (inRaccoonFirst)
+			{
+				timeRaccoon = now;
+				inRaccoonFirst = false;
+			}
+
+			float vx, vy;
+			mario->GetSpeed(vx, vy);
+
+			//Thắng lại lúc mario chạm đất
+			if (allowBreak)
+			{
+				if (vx < 0)
+				{
+					turtleShell->SetGrapper(mario);
+					mario->SetState(MARIO_MENU_STATE_BREAK_RIGHT);
+				}
+				else
+				{
+					allowPartTwo = true;
+					allowBreak = false;
+				}
+			}
+
+			if (allowPartTwo)
+			{
+				//Mario đứng yên sau khi nằm sau bụi cỏ
+				if (timePass > MENU_MARIO_SECOND_16)
+				{
+					mario->SetState(MARIO_MENU_STATE_IDLE);
+					showMenu = true;
+					allowEntity = false;
+				}
+				//Mario chạy về bên phải, đồng thời đặt lại draw order
+				else if (timePass > MENU_MARIO_SECOND_15)
+				{
+					mario->SetState(MARIO_MENU_STATE_RUNNING_RIGHT_CUS);
+					mario->SetDrawOrder(MENU_DRAW_ORDER_RIBBON_BG);
+				}
+				//Mario đứng yên
+				else if (timePass > MENU_MARIO_SECOND_14)
+				{
+					mario->SetState(MARIO_MENU_STATE_IDLE);
+				}
+				//Mario thắng rùi đi về bên trái
+				else if (timePass > MENU_MARIO_SECOND_13)
+				{
+					if (vx > 0)
+						mario->SetState(MARIO_MENU_STATE_BREAK_LEFT);
+					else
+						mario->SetState(MARIO_MENU_STATE_WALKING_LEFT);
+				}
+				//Mario chạy nhanh bên phải
+				else if (timePass > MENU_MARIO_SECOND_12)
+				{
+					mario->SetState(MARIO_MENU_STATE_RUNNING_RIGHT_FAST);
+				}
+				//Mario đứng lại một khoảng
+				else if (timePass > MENU_MARIO_SECOND_11)
+				{
+					mario->SetState(MARIO_MENU_STATE_IDLE);
+				}
+				//Mario sau khi bị dính rùa, mario quay mặt về bên trái một khoảng ngắn
+				else if (timePass > MENU_MARIO_SECOND_10)
+				{
+					mario->SetState(MARIO_MENU_STATE_WALKING_LEFT);
+				}
+				//Đặt lại vị trí rùa ở rìa bên trái màn hình
+				else if (timePass > MENU_MARIO_SECOND_9)
+				{
+					if (turtleRollFirst)
+					{
+						turtleShell->SetDirection(1);
+						turtleShell->SetPosition(0.0f, 144.0f);
+						turtleShell->SetState(ENEMY_STATE_ROLLING);
+						turtleRollFirst = false;
+					}
+
+				}
+				//Mario thả rùa và đứng yên, luigi chạy nhanh về bên phải
+				else if (timePass > MENU_MARIO_SECOND_8)
+				{
+					mario->SetState(MARIO_MENU_STATE_RELEASE);
+					mario->SetState(MARIO_MENU_STATE_IDLE);
+					luigi->SetState(MARIO_MENU_STATE_RUNNING_RIGHT_FAST);
+				}
+				//Mario đi về bên phải, tay cầm rùa, luigi đứng yên
+				else if (timePass > MENU_MARIO_SECOND_7)
+				{
+					mario->SetState(MARIO_MENU_STATE_HOLD);
+					mario->SetState(MARIO_MENU_STATE_WALKING_RIGHT);
+					luigi->SetState(MARIO_MENU_STATE_IDLE);
+					luigiDisappear = true;
+				}
+				//Mario nhảy lên chạm mai rùa và đứng yên
+				else if (timePass > MENU_MARIO_SECOND_6)
+				{
+					//Mario nhảy 1 lần
+					if (jumpFirst)
+					{
+						mario->SetState(MARIO_MENU_STATE_VERY_SHORT_JUMP);
+						jumpFirst = false;
+					}
+					//Đứng yên nếu chạm đất
+					if (mario->isTouchGround())
+					{
+						mario->SetState(MARIO_MENU_STATE_IDLE);
+					}
+					//Nếu chạm mai rùa, đặt lại grapper của rùa là mario, quay mặt về bên phải
+					else if (turtleShell->GetState() == ENEMY_STATE_STOMP)
+					{
+						mario->SetState(MARIO_MENU_STATE_IDLE);
+						mario->SetDirection(1);
+						turtleShell->SetGrapper(mario);
+						turtleShell->SetRollSpeed(ENEMY_MENU_KOOPAS_ROLL_SPEED_SLOW);
+					}
+
+
+					luigi->SetState(MARIO_MENU_STATE_IDLE);
+				}
+				//Mario chạy về bên trái, luigi đá mai rùa
+				else if (timePass > MENU_MARIO_SECOND_5)
+				{
+					mario->SetState(MARIO_MENU_STATE_WALKING_LEFT);
+					luigi->SetState(MARIO_MENU_STATE_RELEASE);
+					luigi->SetState(MARIO_MENU_STATE_IDLE);
+					turtleShell->SetSpeed(-ENEMY_MENU_KOOPAS_ROLL_SPEED_CUSTOM, 0);
+				}
+				//Mario chạy về bên trái
+				else if (timePass > MENU_MARIO_SECOND_4)
+				{
+					mario->SetState(MARIO_MENU_STATE_WALKING_LEFT);
+					luigi->SetState(MARIO_MENU_STATE_HOLD);
+					luigi->SetState(MARIO_MENU_STATE_IDLE);
+				}
+				//2 con đều đứng im
+				else if (timePass > MENU_MARIO_SECOND_3)
+				{
+					mario->SetState(MARIO_MENU_STATE_IDLE);
+					luigi->SetState(MARIO_MENU_STATE_HOLD);
+					luigi->SetState(MARIO_MENU_STATE_IDLE);
+				}
+				//Luigi đi về bên trái, tay cầm con rùa
+				else if (timePass > MENU_MARIO_SECOND_2)
+				{
+					mario->SetState(MARIO_MENU_STATE_IDLE);
+					luigi->SetState(MARIO_MENU_STATE_HOLD);
+					luigi->SetState(MARIO_MENU_STATE_WALKING_LEFT);
+				}
+				//Mario dừng, đặt lại vị trí luigi và cho luigi cầm con rùa
+				else if (timePass > MENU_MARIO_SECOND_1)
+				{
+					mario->SetState(MARIO_MENU_STATE_IDLE);
+					luigi->SetState(MARIO_MENU_STATE_HOLD);
+					luigi->SetPosition(MENU_LUIGI_POSITION_X, MENU_LUIGI_POSITION_Y);
+				}
+				//Mario chạy sang phải, sau khi thắng xong
+				else
+				{
+					mario->SetState(MARIO_MENU_STATE_WALKING_RIGHT);
+				}
+
+				//Nếu mai rùa ra khỏi màn hình
+				if (OutSideCam(turtleShell))
+				{
+					//Lần đầu
+					if (turtleShellFirst)
+					{
+						//Cho luigi cầm lên
+						if (turtleShell->GetState() != ENEMY_STATE_BEING_GRAB)
+						{
+							luigi->SetType(eType::PLAYER);
+							turtleShell->SetGrapper(luigi);
+							turtleShell->SetState(ENEMY_STATE_BEING_GRAB);
+							turtleShellFirst = false;
+
+						}
+
+						luigi->SetState(MARIO_MENU_STATE_HOLD);
+					}
+					//Lần hai, tự xoay sang bên phải
+					else if (turtleShellSecond)
+					{
+						turtleShell->SetState(ENEMY_STATE_STOMP);
+						turtleShellSecond = false;
+					}
+
+				}
+
+				//Nếu luigi ra ngoài màn hình, cho luigi trở thành background
+				if (luigiDisappear)
+				{
+					if (OutSideCam(luigi))
+					{
+						luigi->SetState(MARIO_MENU_STATE_IDLE);
+						luigi->SetSpeed(0.0f, 0.0f);
+						luigi->SetDirection(-1);
+						luigi->SetType(eType::ENEMY_MOB_DIE);
+					}
+
+					luigiDisappear = false;
+				}
+			}
+
+		}
 
 	}
 	
+	//Menu
 	if (showMenu)
 	{
 		if (menuFirst)
@@ -733,7 +781,7 @@ void Intro::Update(DWORD dt)
 			allowEntity = false;
 			shaking = false;
 
-			//Initiate final scene
+			//Đặt lại scene menu, đồng thời hiện tất cả các prop bị giấu
 			D3DCOLOR color = D3DCOLOR_XRGB(255, 255, 255);
 			Global::GetInstance()->background_color = D3DCOLOR_XRGB(252, 216, 168);
 
@@ -761,7 +809,7 @@ void Intro::Update(DWORD dt)
 			arrow->SetAllowDraw();
 			text->SetAllowDraw();
 
-			//Delete all entity
+			//Xóa hết mọi entity
 			for (auto object : gameObjects)
 			{
 				if (object->GetType() != eType::MENU_TITLE && object->GetType() != eType::GROUP)
@@ -773,8 +821,10 @@ void Intro::Update(DWORD dt)
 			menuFirst = false;
 		}
 
+		//Spawn 4 con rùa khi menu hiện ra
 		if (numberOfSpawn < 3)
 		{
+			//Canh thời gian spawn con rùa
 			if (now - currentTime > MENU_SPAWN_TIME)
 			{
 				KoopasIntro* koopas = new KoopasIntro(0, 9, ENEMY_KOOPAS_MENU, false);
@@ -789,6 +839,7 @@ void Intro::Update(DWORD dt)
 			}
 
 		}
+		//Nếu rùa đủ 3 con, spawn con thứ 4
 		else if (numberOfSpawn == 3)
 		{
 			float x, y;
@@ -796,6 +847,7 @@ void Intro::Update(DWORD dt)
 			firstTurtle->GetPosition(x, y);
 			GameEngine::GetInstance()->GetCamPos(cx, cy);
 
+			//Nếu con rùa đầu tiên chạm rìa bên phải
 			if (x + firstTurtle->GetWidth() > cy + SCREEN_WIDTH)
 			{
 				KoopasIntro* koopas = new KoopasIntro(0, 9, ENEMY_KOOPAS_MENU_SPECIAL, false);
@@ -807,6 +859,7 @@ void Intro::Update(DWORD dt)
 			}
 		}
 
+		//Arrow trên menu
 		if (firstOption)
 			arrow->SetPosition(MENU_ARROW_POS_1_X, MENU_ARROW_POS_1_Y);
 		else
