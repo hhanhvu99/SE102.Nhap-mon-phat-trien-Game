@@ -77,9 +77,6 @@
     <Filter Include="GameObject\Item\SuperLeaf">
       <UniqueIdentifier>{a1094414-11e1-44d0-b280-457a933a237e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameObject\Item\RedMushroom">
-      <UniqueIdentifier>{36a4df03-e40e-438b-8d16-a22cb381450c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameObject\Item\SuperStar">
       <UniqueIdentifier>{d0611f8f-db75-444e-be09-59561fb06f7c}</UniqueIdentifier>
     </Filter>
@@ -124,6 +121,9 @@
     </Filter>
     <Filter Include="GameObject\Item\Flower">
       <UniqueIdentifier>{b0e53c74-f7e6-4379-ae85-00def68b2278}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Item\Mushroom">
+      <UniqueIdentifier>{36a4df03-e40e-438b-8d16-a22cb381450c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -178,9 +178,6 @@
     <ClCompile Include="Keyboard.cpp">
       <Filter>GameEngine\Keyboard</Filter>
     </ClCompile>
-    <ClCompile Include="GroupObject.cpp">
-      <Filter>GameObject</Filter>
-    </ClCompile>
     <ClCompile Include="ActiveBlock.cpp">
       <Filter>GameObject\ActiveBlock</Filter>
     </ClCompile>
@@ -224,7 +221,7 @@
       <Filter>GameObject\Item\SuperStar</Filter>
     </ClCompile>
     <ClCompile Include="Mushroom.cpp">
-      <Filter>GameObject\Item\RedMushroom</Filter>
+      <Filter>GameObject\Item\Mushroom</Filter>
     </ClCompile>
     <ClCompile Include="HUD.cpp">
       <Filter>GameObject\HUD</Filter>
@@ -253,9 +250,6 @@
     <ClCompile Include="Teleport.cpp">
       <Filter>GameObject\Teleport</Filter>
     </ClCompile>
-    <ClCompile Include="World1_1.cpp">
-      <Filter>GameEngine\Scene\World1Scene</Filter>
-    </ClCompile>
     <ClCompile Include="EndGoal.cpp">
       <Filter>GameObject\ActiveBlock\End Goal</Filter>
     </ClCompile>
@@ -273,6 +267,12 @@
     </ClCompile>
     <ClCompile Include="Flower.cpp">
       <Filter>GameObject\Item\Flower</Filter>
+    </ClCompile>
+    <ClCompile Include="World.cpp">
+      <Filter>GameEngine\Scene\World1Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="GroupObject.cpp">
+      <Filter>GameObject\Block</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -327,9 +327,6 @@
     <ClInclude Include="Keyboard.h">
       <Filter>GameEngine\Keyboard</Filter>
     </ClInclude>
-    <ClInclude Include="GroupObject.h">
-      <Filter>GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="ActiveBlock.h">
       <Filter>GameObject\ActiveBlock</Filter>
     </ClInclude>
@@ -373,7 +370,7 @@
       <Filter>GameObject\Item\SuperStar</Filter>
     </ClInclude>
     <ClInclude Include="Mushroom.h">
-      <Filter>GameObject\Item\RedMushroom</Filter>
+      <Filter>GameObject\Item\Mushroom</Filter>
     </ClInclude>
     <ClInclude Include="HUD.h">
       <Filter>GameObject\HUD</Filter>
@@ -402,9 +399,6 @@
     <ClInclude Include="Teleport.h">
       <Filter>GameObject\Teleport</Filter>
     </ClInclude>
-    <ClInclude Include="World1_1.h">
-      <Filter>GameEngine\Scene\World1Scene</Filter>
-    </ClInclude>
     <ClInclude Include="EndGoal.h">
       <Filter>GameObject\ActiveBlock\End Goal</Filter>
     </ClInclude>
@@ -422,6 +416,12 @@
     </ClInclude>
     <ClInclude Include="Flower.h">
       <Filter>GameObject\Item\Flower</Filter>
+    </ClInclude>
+    <ClInclude Include="World.h">
+      <Filter>GameEngine\Scene\World1Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="GroupObject.h">
+      <Filter>GameObject\Block</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

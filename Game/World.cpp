@@ -1,7 +1,7 @@
-﻿#include "World1_1.h"
+﻿#include "World.h"
 #include "debug.h"
 
-World1_1::World1_1(int id, LPCWSTR filePath) : TestScene(id, filePath)
+World::World(int id, LPCWSTR filePath) : TestScene(id, filePath)
 {
 	this->type = 1;
 }
@@ -9,7 +9,7 @@ World1_1::World1_1(int id, LPCWSTR filePath) : TestScene(id, filePath)
 /*
 	Load map play scene và menu
 */
-void World1_1::Load()
+void World::Load()
 {
 	CHOOSE = 1;
 	TestScene::Load();
@@ -49,7 +49,7 @@ void World1_1::Load()
 	
 }
 
-void World1_1::Update(DWORD dt)
+void World::Update(DWORD dt)
 {
 	TestScene::Update(dt);
 
@@ -113,12 +113,12 @@ void World1_1::Update(DWORD dt)
 	
 }
 
-void World1_1::Render()
+void World::Render()
 {
 	TestScene::Render();
 }
 
-void World1_1::Unload()
+void World::Unload()
 {
 	TestScene::Unload();
 
@@ -134,7 +134,7 @@ void World1_1::Unload()
 		SceneManager::GetInstance()->GetScene(SCENE_WORLD_1_1_BONUS)->ResetActivedBlock();
 }
 
-void World1_1::SetState(int state)
+void World::SetState(int state)
 {
 	Scene::SetState(state);
 

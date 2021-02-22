@@ -194,7 +194,7 @@
     <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Koopas.cpp" />
-    <ClCompile Include="World1_1.cpp" />
+    <ClCompile Include="World.cpp" />
     <ClCompile Include="WorldMap.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -245,7 +245,7 @@
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Koopas.h" />
-    <ClInclude Include="World1_1.h" />
+    <ClInclude Include="World.h" />
     <ClInclude Include="WorldMap.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

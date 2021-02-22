@@ -2,4 +2,4 @@
 Họ tên: Huỳnh Đỗ Anh Vũ\
 MSSV: 18521665\
 \
-This project is still in development.
+Repo này bao gồm mã nguồn của game Super Mario Bros 3 và 1 file MindMap cho toàn bộ project.

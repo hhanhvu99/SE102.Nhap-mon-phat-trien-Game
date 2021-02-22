@@ -5,7 +5,7 @@
 #define STAGE_OFFSET_TRANSPORT_UP		8.0f
 #define STAGE_OFFSET_TRANSPORT_DOWN		8.0f
 
-class World1_1 : public TestScene
+class World : public TestScene
 {
 	Mario* castMario;
 	bool startSwitching;
@@ -13,7 +13,7 @@ class World1_1 : public TestScene
 	DWORD timeCounter = 0;
 
 public:
-	World1_1(int id, LPCWSTR filePath);
+	World(int id, LPCWSTR filePath);
 
 	virtual void Load();
 	virtual void Update(DWORD dt);

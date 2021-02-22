@@ -17,7 +17,7 @@
 #include "TestScene.h"
 #include "Intro.h"
 #include "WorldMap.h"
-#include "World1_1.h"
+#include "World.h"
 
 #include "Mario.h"
 #include "Keyboard.h"
@@ -186,16 +186,16 @@ void LoadResources()
 	////////////////////
 	//---Load Array---//
 	////////////////////
-	LPSCENE scene = new World1_1(SCENE_WORLD_1_1, L"Script\\Map\\TestMap.txt");
+	LPSCENE scene = new World(SCENE_WORLD_1_1, L"Script\\Map\\TestMap.txt");
 	scene->LoadBlock(L"Script\\Assets\\Block\\Block.txt");
 
-	LPSCENE sceneBonus = new World1_1(SCENE_WORLD_1_1_BONUS, L"Script\\Map\\World1_1_Bonus.txt");
+	LPSCENE sceneBonus = new World(SCENE_WORLD_1_1_BONUS, L"Script\\Map\\World1_1_Bonus.txt");
 	sceneBonus->LoadBlock(L"Script\\Assets\\Block\\World1_1_Bonus.txt");
 
-	LPSCENE sceneTwo = new World1_1(SCENE_WORLD_1_4, L"Script\\Map\\World1_4.txt");
+	LPSCENE sceneTwo = new World(SCENE_WORLD_1_4, L"Script\\Map\\World1_4.txt");
 	sceneTwo->LoadBlock(L"Script\\Assets\\Block\\World1_4.txt");
 
-	LPSCENE sceneTwoBonus = new World1_1(SCENE_WORLD_1_4_GOAL, L"Script\\Map\\World1_4_Goal.txt");
+	LPSCENE sceneTwoBonus = new World(SCENE_WORLD_1_4_GOAL, L"Script\\Map\\World1_4_Goal.txt");
 	sceneTwoBonus->LoadBlock(L"Script\\Assets\\Block\\World1_4_Goal.txt");
 
 	LPSCENE intro = new Intro(SCENE_INTRO, L"Script\\Map\\Intro.txt");
